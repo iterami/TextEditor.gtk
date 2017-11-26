@@ -2,6 +2,11 @@
 
 static void activate(GtkApplication* app, gpointer user_data){
     GtkTextBuffer *buffer;
+    GtkWidget *box;
+    GtkWidget *file;
+    GtkWidget *filemenu;
+    GtkWidget *menubar;
+    GtkWidget *quit;
     GtkWidget *scrolled_window;
     GtkWidget *text_view;
     GtkWidget *window;
@@ -17,6 +22,24 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_window_set_title(
       GTK_WINDOW(window),
       "TextEditor.c"
+    );
+
+    // Setup menu.
+    filemenu = gtk_menu_new();
+    menubar = gtk_menu_bar_new();
+    file = gtk_menu_item_new_with_label("File");
+    quit = gtk_menu_item_new_with_label("Quit");
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(file),
+      filemenu
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(filemenu),
+      quit
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      file
     );
 
     // Setup text view.
@@ -38,14 +61,32 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_POLICY_AUTOMATIC
     );
 
-    // Add everything and show.
+    // Add everything to a box and show.
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
       text_view
     );
+    box = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      5
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      menubar,
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      scrolled_window,
+      TRUE,
+      TRUE,
+      0
+    );
     gtk_container_add(
       GTK_CONTAINER(window),
-      scrolled_window
+      box
     );
     gtk_widget_show_all(window);
 }
