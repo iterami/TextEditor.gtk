@@ -27,8 +27,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     // Setup menu.
     filemenu = gtk_menu_new();
     menubar = gtk_menu_bar_new();
-    file = gtk_menu_item_new_with_label("File");
-    quit = gtk_menu_item_new_with_label("Quit");
+    file = gtk_menu_item_new_with_mnemonic("_File");
+    quit = gtk_menu_item_new_with_mnemonic("_Quit");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(file),
       filemenu
