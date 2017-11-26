@@ -41,6 +41,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_MENU_SHELL(menubar),
       file
     );
+    g_signal_connect_swapped(
+      quit,
+      "activate",
+      G_CALLBACK(gtk_widget_destroy),
+      window
+    );
 
     // Setup text view.
     buffer = gtk_text_buffer_new(NULL);
