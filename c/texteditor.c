@@ -6,6 +6,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *text_view;
     GtkWidget *window;
 
+    // Setup window.
     window = gtk_application_window_new(app);
     gtk_window_set_default_size(
       GTK_WINDOW(window),
@@ -18,6 +19,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       "TextEditor.c"
     );
 
+    // Setup text view.
     buffer = gtk_text_buffer_new(NULL);
     text_view = gtk_text_view_new_with_buffer(buffer);
     gtk_text_view_set_wrap_mode(
@@ -25,6 +27,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_WRAP_WORD
     );
 
+    // Setup scrolled window.
     scrolled_window = gtk_scrolled_window_new(
       NULL,
       NULL
@@ -35,6 +38,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_POLICY_AUTOMATIC
     );
 
+    // Add everything and show.
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
       text_view
