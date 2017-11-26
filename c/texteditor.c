@@ -1,6 +1,9 @@
 #include <gtk/gtk.h>
 
 static void activate(GtkApplication* app, gpointer user_data){
+    GtkTextBuffer *buffer;
+    GtkWidget *scrolled_window;
+    GtkWidget *text_view;
     GtkWidget *window;
 
     window = gtk_application_window_new(app);
@@ -10,6 +13,31 @@ static void activate(GtkApplication* app, gpointer user_data){
       "TextEditor.c"
     );
 
+    buffer = gtk_text_buffer_new(NULL);
+    text_view = gtk_text_view_new_with_buffer(buffer);
+    gtk_text_view_set_wrap_mode(
+      GTK_TEXT_VIEW(text_view),
+      GTK_WRAP_WORD
+    );
+
+    scrolled_window = gtk_scrolled_window_new(
+      NULL,
+      NULL
+    );
+    gtk_scrolled_window_set_policy(
+      GTK_SCROLLED_WINDOW(scrolled_window),
+      GTK_POLICY_AUTOMATIC,
+      GTK_POLICY_AUTOMATIC
+    );
+
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window),
+      text_view
+    );
+    gtk_container_add(
+      GTK_CONTAINER(window),
+      scrolled_window
+    );
     gtk_widget_show_all(window);
 }
 
