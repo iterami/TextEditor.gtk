@@ -1,5 +1,18 @@
 #include <gtk/gtk.h>
 
+GtkTextBuffer *buffer;
+GtkWidget *box;
+GtkWidget *file;
+GtkWidget *filemenu;
+GtkWidget *menubar;
+GtkWidget *new;
+GtkWidget *open;
+GtkWidget *quit;
+GtkWidget *save;
+GtkWidget *scrolled_window;
+GtkWidget *text_view;
+GtkWidget *window;
+
 static void menu_new(GtkTextBuffer *buffer){
     gtk_text_buffer_set_text(
       buffer,
@@ -8,18 +21,39 @@ static void menu_new(GtkTextBuffer *buffer){
     );
 }
 
-static void activate(GtkApplication* app, gpointer user_data){
-    GtkTextBuffer *buffer;
-    GtkWidget *box;
-    GtkWidget *file;
-    GtkWidget *filemenu;
-    GtkWidget *menubar;
-    GtkWidget *new;
-    GtkWidget *quit;
-    GtkWidget *scrolled_window;
-    GtkWidget *text_view;
-    GtkWidget *window;
+static void menu_open(GtkTextBuffer *buffer){
+    GtkWidget *dialog_open;
+    dialog_open = gtk_file_chooser_dialog_new(
+      "Open File",
+      NULL,
+      GTK_FILE_CHOOSER_ACTION_OPEN,
+      "_Cancel",
+      GTK_RESPONSE_CANCEL,
+      "_Open",
+      GTK_RESPONSE_ACCEPT,
+      NULL
+    );
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog_open));
+    gtk_widget_destroy(dialog_open);
+}
 
+static void menu_save(GtkTextBuffer *buffer){
+    GtkWidget *dialog_save;
+    dialog_save = gtk_file_chooser_dialog_new(
+      "Save File",
+      NULL,
+      GTK_FILE_CHOOSER_ACTION_SAVE,
+      "_Cancel",
+      GTK_RESPONSE_CANCEL,
+      "_Save",
+      GTK_RESPONSE_ACCEPT,
+      NULL
+    );
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog_save));
+    gtk_widget_destroy(dialog_save);
+}
+
+static void activate(GtkApplication* app, gpointer user_data){
     // Setup window.
     window = gtk_application_window_new(app);
     gtk_window_set_default_size(
@@ -57,7 +91,9 @@ static void activate(GtkApplication* app, gpointer user_data){
     menubar = gtk_menu_bar_new();
     file = gtk_menu_item_new_with_mnemonic("_File");
     new = gtk_menu_item_new_with_mnemonic("_New");
+    open = gtk_menu_item_new_with_mnemonic("_Open");
     quit = gtk_menu_item_new_with_mnemonic("_Quit");
+    save = gtk_menu_item_new_with_mnemonic("_Save");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(file),
       filemenu
@@ -65,6 +101,18 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(filemenu),
       new
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(filemenu),
+      open
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(filemenu),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(filemenu),
+      save
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(filemenu),
@@ -84,6 +132,18 @@ static void activate(GtkApplication* app, gpointer user_data){
       new,
       "activate",
       G_CALLBACK(menu_new),
+      buffer
+    );
+    g_signal_connect_swapped(
+      open,
+      "activate",
+      G_CALLBACK(menu_open),
+      buffer
+    );
+    g_signal_connect_swapped(
+      save,
+      "activate",
+      G_CALLBACK(menu_save),
       buffer
     );
     g_signal_connect_swapped(
