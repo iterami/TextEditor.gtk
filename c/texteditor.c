@@ -54,6 +54,22 @@ static void menu_save(GtkTextBuffer *buffer){
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
+    // Setup CSS.
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GdkDisplay *display = gdk_display_get_default();
+    GdkScreen *screen = gdk_display_get_default_screen(display);
+    gtk_style_context_add_provider_for_screen(
+      screen,
+      GTK_STYLE_PROVIDER(provider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
+    gtk_css_provider_load_from_file(
+      provider,
+      g_file_new_for_path("../css/style.css"),
+      0
+    );
+    g_object_unref(provider);
+
     // Setup window.
     window = gtk_application_window_new(app);
     gtk_window_set_default_size(
@@ -160,7 +176,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     box = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
-      5
+      0
     );
     gtk_box_pack_start(
       GTK_BOX(box),
