@@ -34,6 +34,26 @@ static void menu_open(GtkTextBuffer *buffer){
       NULL
     );
     gint result = gtk_dialog_run(GTK_DIALOG(dialog_open));
+
+    if(result == GTK_RESPONSE_ACCEPT){
+        char *filename;
+        gssize length;
+        gchar *content;
+
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_open);
+        filename = gtk_file_chooser_get_filename(chooser);
+        if(g_file_get_contents(filename, &content, &length, NULL)){
+            gtk_text_buffer_set_text(
+              buffer,
+              content,
+              length
+            );
+        }
+
+        g_free (content);
+        g_free (filename);
+    }
+
     gtk_widget_destroy(dialog_open);
 }
 
