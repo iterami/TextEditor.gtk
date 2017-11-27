@@ -1,18 +1,5 @@
 #include <gtk/gtk.h>
 
-GtkTextBuffer *buffer;
-GtkWidget *box;
-GtkWidget *file;
-GtkWidget *filemenu;
-GtkWidget *menubar;
-GtkWidget *new;
-GtkWidget *open;
-GtkWidget *quit;
-GtkWidget *save;
-GtkWidget *scrolled_window;
-GtkWidget *text_view;
-GtkWidget *window;
-
 static void menu_new(GtkTextBuffer *buffer){
     gtk_text_buffer_set_text(
       buffer,
@@ -58,9 +45,9 @@ static void menu_open(GtkTextBuffer *buffer){
     gtk_widget_destroy(dialog_open);
 }
 
-static void menu_save(GtkTextBuffer *buffer){
-    GtkWidget *dialog_save;
-    dialog_save = gtk_file_chooser_dialog_new(
+static void menu_saveas(GtkTextBuffer *buffer){
+    GtkWidget *dialog_saveas;
+    dialog_saveas = gtk_file_chooser_dialog_new(
       "Save File",
       NULL,
       GTK_FILE_CHOOSER_ACTION_SAVE,
@@ -70,7 +57,7 @@ static void menu_save(GtkTextBuffer *buffer){
       GTK_RESPONSE_ACCEPT,
       NULL
     );
-    gint result = gtk_dialog_run(GTK_DIALOG(dialog_save));
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog_saveas));
 
     if(result == GTK_RESPONSE_ACCEPT){
         char *filename;
@@ -94,7 +81,7 @@ static void menu_save(GtkTextBuffer *buffer){
           FALSE
         );
 
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_save);
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_saveas);
         filename = gtk_file_chooser_get_filename(chooser);
 
         g_file_set_contents(
@@ -108,10 +95,30 @@ static void menu_save(GtkTextBuffer *buffer){
         g_free(filename);
     }
 
-    gtk_widget_destroy(dialog_save);
+    gtk_widget_destroy(dialog_saveas);
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
+    GtkTextBuffer *buffer;
+    GtkWidget *box;
+    GtkWidget *menu_edit;
+    GtkWidget *menu_file;
+    GtkWidget *menubar;
+    GtkWidget *menuitem_edit_copy;
+    GtkWidget *menuitem_edit_cut;
+    GtkWidget *menuitem_edit_delete;
+    GtkWidget *menuitem_edit_paste;
+    GtkWidget *menuitem_edit_selectall;
+    GtkWidget *menuitem_edit;
+    GtkWidget *menuitem_file_new;
+    GtkWidget *menuitem_file_open;
+    GtkWidget *menuitem_file_quit;
+    GtkWidget *menuitem_file_saveas;
+    GtkWidget *menuitem_file;
+    GtkWidget *scrolled_window;
+    GtkWidget *text_view;
+    GtkWidget *window;
+
     // Setup CSS.
     GtkCssProvider *provider = gtk_css_provider_new();
     GdkDisplay *display = gdk_display_get_default();
@@ -161,67 +168,108 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
 
     // Setup menu items.
-    filemenu = gtk_menu_new();
     menubar = gtk_menu_bar_new();
-    file = gtk_menu_item_new_with_mnemonic("_File");
-    new = gtk_menu_item_new_with_mnemonic("_New");
-    open = gtk_menu_item_new_with_mnemonic("_Open");
-    quit = gtk_menu_item_new_with_mnemonic("_Quit");
-    save = gtk_menu_item_new_with_mnemonic("Save _As");
+    menu_file = gtk_menu_new();
+    menuitem_file = gtk_menu_item_new_with_mnemonic("_File");
+    menuitem_file_new = gtk_menu_item_new_with_mnemonic("_New");
+    menuitem_file_open = gtk_menu_item_new_with_mnemonic("_Open");
+    menuitem_file_quit = gtk_menu_item_new_with_mnemonic("_Quit");
+    menuitem_file_saveas = gtk_menu_item_new_with_mnemonic("Save _As");
+    menu_edit = gtk_menu_new();
+    menuitem_edit = gtk_menu_item_new_with_mnemonic("_Edit");
+    menuitem_edit_copy = gtk_menu_item_new_with_mnemonic("_Copy");
+    menuitem_edit_cut = gtk_menu_item_new_with_mnemonic("C_ut");
+    menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
+    menuitem_edit_delete = gtk_menu_item_new_with_mnemonic("_Delete");
+    menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("_Select All");
+    // File menu.
     gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(file),
-      filemenu
+      GTK_MENU_ITEM(menuitem_file),
+      menu_file
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(filemenu),
-      new
+      GTK_MENU_SHELL(menu_file),
+      menuitem_file_new
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(filemenu),
-      open
+      GTK_MENU_SHELL(menu_file),
+      menuitem_file_open
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(filemenu),
+      GTK_MENU_SHELL(menu_file),
       gtk_separator_menu_item_new()
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(filemenu),
-      save
+      GTK_MENU_SHELL(menu_file),
+      menuitem_file_saveas
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(filemenu),
+      GTK_MENU_SHELL(menu_file),
       gtk_separator_menu_item_new()
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(filemenu),
-      quit
+      GTK_MENU_SHELL(menu_file),
+      menuitem_file_quit
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
-      file
+      menuitem_file
+    );
+    // Edit menu.
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(menuitem_edit),
+      menu_edit
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_copy
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_cut
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_paste
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_delete
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_selectall
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      menuitem_edit
     );
 
     // Setup menu item callbacks.
     g_signal_connect_swapped(
-      new,
+      menuitem_file_new,
       "activate",
       G_CALLBACK(menu_new),
       buffer
     );
     g_signal_connect_swapped(
-      open,
+      menuitem_file_open,
       "activate",
       G_CALLBACK(menu_open),
       buffer
     );
     g_signal_connect_swapped(
-      save,
+      menuitem_file_saveas,
       "activate",
-      G_CALLBACK(menu_save),
+      G_CALLBACK(menu_saveas),
       buffer
     );
     g_signal_connect_swapped(
-      quit,
+      menuitem_file_quit,
       "activate",
       G_CALLBACK(gtk_widget_destroy),
       window
