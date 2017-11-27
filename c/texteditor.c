@@ -42,6 +42,7 @@ static void menu_open(GtkTextBuffer *buffer){
 
         GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_open);
         filename = gtk_file_chooser_get_filename(chooser);
+
         if(g_file_get_contents(filename, &content, &length, NULL)){
             gtk_text_buffer_set_text(
               buffer,
@@ -50,8 +51,8 @@ static void menu_open(GtkTextBuffer *buffer){
             );
         }
 
-        g_free (content);
-        g_free (filename);
+        g_free(content);
+        g_free(filename);
     }
 
     gtk_widget_destroy(dialog_open);
@@ -70,6 +71,43 @@ static void menu_save(GtkTextBuffer *buffer){
       NULL
     );
     gint result = gtk_dialog_run(GTK_DIALOG(dialog_save));
+
+    if(result == GTK_RESPONSE_ACCEPT){
+        char *filename;
+        gchar *content;
+        GtkTextIter end;
+        GtkTextIter start;
+
+        gtk_text_buffer_get_start_iter(
+          buffer,
+          &start
+        );
+        gtk_text_buffer_get_end_iter(
+          buffer,
+          &end
+        );
+
+        content = gtk_text_buffer_get_text(
+          buffer,
+          &start,
+          &end,
+          FALSE
+        );
+
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_save);
+        filename = gtk_file_chooser_get_filename(chooser);
+
+        g_file_set_contents(
+          filename,
+          content,
+          -1,
+          NULL
+        );
+
+        g_free(content);
+        g_free(filename);
+    }
+
     gtk_widget_destroy(dialog_save);
 }
 
@@ -129,7 +167,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     new = gtk_menu_item_new_with_mnemonic("_New");
     open = gtk_menu_item_new_with_mnemonic("_Open");
     quit = gtk_menu_item_new_with_mnemonic("_Quit");
-    save = gtk_menu_item_new_with_mnemonic("_Save");
+    save = gtk_menu_item_new_with_mnemonic("Save _As");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(file),
       filemenu
