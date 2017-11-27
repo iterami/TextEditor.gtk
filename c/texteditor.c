@@ -420,7 +420,6 @@ static void activate(GtkApplication* app, gpointer user_data){
 
 int main(int argc, char **argv){
     GtkApplication *app;
-    int status;
 
     app = gtk_application_new(
       "com.iterami.texteditor",
@@ -432,7 +431,7 @@ int main(int argc, char **argv){
       G_CALLBACK(activate),
       NULL
     );
-    status = g_application_run(
+    int status = g_application_run(
       G_APPLICATION(app),
       argc,
       argv
