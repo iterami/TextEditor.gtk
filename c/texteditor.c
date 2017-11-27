@@ -115,6 +115,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_file_quit;
     GtkWidget *menuitem_file_saveas;
     GtkWidget *menuitem_file;
+    GtkWidget *notebook;
     GtkWidget *scrolled_window;
     GtkWidget *text_view;
     GtkWidget *window;
@@ -148,15 +149,14 @@ static void activate(GtkApplication* app, gpointer user_data){
       "TextEditor.c"
     );
 
-    // Setup text view.
+    // Setup notebook and tab with scrollable text view.
+    notebook = gtk_notebook_new();
     buffer = gtk_text_buffer_new(NULL);
     text_view = gtk_text_view_new_with_buffer(buffer);
     gtk_text_view_set_wrap_mode(
       GTK_TEXT_VIEW(text_view),
       GTK_WRAP_WORD
     );
-
-    // Setup scrolled window.
     scrolled_window = gtk_scrolled_window_new(
       NULL,
       NULL
@@ -165,6 +165,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_SCROLLED_WINDOW(scrolled_window),
       GTK_POLICY_AUTOMATIC,
       GTK_POLICY_AUTOMATIC
+    );
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window),
+      text_view
+    );
+    gtk_notebook_append_page(
+      GTK_NOTEBOOK(notebook),
+      scrolled_window,
+      NULL
     );
 
     // Setup menu items.
@@ -276,10 +285,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
 
     // Add everything to a box and show.
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window),
-      text_view
-    );
     box = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
@@ -293,7 +298,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_box_pack_start(
       GTK_BOX(box),
-      scrolled_window,
+      notebook,
       TRUE,
       TRUE,
       0
@@ -303,6 +308,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       box
     );
     gtk_widget_show_all(window);
+    gtk_widget_grab_focus(text_view);
 }
 
 int main(int argc, char **argv){
