@@ -195,6 +195,7 @@ static void activate(GtkApplication* app, gpointer user_data){
 
     // Setup notebook and tab with scrollable text view.
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_popup_enable(notebook);
     new_tab();
 
     // Setup menu items.
