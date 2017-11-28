@@ -41,6 +41,11 @@ static void new_tab(){
     );
 
     gtk_widget_show_all(window);
+
+    gtk_notebook_set_current_page(
+      notebook,
+      gtk_notebook_get_n_pages(notebook) - 1
+    );
     gtk_widget_grab_focus(text_view);
 }
 
