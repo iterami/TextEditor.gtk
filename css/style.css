@@ -1,4 +1,5 @@
-GtkNotebook{
+GtkNotebook,
+GtkWindow{
     background-color: #3c3b37;
     color: #aaa;
     font-family: monospace;

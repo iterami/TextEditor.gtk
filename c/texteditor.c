@@ -1,14 +1,50 @@
 #include <gtk/gtk.h>
 
-static void menu_new(GtkTextBuffer *buffer){
-    gtk_text_buffer_set_text(
-      buffer,
-      "",
-      0
+GtkNotebook *notebook;
+GtkWidget *window;
+
+static void close_tab(){
+    gtk_notebook_remove_page(
+      notebook,
+      gtk_notebook_get_current_page(notebook)
     );
 }
 
-static void menu_open(GtkTextBuffer *buffer){
+static void new_tab(){
+    GtkTextBuffer *buffer;
+    GtkWidget *scrolled_window;
+    GtkWidget *text_view;
+
+    buffer = gtk_text_buffer_new(NULL);
+    text_view = gtk_text_view_new_with_buffer(buffer);
+    gtk_text_view_set_wrap_mode(
+      GTK_TEXT_VIEW(text_view),
+      GTK_WRAP_WORD
+    );
+    scrolled_window = gtk_scrolled_window_new(
+      NULL,
+      NULL
+    );
+    gtk_scrolled_window_set_policy(
+      GTK_SCROLLED_WINDOW(scrolled_window),
+      GTK_POLICY_AUTOMATIC,
+      GTK_POLICY_AUTOMATIC
+    );
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window),
+      text_view
+    );
+    gtk_notebook_append_page(
+      notebook,
+      scrolled_window,
+      NULL
+    );
+
+    gtk_widget_show_all(window);
+    gtk_widget_grab_focus(text_view);
+}
+
+static void menu_open(){
     GtkWidget *dialog_open;
     dialog_open = gtk_file_chooser_dialog_new(
       "Open File",
@@ -31,11 +67,13 @@ static void menu_open(GtkTextBuffer *buffer){
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)){
+            /*
             gtk_text_buffer_set_text(
               buffer,
               content,
               length
             );
+            */
         }
 
         g_free(content);
@@ -45,7 +83,7 @@ static void menu_open(GtkTextBuffer *buffer){
     gtk_widget_destroy(dialog_open);
 }
 
-static void menu_saveas(GtkTextBuffer *buffer){
+static void menu_saveas(){
     GtkWidget *dialog_saveas;
     dialog_saveas = gtk_file_chooser_dialog_new(
       "Save File",
@@ -65,6 +103,7 @@ static void menu_saveas(GtkTextBuffer *buffer){
         GtkTextIter end;
         GtkTextIter start;
 
+        /*
         gtk_text_buffer_get_start_iter(
           buffer,
           &start
@@ -90,6 +129,7 @@ static void menu_saveas(GtkTextBuffer *buffer){
           -1,
           NULL
         );
+        */
 
         g_free(content);
         g_free(filename);
@@ -99,7 +139,6 @@ static void menu_saveas(GtkTextBuffer *buffer){
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
-    GtkTextBuffer *buffer;
     GtkWidget *box;
     GtkWidget *menu_edit;
     GtkWidget *menu_file;
@@ -112,8 +151,9 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_selectall;
     GtkWidget *menuitem_edit;
     GtkWidget *menuitem_file_closetab;
-    GtkWidget *menuitem_file_new;
+    GtkWidget *menuitem_file_newtab;
     GtkWidget *menuitem_file_open;
+    GtkWidget *menuitem_file_print;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menuitem_file_save;
     GtkWidget *menuitem_file_saveas;
@@ -123,10 +163,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_find_findprevious;
     GtkWidget *menuitem_find_findreplace;
     GtkWidget *menuitem_find;
-    GtkWidget *notebook;
-    GtkWidget *scrolled_window;
-    GtkWidget *text_view;
-    GtkWidget *window;
 
     // Setup CSS.
     GtkCssProvider *provider = gtk_css_provider_new();
@@ -158,31 +194,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
 
     // Setup notebook and tab with scrollable text view.
-    notebook = gtk_notebook_new();
-    buffer = gtk_text_buffer_new(NULL);
-    text_view = gtk_text_view_new_with_buffer(buffer);
-    gtk_text_view_set_wrap_mode(
-      GTK_TEXT_VIEW(text_view),
-      GTK_WRAP_WORD
-    );
-    scrolled_window = gtk_scrolled_window_new(
-      NULL,
-      NULL
-    );
-    gtk_scrolled_window_set_policy(
-      GTK_SCROLLED_WINDOW(scrolled_window),
-      GTK_POLICY_AUTOMATIC,
-      GTK_POLICY_AUTOMATIC
-    );
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window),
-      text_view
-    );
-    gtk_notebook_append_page(
-      GTK_NOTEBOOK(notebook),
-      scrolled_window,
-      NULL
-    );
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    new_tab();
 
     // Setup menu items.
     menubar = gtk_menu_bar_new();
@@ -190,8 +203,9 @@ static void activate(GtkApplication* app, gpointer user_data){
     menu_file = gtk_menu_new();
     menuitem_file = gtk_menu_item_new_with_mnemonic("_File");
     menuitem_file_closetab = gtk_menu_item_new_with_mnemonic("_Close Tab");
-    menuitem_file_new = gtk_menu_item_new_with_mnemonic("_New");
+    menuitem_file_newtab = gtk_menu_item_new_with_mnemonic("_New Tab");
     menuitem_file_open = gtk_menu_item_new_with_mnemonic("_Open...");
+    menuitem_file_print = gtk_menu_item_new_with_mnemonic("_Print...");
     menuitem_file_quit = gtk_menu_item_new_with_mnemonic("_Quit");
     menuitem_file_save = gtk_menu_item_new_with_mnemonic("_Save");
     menuitem_file_saveas = gtk_menu_item_new_with_mnemonic("Save _As...");
@@ -201,7 +215,11 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_file),
-      menuitem_file_new
+      menuitem_file_newtab
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_file),
+      menuitem_file_closetab
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_file),
@@ -229,7 +247,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_file),
-      menuitem_file_closetab
+      menuitem_file_print
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_file),
@@ -321,22 +339,28 @@ static void activate(GtkApplication* app, gpointer user_data){
 
     // Setup menu item callbacks.
     g_signal_connect_swapped(
-      menuitem_file_new,
+      menuitem_file_newtab,
       "activate",
-      G_CALLBACK(menu_new),
-      buffer
+      G_CALLBACK(new_tab),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_closetab,
+      "activate",
+      G_CALLBACK(close_tab),
+      NULL
     );
     g_signal_connect_swapped(
       menuitem_file_open,
       "activate",
       G_CALLBACK(menu_open),
-      buffer
+      NULL
     );
     g_signal_connect_swapped(
       menuitem_file_saveas,
       "activate",
       G_CALLBACK(menu_saveas),
-      buffer
+      NULL
     );
     g_signal_connect_swapped(
       menuitem_file_quit,
@@ -359,7 +383,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_box_pack_start(
       GTK_BOX(box),
-      notebook,
+      GTK_WIDGET(notebook),
       TRUE,
       TRUE,
       0
@@ -369,7 +393,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       box
     );
     gtk_widget_show_all(window);
-    gtk_widget_grab_focus(text_view);
 
     // TEMPORARY: disable nonfunctional menu items.
     gtk_widget_set_sensitive(
@@ -377,7 +400,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       FALSE
     );
     gtk_widget_set_sensitive(
-      menuitem_file_closetab,
+      menuitem_file_print,
       FALSE
     );
     gtk_widget_set_sensitive(
