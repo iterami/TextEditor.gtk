@@ -292,9 +292,11 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_copy;
     GtkWidget *menuitem_edit_cut;
     GtkWidget *menuitem_edit_delete;
+    GtkWidget *menuitem_edit_deleteline;
     GtkWidget *menuitem_edit_paste;
     GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
+    GtkWidget *menuitem_edit_sort;
     GtkWidget *menuitem_edit_undo;
     GtkWidget *menuitem_edit;
     GtkWidget *menuitem_file_closetab;
@@ -504,6 +506,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       0,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_edit_deleteline = gtk_menu_item_new_with_mnemonic("Delete _Line");
+    gtk_widget_add_accelerator(
+      menuitem_edit_deleteline,
+      "activate",
+      accelgroup,
+      GDK_KEY_d,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
     gtk_widget_add_accelerator(
       menuitem_edit_paste,
@@ -528,6 +539,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       "activate",
       accelgroup,
       GDK_KEY_a,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
+    menuitem_edit_sort = gtk_menu_item_new_with_mnemonic("S_ort Lines");
+    gtk_widget_add_accelerator(
+      menuitem_edit_sort,
+      "activate",
+      accelgroup,
+      GDK_KEY_r,
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
@@ -570,7 +590,15 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
       menuitem_edit_delete
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_deleteline
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
@@ -579,6 +607,14 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
       menuitem_edit_selectall
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_sort
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
@@ -767,6 +803,14 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_paste,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_deleteline,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_sort,
       FALSE
     );
     gtk_widget_set_sensitive(
