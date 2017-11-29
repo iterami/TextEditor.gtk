@@ -373,7 +373,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_file_newtab,
       "activate",
       accelgroup,
-      GDK_KEY_n,
+      GDK_KEY_t,
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
