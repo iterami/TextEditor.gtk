@@ -72,6 +72,10 @@ static void menu_open(){
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)){
+            if(gtk_notebook_get_n_pages(notebook) <= 0){
+                new_tab();
+            }
+
             int page = gtk_notebook_get_current_page(notebook);
             GtkWidget *scroll_view;
             scroll_view = gtk_notebook_get_nth_page(
