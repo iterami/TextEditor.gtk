@@ -248,11 +248,31 @@ static void menu_delete(){
         GtkTextBuffer *buffer;
         buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
 
-        gtk_text_buffer_delete_selection(
-          buffer,
-          TRUE,
-          TRUE
-        );
+        if(gtk_text_buffer_get_has_selection(buffer)){
+            gtk_text_buffer_delete_selection(
+              buffer,
+              TRUE,
+              TRUE
+            );
+
+        }else{
+            GtkTextIter end;
+            GtkTextIter start;
+            gtk_text_buffer_get_iter_at_mark(
+              buffer,
+              &start,
+              gtk_text_buffer_get_insert(buffer)
+            );
+            end = start;
+            if(gtk_text_iter_forward_cursor_position(&end)){
+                gtk_text_buffer_delete(
+                  buffer,
+                  &start,
+                  &end
+                );
+            }
+        }
+
     }
 }
 
