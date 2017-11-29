@@ -387,6 +387,14 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_ACCEL_VISIBLE
     );
     menuitem_file_print = gtk_menu_item_new_with_mnemonic("_Print...");
+    gtk_widget_add_accelerator(
+      menuitem_file_print,
+      "activate",
+      accelgroup,
+      GDK_KEY_p,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_file_quit = gtk_menu_item_new_with_mnemonic("_Quit");
     gtk_widget_add_accelerator(
       menuitem_file_quit,
@@ -470,7 +478,23 @@ static void activate(GtkApplication* app, gpointer user_data){
     menu_edit = gtk_menu_new();
     menuitem_edit = gtk_menu_item_new_with_mnemonic("_Edit");
     menuitem_edit_copy = gtk_menu_item_new_with_mnemonic("_Copy");
+    gtk_widget_add_accelerator(
+      menuitem_edit_copy,
+      "activate",
+      accelgroup,
+      GDK_KEY_c,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_cut = gtk_menu_item_new_with_mnemonic("C_ut");
+    gtk_widget_add_accelerator(
+      menuitem_edit_cut,
+      "activate",
+      accelgroup,
+      GDK_KEY_x,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_delete = gtk_menu_item_new_with_mnemonic("_Delete");
     gtk_widget_add_accelerator(
       menuitem_edit_delete,
@@ -481,7 +505,23 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_ACCEL_VISIBLE
     );
     menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
+    gtk_widget_add_accelerator(
+      menuitem_edit_paste,
+      "activate",
+      accelgroup,
+      GDK_KEY_v,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_redo = gtk_menu_item_new_with_mnemonic("_Redo");
+    gtk_widget_add_accelerator(
+      menuitem_edit_redo,
+      "activate",
+      accelgroup,
+      GDK_KEY_z,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("_Select All");
     gtk_widget_add_accelerator(
       menuitem_edit_selectall,
@@ -492,6 +532,14 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_ACCEL_VISIBLE
     );
     menuitem_edit_undo = gtk_menu_item_new_with_mnemonic("_Undo");
+    gtk_widget_add_accelerator(
+      menuitem_edit_undo,
+      "activate",
+      accelgroup,
+      GDK_KEY_z,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_edit),
       menu_edit
@@ -540,10 +588,50 @@ static void activate(GtkApplication* app, gpointer user_data){
     menu_find = gtk_menu_new();
     menuitem_find = gtk_menu_item_new_with_mnemonic("_Find");
     menuitem_find_find = gtk_menu_item_new_with_mnemonic("_Find...");
+    gtk_widget_add_accelerator(
+      menuitem_find_find,
+      "activate",
+      accelgroup,
+      GDK_KEY_f,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_findnext = gtk_menu_item_new_with_mnemonic("Find _Next");
+    gtk_widget_add_accelerator(
+      menuitem_find_findnext,
+      "activate",
+      accelgroup,
+      GDK_KEY_g,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_findprevious = gtk_menu_item_new_with_mnemonic("Find _Previous");
+    gtk_widget_add_accelerator(
+      menuitem_find_findprevious,
+      "activate",
+      accelgroup,
+      GDK_KEY_g,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_findreplace = gtk_menu_item_new_with_mnemonic("Find and _Replace...");
+    gtk_widget_add_accelerator(
+      menuitem_find_findreplace,
+      "activate",
+      accelgroup,
+      GDK_KEY_h,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_gotoline = gtk_menu_item_new_with_mnemonic("Go to _Line...");
+    gtk_widget_add_accelerator(
+      menuitem_find_gotoline,
+      "activate",
+      accelgroup,
+      GDK_KEY_l,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_find),
       menu_find
