@@ -153,7 +153,8 @@ static void menu_open(){
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)){
-            if(!check_equals_unsaved()){
+            if(gtk_notebook_get_n_pages(notebook) <= 0
+              || !check_equals_unsaved()){
                 new_tab();
             }
 
