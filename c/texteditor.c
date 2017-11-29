@@ -165,6 +165,14 @@ static void menu_saveas(){
           -1,
           NULL
         );
+        gtk_notebook_set_tab_label(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            gtk_notebook_get_current_page(notebook)
+          ),
+          gtk_label_new(filename)
+        );
 
         g_free(content);
         g_free(filename);
