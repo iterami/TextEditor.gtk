@@ -468,13 +468,13 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_file_save;
     GtkWidget *menuitem_file_saveas;
     GtkWidget *menuitem_file;
-    GtkWidget *menuitem_find_bottom;
     GtkWidget *menuitem_find_find;
     GtkWidget *menuitem_find_findnext;
     GtkWidget *menuitem_find_findprevious;
     GtkWidget *menuitem_find_findreplace;
+    GtkWidget *menuitem_find_gotobottom;
     GtkWidget *menuitem_find_gotoline;
-    GtkWidget *menuitem_find_top;
+    GtkWidget *menuitem_find_gototop;
     GtkWidget *menuitem_find;
 
     // Setup CSS.
@@ -808,15 +808,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_find_bottom = gtk_menu_item_new_with_mnemonic("_Bottom");
-    gtk_widget_add_accelerator(
-      menuitem_find_bottom,
-      "activate",
-      accelgroup,
-      GDK_KEY_End,
-      0,
-      GTK_ACCEL_VISIBLE
-    );
     menuitem_find_findnext = gtk_menu_item_new_with_mnemonic("Find _Next");
     gtk_widget_add_accelerator(
       menuitem_find_findnext,
@@ -844,6 +835,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_find_gotobottom = gtk_menu_item_new_with_mnemonic("Go to _Bottom");
+    gtk_widget_add_accelerator(
+      menuitem_find_gotobottom,
+      "activate",
+      accelgroup,
+      GDK_KEY_End,
+      0,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_gotoline = gtk_menu_item_new_with_mnemonic("Go to _Line...");
     gtk_widget_add_accelerator(
       menuitem_find_gotoline,
@@ -853,9 +853,9 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_find_top = gtk_menu_item_new_with_mnemonic("_Top");
+    menuitem_find_gototop = gtk_menu_item_new_with_mnemonic("Go to _Top");
     gtk_widget_add_accelerator(
-      menuitem_find_top,
+      menuitem_find_gototop,
       "activate",
       accelgroup,
       GDK_KEY_Home,
@@ -892,15 +892,11 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_find),
-      menuitem_find_top
+      menuitem_find_gototop
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_find),
-      menuitem_find_bottom
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_find),
-      gtk_separator_menu_item_new()
+      menuitem_find_gotobottom
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_find),
@@ -967,13 +963,13 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_find_bottom,
+      menuitem_find_gotobottom,
       "activate",
       G_CALLBACK(menu_findbottom),
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_find_top,
+      menuitem_find_gototop,
       "activate",
       G_CALLBACK(menu_findtop),
       NULL
