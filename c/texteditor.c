@@ -472,6 +472,14 @@ static void activate(GtkApplication* app, gpointer user_data){
     menuitem_edit_copy = gtk_menu_item_new_with_mnemonic("_Copy");
     menuitem_edit_cut = gtk_menu_item_new_with_mnemonic("C_ut");
     menuitem_edit_delete = gtk_menu_item_new_with_mnemonic("_Delete");
+    gtk_widget_add_accelerator(
+      menuitem_edit_delete,
+      "activate",
+      accelgroup,
+      GDK_KEY_Delete,
+      0,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
     menuitem_edit_redo = gtk_menu_item_new_with_mnemonic("_Redo");
     menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("_Select All");
