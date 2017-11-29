@@ -5,9 +5,9 @@ GtkWidget *window;
 
 typedef struct tabcontents tabcontents;
 struct tabcontents{
-    int page;
-    GtkWidget *text_view;
-    GtkTextBuffer *buffer;
+  int page;
+  GtkWidget *text_view;
+  GtkTextBuffer *buffer;
 };
 
 struct tabcontents get_tab_contents(){
