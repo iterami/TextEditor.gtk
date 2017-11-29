@@ -283,6 +283,7 @@ static void menu_selectall(){
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
+    GtkAccelGroup *accelgroup;
     GtkWidget *box;
     GtkWidget *menu_edit;
     GtkWidget *menu_file;
@@ -350,16 +351,69 @@ static void activate(GtkApplication* app, gpointer user_data){
 
     // Setup menu items.
     menubar = gtk_menu_bar_new();
+    accelgroup = gtk_accel_group_new();
+    gtk_window_add_accel_group(
+      GTK_WINDOW(window),
+      accelgroup
+    );
     // File menu.
     menu_file = gtk_menu_new();
     menuitem_file = gtk_menu_item_new_with_mnemonic("_File");
     menuitem_file_closetab = gtk_menu_item_new_with_mnemonic("_Close Tab");
+    gtk_widget_add_accelerator(
+      menuitem_file_closetab,
+      "activate",
+      accelgroup,
+      GDK_KEY_w,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_file_newtab = gtk_menu_item_new_with_mnemonic("_New Tab");
+    gtk_widget_add_accelerator(
+      menuitem_file_newtab,
+      "activate",
+      accelgroup,
+      GDK_KEY_n,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_file_open = gtk_menu_item_new_with_mnemonic("_Open...");
+    gtk_widget_add_accelerator(
+      menuitem_file_open,
+      "activate",
+      accelgroup,
+      GDK_KEY_o,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_file_print = gtk_menu_item_new_with_mnemonic("_Print...");
     menuitem_file_quit = gtk_menu_item_new_with_mnemonic("_Quit");
+    gtk_widget_add_accelerator(
+      menuitem_file_quit,
+      "activate",
+      accelgroup,
+      GDK_KEY_q,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_file_save = gtk_menu_item_new_with_mnemonic("_Save");
+    gtk_widget_add_accelerator(
+      menuitem_file_save,
+      "activate",
+      accelgroup,
+      GDK_KEY_s,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_file_saveas = gtk_menu_item_new_with_mnemonic("Save _As...");
+    gtk_widget_add_accelerator(
+      menuitem_file_saveas,
+      "activate",
+      accelgroup,
+      GDK_KEY_s,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_file),
       menu_file
@@ -421,6 +475,14 @@ static void activate(GtkApplication* app, gpointer user_data){
     menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
     menuitem_edit_redo = gtk_menu_item_new_with_mnemonic("_Redo");
     menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("_Select All");
+    gtk_widget_add_accelerator(
+      menuitem_edit_selectall,
+      "activate",
+      accelgroup,
+      GDK_KEY_a,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_undo = gtk_menu_item_new_with_mnemonic("_Undo");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_edit),
