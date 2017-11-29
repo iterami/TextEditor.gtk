@@ -9,3 +9,6 @@ GtkTextView{
     color: #aaa;
     font-family: monospace;
 }
+GtkTextView:selected{
+    background-color: #3c3b37;
+}
