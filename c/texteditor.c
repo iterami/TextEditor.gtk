@@ -250,6 +250,49 @@ static void menu_delete(){
     }
 }
 
+static void menu_deleteline(){
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        GtkTextIter end;
+        GtkTextIter start;
+
+        int page = gtk_notebook_get_current_page(notebook);
+        GtkWidget *scroll_view;
+        scroll_view = gtk_notebook_get_nth_page(
+          notebook,
+          page
+        );
+        GtkWidget *text_view;
+        text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+        GtkTextBuffer *buffer;
+        buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+
+        GtkTextIter line;
+        gtk_text_buffer_get_iter_at_mark(
+          buffer,
+          &line,
+          gtk_text_buffer_get_insert(buffer)
+        );
+
+        gint linenumber = gtk_text_iter_get_line(&line);
+
+        gtk_text_buffer_get_iter_at_line(
+          buffer,
+          &start,
+          linenumber
+        );
+        gtk_text_buffer_get_iter_at_line(
+          buffer,
+          &end,
+          linenumber + 1
+        );
+        gtk_text_buffer_delete(
+          buffer,
+          &start,
+          &end
+        );
+    }
+}
+
 static void menu_selectall(){
     if(gtk_notebook_get_n_pages(notebook) > 0){
         GtkTextIter end;
@@ -749,6 +792,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_edit_deleteline,
+      "activate",
+      G_CALLBACK(menu_deleteline),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_edit_selectall,
       "activate",
       G_CALLBACK(menu_selectall),
@@ -803,10 +852,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_paste,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_deleteline,
       FALSE
     );
     gtk_widget_set_sensitive(
