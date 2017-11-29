@@ -470,6 +470,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_cut;
     GtkWidget *menuitem_edit_delete;
     GtkWidget *menuitem_edit_deleteline;
+    GtkWidget *menuitem_edit_deleteword;
     GtkWidget *menuitem_edit_paste;
     GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
@@ -694,6 +695,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_edit_deleteword = gtk_menu_item_new_with_mnemonic("Delete _Word");
+    gtk_widget_add_accelerator(
+      menuitem_edit_deleteword,
+      "activate",
+      accelgroup,
+      GDK_KEY_Delete,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
     gtk_widget_add_accelerator(
       menuitem_edit_paste,
@@ -778,6 +788,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
       menuitem_edit_deleteline
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_deleteword
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
@@ -1007,7 +1021,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_show_all(window);
 
-    // TEMPORARY: disable nonfunctional menu items.
+    // Disable nonfunctional menu items.
     gtk_widget_set_sensitive(
       menuitem_file_print,
       FALSE
@@ -1030,6 +1044,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_paste,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_deleteword,
       FALSE
     );
     gtk_widget_set_sensitive(
