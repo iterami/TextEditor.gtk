@@ -3,6 +3,31 @@
 GtkNotebook *notebook;
 GtkWidget *window;
 
+static const gchar* get_current_tab_label_text(){
+    const gchar *text;
+    GtkWidget *label;
+
+    label = gtk_notebook_get_tab_label(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      )
+    );
+    text = gtk_label_get_text(GTK_LABEL(label));
+    return text;
+}
+
+static gboolean check_equals_unsaved(){
+    const gchar *text;
+    text = get_current_tab_label_text();
+
+    return g_strcmp0(
+      text,
+      "UNSAVED"
+    ) == 0;
+}
+
 static void new_tab(){
     GtkTextBuffer *buffer;
     GtkWidget *scrolled_window;
@@ -43,6 +68,10 @@ static void new_tab(){
 }
 
 static void save_tab(const char *filename){
+    if(filename == NULL){
+        filename = get_current_tab_label_text();
+    }
+
     gchar *content;
     GtkTextIter end;
     GtkTextIter start;
@@ -124,7 +153,7 @@ static void menu_open(){
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)){
-            if(gtk_notebook_get_n_pages(notebook) <= 0){
+            if(!check_equals_unsaved()){
                 new_tab();
             }
 
@@ -190,26 +219,11 @@ static void menu_saveas(){
 
 static void menu_save(){
     if(gtk_notebook_get_n_pages(notebook) > 0){
-        const gchar *text;
-        GtkWidget *label;
-
-        label = gtk_notebook_get_tab_label(
-          notebook,
-          gtk_notebook_get_nth_page(
-            notebook,
-            gtk_notebook_get_current_page(notebook)
-          )
-        );
-        text = gtk_label_get_text(GTK_LABEL(label));
-
-        if(g_strcmp0(
-          text,
-          "UNSAVED"
-        ) == 0){
+        if(check_equals_unsaved()){
             menu_saveas();
 
         }else{
-            save_tab(text);
+            save_tab(NULL);
         }
     }
 }
