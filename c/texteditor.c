@@ -37,7 +37,7 @@ static void new_tab(){
     gtk_notebook_append_page(
       notebook,
       scrolled_window,
-      NULL
+      gtk_label_new("Untitled*")
     );
 
     gtk_widget_show_all(window);
@@ -91,6 +91,14 @@ static void menu_open(){
               buffer,
               content,
               length
+            );
+            gtk_notebook_set_tab_label(
+              notebook,
+              gtk_notebook_get_nth_page(
+                notebook,
+                page
+              ),
+              gtk_label_new(filename)
             );
         }
 
@@ -223,7 +231,6 @@ static void activate(GtkApplication* app, gpointer user_data){
 
     // Setup notebook and tab with scrollable text view.
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_popup_enable(notebook);
     new_tab();
 
     // Setup menu items.
