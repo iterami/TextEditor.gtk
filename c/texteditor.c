@@ -3,6 +3,56 @@
 GtkNotebook *notebook;
 GtkWidget *window;
 
+static void save_tab(const char *filename){
+    gchar *content;
+    GtkTextIter end;
+    GtkTextIter start;
+
+    int page = gtk_notebook_get_current_page(notebook);
+    GtkWidget *scroll_view;
+    scroll_view = gtk_notebook_get_nth_page(
+      notebook,
+      page
+    );
+    GtkWidget *text_view;
+    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+    GtkTextBuffer *buffer;
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+
+    gtk_text_buffer_get_start_iter(
+      buffer,
+      &start
+    );
+    gtk_text_buffer_get_end_iter(
+      buffer,
+      &end
+    );
+
+    content = gtk_text_buffer_get_text(
+      buffer,
+      &start,
+      &end,
+      FALSE
+    );
+
+    g_file_set_contents(
+      filename,
+      content,
+      -1,
+      NULL
+    );
+    gtk_notebook_set_tab_label(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      gtk_label_new(filename)
+    );
+
+    g_free(content);
+}
+
 static void close_tab(){
     gtk_notebook_remove_page(
       notebook,
@@ -37,7 +87,7 @@ static void new_tab(){
     gtk_notebook_append_page(
       notebook,
       scrolled_window,
-      gtk_label_new("Untitled*")
+      gtk_label_new("UNSAVED")
     );
 
     gtk_widget_show_all(window);
@@ -124,61 +174,38 @@ static void menu_saveas(){
     gint result = gtk_dialog_run(GTK_DIALOG(dialog_saveas));
 
     if(result == GTK_RESPONSE_ACCEPT){
-        char *filename;
-        gchar *content;
-        GtkTextIter end;
-        GtkTextIter start;
-
-        int page = gtk_notebook_get_current_page(notebook);
-        GtkWidget *scroll_view;
-        scroll_view = gtk_notebook_get_nth_page(
-          notebook,
-          page
-        );
-        GtkWidget *text_view;
-        text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-        GtkTextBuffer *buffer;
-        buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
-
-        gtk_text_buffer_get_start_iter(
-          buffer,
-          &start
-        );
-        gtk_text_buffer_get_end_iter(
-          buffer,
-          &end
-        );
-
-        content = gtk_text_buffer_get_text(
-          buffer,
-          &start,
-          &end,
-          FALSE
-        );
-
+        gchar *filename;
         GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_saveas);
         filename = gtk_file_chooser_get_filename(chooser);
 
-        g_file_set_contents(
-          filename,
-          content,
-          -1,
-          NULL
-        );
-        gtk_notebook_set_tab_label(
-          notebook,
-          gtk_notebook_get_nth_page(
-            notebook,
-            gtk_notebook_get_current_page(notebook)
-          ),
-          gtk_label_new(filename)
-        );
-
-        g_free(content);
-        g_free(filename);
+        save_tab(filename);
     }
 
     gtk_widget_destroy(dialog_saveas);
+}
+
+static void menu_save(){
+    const gchar *text;
+    GtkWidget *label;
+
+    label = gtk_notebook_get_tab_label(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      )
+    );
+    text = gtk_label_get_text(GTK_LABEL(label));
+
+    if(g_strcmp0(
+      text,
+      "UNSAVED"
+    ) == 0){
+        menu_saveas();
+
+    }else{
+        save_tab(text);
+    }
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
@@ -410,6 +437,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_file_save,
+      "activate",
+      G_CALLBACK(menu_save),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_file_saveas,
       "activate",
       G_CALLBACK(menu_saveas),
@@ -448,10 +481,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_widget_show_all(window);
 
     // TEMPORARY: disable nonfunctional menu items.
-    gtk_widget_set_sensitive(
-      menuitem_file_save,
-      FALSE
-    );
     gtk_widget_set_sensitive(
       menuitem_file_print,
       FALSE
