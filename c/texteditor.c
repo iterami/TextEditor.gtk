@@ -214,6 +214,27 @@ static void menu_save(){
     }
 }
 
+static void menu_delete(){
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        int page = gtk_notebook_get_current_page(notebook);
+        GtkWidget *scroll_view;
+        scroll_view = gtk_notebook_get_nth_page(
+          notebook,
+          page
+        );
+        GtkWidget *text_view;
+        text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+        GtkTextBuffer *buffer;
+        buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+
+        gtk_text_buffer_delete_selection(
+          buffer,
+          TRUE,
+          TRUE
+        );
+    }
+}
+
 static void menu_selectall(){
     if(gtk_notebook_get_n_pages(notebook) > 0){
         GtkTextIter end;
@@ -256,7 +277,9 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_cut;
     GtkWidget *menuitem_edit_delete;
     GtkWidget *menuitem_edit_paste;
+    GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
+    GtkWidget *menuitem_edit_undo;
     GtkWidget *menuitem_edit;
     GtkWidget *menuitem_file_closetab;
     GtkWidget *menuitem_file_newtab;
@@ -381,10 +404,24 @@ static void activate(GtkApplication* app, gpointer user_data){
     menuitem_edit_cut = gtk_menu_item_new_with_mnemonic("C_ut");
     menuitem_edit_delete = gtk_menu_item_new_with_mnemonic("_Delete");
     menuitem_edit_paste = gtk_menu_item_new_with_mnemonic("_Paste");
+    menuitem_edit_redo = gtk_menu_item_new_with_mnemonic("_Redo");
     menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("_Select All");
+    menuitem_edit_undo = gtk_menu_item_new_with_mnemonic("_Undo");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_edit),
       menu_edit
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_undo
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_redo
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
@@ -497,6 +534,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       window
     );
     g_signal_connect_swapped(
+      menuitem_edit_delete,
+      "activate",
+      G_CALLBACK(menu_delete),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_edit_selectall,
       "activate",
       G_CALLBACK(menu_selectall),
@@ -534,6 +577,14 @@ static void activate(GtkApplication* app, gpointer user_data){
       FALSE
     );
     gtk_widget_set_sensitive(
+      menuitem_edit_undo,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_redo,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
       menuitem_edit_copy,
       FALSE
     );
@@ -543,10 +594,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_paste,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_delete,
       FALSE
     );
     gtk_widget_set_sensitive(
