@@ -276,6 +276,72 @@ static void menu_delete(){
     }
 }
 
+static void menu_findbottom(){
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        int page = gtk_notebook_get_current_page(notebook);
+        GtkWidget *scroll_view;
+        scroll_view = gtk_notebook_get_nth_page(
+          notebook,
+          page
+        );
+        GtkWidget *text_view;
+        text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+        GtkTextBuffer *buffer;
+        buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+        GtkTextIter end;
+        gtk_text_buffer_get_end_iter(
+          buffer,
+          &end
+        );
+
+        gtk_text_buffer_place_cursor(
+          buffer,
+          &end
+        );
+        gtk_text_view_scroll_to_iter(
+          GTK_TEXT_VIEW(text_view),
+          &end,
+          0,
+          TRUE,
+          0,
+          0
+        );
+    }
+}
+
+static void menu_findtop(){
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        int page = gtk_notebook_get_current_page(notebook);
+        GtkWidget *scroll_view;
+        scroll_view = gtk_notebook_get_nth_page(
+          notebook,
+          page
+        );
+        GtkWidget *text_view;
+        text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+        GtkTextBuffer *buffer;
+        buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+        GtkTextIter start;
+        gtk_text_buffer_get_start_iter(
+          buffer,
+          &start
+        );
+
+        gtk_text_buffer_place_cursor(
+          buffer,
+          &start
+        );
+        gtk_text_view_scroll_to_iter(
+          GTK_TEXT_VIEW(text_view),
+          &start,
+          0,
+          TRUE,
+          0,
+          0
+        );
+    }
+}
+
 static void menu_deleteline(){
     if(gtk_notebook_get_n_pages(notebook) > 0){
         GtkTextIter end;
@@ -418,11 +484,13 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_file_save;
     GtkWidget *menuitem_file_saveas;
     GtkWidget *menuitem_file;
+    GtkWidget *menuitem_find_bottom;
     GtkWidget *menuitem_find_find;
     GtkWidget *menuitem_find_findnext;
     GtkWidget *menuitem_find_findprevious;
     GtkWidget *menuitem_find_findreplace;
     GtkWidget *menuitem_find_gotoline;
+    GtkWidget *menuitem_find_top;
     GtkWidget *menuitem_find;
 
     // Setup CSS.
@@ -743,6 +811,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_find_bottom = gtk_menu_item_new_with_mnemonic("_Bottom");
+    gtk_widget_add_accelerator(
+      menuitem_find_bottom,
+      "activate",
+      accelgroup,
+      GDK_KEY_End,
+      0,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_findnext = gtk_menu_item_new_with_mnemonic("Find _Next");
     gtk_widget_add_accelerator(
       menuitem_find_findnext,
@@ -779,6 +856,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_find_top = gtk_menu_item_new_with_mnemonic("_Top");
+    gtk_widget_add_accelerator(
+      menuitem_find_top,
+      "activate",
+      accelgroup,
+      GDK_KEY_Home,
+      0,
+      GTK_ACCEL_VISIBLE
+    );
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_find),
       menu_find
@@ -802,6 +888,18 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_find),
       menuitem_find_findreplace
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      menuitem_find_top
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      menuitem_find_bottom
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_find),
@@ -869,6 +967,18 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_edit_selectall,
       "activate",
       G_CALLBACK(menu_selectall),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_find_bottom,
+      "activate",
+      G_CALLBACK(menu_findbottom),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_find_top,
+      "activate",
+      G_CALLBACK(menu_findtop),
       NULL
     );
 
