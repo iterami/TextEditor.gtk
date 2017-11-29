@@ -153,35 +153,41 @@ static void menu_open(){
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)){
-            if(gtk_notebook_get_n_pages(notebook) <= 0
-              || !check_equals_unsaved()){
-                new_tab();
-            }
-
-            int page = gtk_notebook_get_current_page(notebook);
-            GtkWidget *scroll_view;
-            scroll_view = gtk_notebook_get_nth_page(
-              notebook,
-              page
-            );
-            GtkWidget *text_view;
-            text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-            GtkTextBuffer *buffer;
-            buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
-
-            gtk_text_buffer_set_text(
-              buffer,
+            if(g_utf8_validate(
               content,
-              length
-            );
-            gtk_notebook_set_tab_label(
-              notebook,
-              gtk_notebook_get_nth_page(
-                notebook,
-                page
-              ),
-              gtk_label_new(filename)
-            );
+              length,
+              NULL
+            )){
+                if(gtk_notebook_get_n_pages(notebook) <= 0
+                  || !check_equals_unsaved()){
+                    new_tab();
+                }
+
+                int page = gtk_notebook_get_current_page(notebook);
+                GtkWidget *scroll_view;
+                scroll_view = gtk_notebook_get_nth_page(
+                  notebook,
+                  page
+                );
+                GtkWidget *text_view;
+                text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+                GtkTextBuffer *buffer;
+                buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+
+                gtk_text_buffer_set_text(
+                  buffer,
+                  content,
+                  length
+                );
+                gtk_notebook_set_tab_label(
+                  notebook,
+                  gtk_notebook_get_nth_page(
+                    notebook,
+                    page
+                  ),
+                  gtk_label_new(filename)
+                );
+            }
         }
 
         g_free(content);
