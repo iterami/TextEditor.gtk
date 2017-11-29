@@ -189,6 +189,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_find_findnext;
     GtkWidget *menuitem_find_findprevious;
     GtkWidget *menuitem_find_findreplace;
+    GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find;
 
     // Setup CSS.
@@ -336,6 +337,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     menuitem_find_findnext = gtk_menu_item_new_with_mnemonic("Find _Next");
     menuitem_find_findprevious = gtk_menu_item_new_with_mnemonic("Find _Previous");
     menuitem_find_findreplace = gtk_menu_item_new_with_mnemonic("Find and _Replace...");
+    menuitem_find_gotoline = gtk_menu_item_new_with_mnemonic("Go to _Line...");
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_find),
       menu_find
@@ -359,6 +361,14 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_find),
       menuitem_find_findreplace
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      menuitem_find_gotoline
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
@@ -465,6 +475,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_find_findreplace,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_find_gotoline,
       FALSE
     );
 }
