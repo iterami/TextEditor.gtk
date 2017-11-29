@@ -259,6 +259,7 @@ static void menu_delete(){
 static void menu_deleteline(){
     if(gtk_notebook_get_n_pages(notebook) > 0){
         GtkTextIter end;
+        GtkTextIter endall;
         GtkTextIter start;
 
         int page = gtk_notebook_get_current_page(notebook);
@@ -278,19 +279,60 @@ static void menu_deleteline(){
           &line,
           gtk_text_buffer_get_insert(buffer)
         );
-
         gint linenumber = gtk_text_iter_get_line(&line);
-
         gtk_text_buffer_get_iter_at_line(
           buffer,
-          &start,
-          linenumber
-        );
-        gtk_text_buffer_get_iter_at_line(
-          buffer,
-          &end,
+          &endall,
           linenumber + 1
         );
+        gint endlinenumber = gtk_text_iter_get_line(&endall);
+
+        // Deleting first line.
+        if(linenumber == 0){
+            gtk_text_buffer_get_start_iter(
+              buffer,
+              &start
+            );
+            if(endlinenumber == 0){
+                gtk_text_buffer_get_end_iter(
+                  buffer,
+                  &end
+                );
+
+            }else{
+                gtk_text_buffer_get_iter_at_line(
+                  buffer,
+                  &end,
+                  1
+                );
+            }
+
+        // Deleting last line.
+        }else if(linenumber == endlinenumber){
+            gtk_text_buffer_get_iter_at_line(
+              buffer,
+              &start,
+              linenumber - 1
+            );
+            gtk_text_iter_forward_to_line_end(&start);
+            gtk_text_buffer_get_end_iter(
+              buffer,
+              &end
+            );
+
+        // Deleting any other line.
+        }else{
+            gtk_text_buffer_get_iter_at_line(
+              buffer,
+              &start,
+              linenumber
+            );
+            gtk_text_buffer_get_iter_at_line(
+              buffer,
+              &end,
+              linenumber + 1
+            );
+        }
         gtk_text_buffer_delete(
           buffer,
           &start,
