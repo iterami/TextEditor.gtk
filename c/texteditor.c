@@ -215,33 +215,35 @@ static void menu_save(){
 }
 
 static void menu_selectall(){
-    GtkTextIter end;
-    GtkTextIter start;
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        GtkTextIter end;
+        GtkTextIter start;
 
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+        int page = gtk_notebook_get_current_page(notebook);
+        GtkWidget *scroll_view;
+        scroll_view = gtk_notebook_get_nth_page(
+          notebook,
+          page
+        );
+        GtkWidget *text_view;
+        text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+        GtkTextBuffer *buffer;
+        buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
 
-    gtk_text_buffer_get_start_iter(
-      buffer,
-      &start
-    );
-    gtk_text_buffer_get_end_iter(
-      buffer,
-      &end
-    );
-    gtk_text_buffer_select_range(
-      buffer,
-      &start,
-      &end
-    );
+        gtk_text_buffer_get_start_iter(
+          buffer,
+          &start
+        );
+        gtk_text_buffer_get_end_iter(
+          buffer,
+          &end
+        );
+        gtk_text_buffer_select_range(
+          buffer,
+          &start,
+          &end
+        );
+    }
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
