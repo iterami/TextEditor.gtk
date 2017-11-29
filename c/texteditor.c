@@ -3,6 +3,10 @@
 GtkNotebook *notebook;
 GtkWidget *window;
 
+static gboolean get_notebook_has_pages(){
+    return gtk_notebook_get_n_pages(notebook) <= 0;
+}
+
 static const gchar* get_current_tab_label_text(){
     const gchar *text;
     GtkWidget *label;
@@ -122,7 +126,7 @@ static void save_tab(const char *filename){
 }
 
 static void close_tab(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -160,7 +164,7 @@ static void menu_open(){
               length,
               NULL
             )){
-                if(gtk_notebook_get_n_pages(notebook) <= 0
+                if(get_notebook_has_pages()
                   || !check_equals_unsaved()){
                     new_tab();
                 }
@@ -200,7 +204,7 @@ static void menu_open(){
 }
 
 static void menu_saveas(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -229,7 +233,7 @@ static void menu_saveas(){
 }
 
 static void menu_save(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -242,7 +246,7 @@ static void menu_save(){
 }
 
 static void menu_delete(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -285,7 +289,7 @@ static void menu_delete(){
 }
 
 static void menu_findbottom(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -320,7 +324,7 @@ static void menu_findbottom(){
 }
 
 static void menu_findtop(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -355,7 +359,7 @@ static void menu_findtop(){
 }
 
 static void menu_deleteline(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
@@ -442,7 +446,7 @@ static void menu_deleteline(){
 }
 
 static void menu_selectall(){
-    if(gtk_notebook_get_n_pages(notebook) <= 0){
+    if(get_notebook_has_pages()){
         return;
     }
 
