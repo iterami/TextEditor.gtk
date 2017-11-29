@@ -134,7 +134,7 @@ static void menu_open(){
     GtkWidget *dialog_open;
     dialog_open = gtk_file_chooser_dialog_new(
       "Open File",
-      NULL,
+      GTK_WINDOW(window),
       GTK_FILE_CHOOSER_ACTION_OPEN,
       "_Cancel",
       GTK_RESPONSE_CANCEL,
@@ -196,7 +196,7 @@ static void menu_saveas(){
         GtkWidget *dialog_saveas;
         dialog_saveas = gtk_file_chooser_dialog_new(
           "Save File",
-          NULL,
+          GTK_WINDOW(window),
           GTK_FILE_CHOOSER_ACTION_SAVE,
           "_Cancel",
           GTK_RESPONSE_CANCEL,
