@@ -3,6 +3,33 @@
 GtkNotebook *notebook;
 GtkWidget *window;
 
+typedef struct tabcontents tabcontents;
+struct tabcontents{
+    int page;
+    GtkWidget *text_view;
+    GtkTextBuffer *buffer;
+};
+
+struct tabcontents get_tab_contents(){
+    int page = gtk_notebook_get_current_page(notebook);
+    GtkWidget *scroll_view;
+    scroll_view = gtk_notebook_get_nth_page(
+      notebook,
+      page
+    );
+    GtkWidget *text_view;
+    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+    GtkTextBuffer *buffer;
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+
+    tabcontents result = {
+      page,
+      text_view,
+      buffer
+    };
+    return result;
+}
+
 static gboolean get_notebook_has_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
@@ -79,29 +106,19 @@ static void save_tab(const char *filename){
     gchar *content;
     GtkTextIter end;
     GtkTextIter start;
-
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    tabcontents tab = get_tab_contents();
 
     gtk_text_buffer_get_start_iter(
-      buffer,
+      tab.buffer,
       &start
     );
     gtk_text_buffer_get_end_iter(
-      buffer,
+      tab.buffer,
       &end
     );
 
     content = gtk_text_buffer_get_text(
-      buffer,
+      tab.buffer,
       &start,
       &end,
       FALSE
@@ -169,19 +186,10 @@ static void menu_open(){
                     new_tab();
                 }
 
-                int page = gtk_notebook_get_current_page(notebook);
-                GtkWidget *scroll_view;
-                scroll_view = gtk_notebook_get_nth_page(
-                  notebook,
-                  page
-                );
-                GtkWidget *text_view;
-                text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-                GtkTextBuffer *buffer;
-                buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+                tabcontents tab =  get_tab_contents();
 
                 gtk_text_buffer_set_text(
-                  buffer,
+                  tab.buffer,
                   content,
                   length
                 );
@@ -189,7 +197,7 @@ static void menu_open(){
                   notebook,
                   gtk_notebook_get_nth_page(
                     notebook,
-                    page
+                    tab.page
                   ),
                   gtk_label_new(filename)
                 );
@@ -250,20 +258,11 @@ static void menu_delete(){
         return;
     }
 
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    tabcontents tab = get_tab_contents();
 
-    if(gtk_text_buffer_get_has_selection(buffer)){
+    if(gtk_text_buffer_get_has_selection(tab.buffer)){
         gtk_text_buffer_delete_selection(
-          buffer,
+          tab.buffer,
           TRUE,
           TRUE
         );
@@ -272,14 +271,14 @@ static void menu_delete(){
         GtkTextIter end;
         GtkTextIter start;
         gtk_text_buffer_get_iter_at_mark(
-          buffer,
+          tab.buffer,
           &start,
-          gtk_text_buffer_get_insert(buffer)
+          gtk_text_buffer_get_insert(tab.buffer)
         );
         end = start;
         if(gtk_text_iter_forward_cursor_position(&end)){
             gtk_text_buffer_delete(
-              buffer,
+              tab.buffer,
               &start,
               &end
             );
@@ -293,28 +292,20 @@ static void menu_findbottom(){
         return;
     }
 
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
     GtkTextIter end;
+    tabcontents tab = get_tab_contents();
+
     gtk_text_buffer_get_end_iter(
-      buffer,
+      tab.buffer,
       &end
     );
 
     gtk_text_buffer_place_cursor(
-      buffer,
+      tab.buffer,
       &end
     );
     gtk_text_view_scroll_to_iter(
-      GTK_TEXT_VIEW(text_view),
+      GTK_TEXT_VIEW(tab.text_view),
       &end,
       0,
       TRUE,
@@ -328,28 +319,20 @@ static void menu_findtop(){
         return;
     }
 
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
     GtkTextIter start;
+    tabcontents tab = get_tab_contents();
+
     gtk_text_buffer_get_start_iter(
-      buffer,
+      tab.buffer,
       &start
     );
 
     gtk_text_buffer_place_cursor(
-      buffer,
+      tab.buffer,
       &start
     );
     gtk_text_view_scroll_to_iter(
-      GTK_TEXT_VIEW(text_view),
+      GTK_TEXT_VIEW(tab.text_view),
       &start,
       0,
       TRUE,
@@ -366,27 +349,17 @@ static void menu_deleteline(){
     GtkTextIter end;
     GtkTextIter endall;
     GtkTextIter start;
-
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    tabcontents tab = get_tab_contents();
 
     GtkTextIter line;
     gtk_text_buffer_get_iter_at_mark(
-      buffer,
+      tab.buffer,
       &line,
-      gtk_text_buffer_get_insert(buffer)
+      gtk_text_buffer_get_insert(tab.buffer)
     );
     gint linenumber = gtk_text_iter_get_line(&line);
     gtk_text_buffer_get_iter_at_line(
-      buffer,
+      tab.buffer,
       &endall,
       linenumber + 1
     );
@@ -395,18 +368,18 @@ static void menu_deleteline(){
     // Deleting first line.
     if(linenumber == 0){
         gtk_text_buffer_get_start_iter(
-          buffer,
+          tab.buffer,
           &start
         );
         if(endlinenumber == 0){
             gtk_text_buffer_get_end_iter(
-              buffer,
+              tab.buffer,
               &end
             );
 
         }else{
             gtk_text_buffer_get_iter_at_line(
-              buffer,
+              tab.buffer,
               &end,
               1
             );
@@ -415,31 +388,31 @@ static void menu_deleteline(){
     // Deleting last line.
     }else if(linenumber == endlinenumber){
         gtk_text_buffer_get_iter_at_line(
-          buffer,
+          tab.buffer,
           &start,
           linenumber - 1
         );
         gtk_text_iter_forward_to_line_end(&start);
         gtk_text_buffer_get_end_iter(
-          buffer,
+          tab.buffer,
           &end
         );
 
     // Deleting any other line.
     }else{
         gtk_text_buffer_get_iter_at_line(
-          buffer,
+          tab.buffer,
           &start,
           linenumber
         );
         gtk_text_buffer_get_iter_at_line(
-          buffer,
+          tab.buffer,
           &end,
           linenumber + 1
         );
     }
     gtk_text_buffer_delete(
-      buffer,
+      tab.buffer,
       &start,
       &end
     );
@@ -452,28 +425,18 @@ static void menu_selectall(){
 
     GtkTextIter end;
     GtkTextIter start;
-
-    int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
-      notebook,
-      page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    tabcontents tab = get_tab_contents();
 
     gtk_text_buffer_get_start_iter(
-      buffer,
+      tab.buffer,
       &start
     );
     gtk_text_buffer_get_end_iter(
-      buffer,
+      tab.buffer,
       &end
     );
     gtk_text_buffer_select_range(
-      buffer,
+      tab.buffer,
       &start,
       &end
     );
