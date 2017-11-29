@@ -3,6 +3,45 @@
 GtkNotebook *notebook;
 GtkWidget *window;
 
+static void new_tab(){
+    GtkTextBuffer *buffer;
+    GtkWidget *scrolled_window;
+    GtkWidget *text_view;
+
+    buffer = gtk_text_buffer_new(NULL);
+    text_view = gtk_text_view_new_with_buffer(buffer);
+    gtk_text_view_set_wrap_mode(
+      GTK_TEXT_VIEW(text_view),
+      GTK_WRAP_WORD
+    );
+    scrolled_window = gtk_scrolled_window_new(
+      NULL,
+      NULL
+    );
+    gtk_scrolled_window_set_policy(
+      GTK_SCROLLED_WINDOW(scrolled_window),
+      GTK_POLICY_AUTOMATIC,
+      GTK_POLICY_AUTOMATIC
+    );
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window),
+      text_view
+    );
+    gtk_notebook_append_page(
+      notebook,
+      scrolled_window,
+      gtk_label_new("UNSAVED")
+    );
+
+    gtk_widget_show_all(window);
+
+    gtk_notebook_set_current_page(
+      notebook,
+      gtk_notebook_get_n_pages(notebook) - 1
+    );
+    gtk_widget_grab_focus(text_view);
+}
+
 static void save_tab(const char *filename){
     gchar *content;
     GtkTextIter end;
@@ -54,49 +93,12 @@ static void save_tab(const char *filename){
 }
 
 static void close_tab(){
-    gtk_notebook_remove_page(
-      notebook,
-      gtk_notebook_get_current_page(notebook)
-    );
-}
-
-static void new_tab(){
-    GtkTextBuffer *buffer;
-    GtkWidget *scrolled_window;
-    GtkWidget *text_view;
-
-    buffer = gtk_text_buffer_new(NULL);
-    text_view = gtk_text_view_new_with_buffer(buffer);
-    gtk_text_view_set_wrap_mode(
-      GTK_TEXT_VIEW(text_view),
-      GTK_WRAP_WORD
-    );
-    scrolled_window = gtk_scrolled_window_new(
-      NULL,
-      NULL
-    );
-    gtk_scrolled_window_set_policy(
-      GTK_SCROLLED_WINDOW(scrolled_window),
-      GTK_POLICY_AUTOMATIC,
-      GTK_POLICY_AUTOMATIC
-    );
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window),
-      text_view
-    );
-    gtk_notebook_append_page(
-      notebook,
-      scrolled_window,
-      gtk_label_new("UNSAVED")
-    );
-
-    gtk_widget_show_all(window);
-
-    gtk_notebook_set_current_page(
-      notebook,
-      gtk_notebook_get_n_pages(notebook) - 1
-    );
-    gtk_widget_grab_focus(text_view);
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        gtk_notebook_remove_page(
+          notebook,
+          gtk_notebook_get_current_page(notebook)
+        );
+    }
 }
 
 static void menu_open(){
@@ -160,51 +162,55 @@ static void menu_open(){
 }
 
 static void menu_saveas(){
-    GtkWidget *dialog_saveas;
-    dialog_saveas = gtk_file_chooser_dialog_new(
-      "Save File",
-      NULL,
-      GTK_FILE_CHOOSER_ACTION_SAVE,
-      "_Cancel",
-      GTK_RESPONSE_CANCEL,
-      "_Save",
-      GTK_RESPONSE_ACCEPT,
-      NULL
-    );
-    gint result = gtk_dialog_run(GTK_DIALOG(dialog_saveas));
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        GtkWidget *dialog_saveas;
+        dialog_saveas = gtk_file_chooser_dialog_new(
+          "Save File",
+          NULL,
+          GTK_FILE_CHOOSER_ACTION_SAVE,
+          "_Cancel",
+          GTK_RESPONSE_CANCEL,
+          "_Save",
+          GTK_RESPONSE_ACCEPT,
+          NULL
+        );
+        gint result = gtk_dialog_run(GTK_DIALOG(dialog_saveas));
 
-    if(result == GTK_RESPONSE_ACCEPT){
-        gchar *filename;
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_saveas);
-        filename = gtk_file_chooser_get_filename(chooser);
+        if(result == GTK_RESPONSE_ACCEPT){
+            gchar *filename;
+            GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_saveas);
+            filename = gtk_file_chooser_get_filename(chooser);
 
-        save_tab(filename);
+            save_tab(filename);
+        }
+
+        gtk_widget_destroy(dialog_saveas);
     }
-
-    gtk_widget_destroy(dialog_saveas);
 }
 
 static void menu_save(){
-    const gchar *text;
-    GtkWidget *label;
+    if(gtk_notebook_get_n_pages(notebook) > 0){
+        const gchar *text;
+        GtkWidget *label;
 
-    label = gtk_notebook_get_tab_label(
-      notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        gtk_notebook_get_current_page(notebook)
-      )
-    );
-    text = gtk_label_get_text(GTK_LABEL(label));
+        label = gtk_notebook_get_tab_label(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            gtk_notebook_get_current_page(notebook)
+          )
+        );
+        text = gtk_label_get_text(GTK_LABEL(label));
 
-    if(g_strcmp0(
-      text,
-      "UNSAVED"
-    ) == 0){
-        menu_saveas();
+        if(g_strcmp0(
+          text,
+          "UNSAVED"
+        ) == 0){
+            menu_saveas();
 
-    }else{
-        save_tab(text);
+        }else{
+            save_tab(text);
+        }
     }
 }
 
