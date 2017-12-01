@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 
+GtkAccelGroup *accelgroup;
 GtkClipboard *clipboard;
 GtkNotebook *notebook;
 GtkWidget *window;
@@ -345,12 +346,25 @@ static void menu_delete(){
     }
 }
 
+static void menu_findnext(){
+}
+
+static void menu_findprevious(){
+}
+
 static void menu_find(){
+    GtkWidget *find_window;
+    GtkWidget *findnext;
+    GtkWidget *findprevious;
     GtkWidget *innerbox;
     GtkWidget *outerbox;
-    GtkWidget *find_window;
 
+    // Setup mini window.
     find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_add_accel_group(
+      GTK_WINDOW(find_window),
+      accelgroup
+    );
     gtk_window_set_default_size(
       GTK_WINDOW(find_window),
       300,
@@ -373,6 +387,7 @@ static void menu_find(){
       GTK_WINDOW(window)
     );
 
+    // Add contents to a box and show.
     outerbox = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
@@ -388,16 +403,18 @@ static void menu_find(){
       GTK_ORIENTATION_HORIZONTAL,
       0
     );
+    findnext = gtk_button_new_with_label("←");
     gtk_box_pack_start(
       GTK_BOX(innerbox),
-      gtk_button_new_with_label("←"),
+      findnext,
       TRUE,
       TRUE,
       0
     );
+    findprevious = gtk_button_new_with_label("→");
     gtk_box_pack_start(
       GTK_BOX(innerbox),
-      gtk_button_new_with_label("→"),
+      findprevious,
       TRUE,
       TRUE,
       0
@@ -434,8 +451,21 @@ static void menu_find(){
       GTK_CONTAINER(find_window),
       outerbox
     );
-
     gtk_widget_show_all(find_window);
+
+    // Setup signals.
+    g_signal_connect(
+      findnext,
+      "clicked",
+      G_CALLBACK(menu_findnext),
+      NULL
+    );
+    g_signal_connect(
+      findprevious,
+      "clicked",
+      G_CALLBACK(menu_findprevious),
+      NULL
+    );
 }
 
 static void menu_findbottom(){
@@ -594,7 +624,6 @@ static void menu_selectall(){
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
-    GtkAccelGroup *accelgroup;
     GtkWidget *box;
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
@@ -1141,6 +1170,18 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_find_findnext,
+      "activate",
+      G_CALLBACK(menu_findnext),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_find_findprevious,
+      "activate",
+      G_CALLBACK(menu_findprevious),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_find_gotobottom,
       "activate",
       G_CALLBACK(menu_findbottom),
@@ -1201,14 +1242,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_sort,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_find_findnext,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_find_findprevious,
       FALSE
     );
     gtk_widget_set_sensitive(
