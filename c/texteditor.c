@@ -280,10 +280,18 @@ static void menu_findnext(){
 static void menu_findprevious(){
 }
 
+static void menu_findreplace(){
+}
+
+static void menu_findreplaceall(){
+}
+
 static void menu_find(){
     GtkWidget *find_window;
     GtkWidget *findnext;
     GtkWidget *findprevious;
+    GtkWidget *findreplace;
+    GtkWidget *findreplaceall;
     GtkWidget *innerbox;
     GtkWidget *outerbox;
 
@@ -347,16 +355,18 @@ static void menu_find(){
       TRUE,
       0
     );
+    findreplace = gtk_button_new_with_mnemonic("_Replace");
     gtk_box_pack_start(
       GTK_BOX(innerbox),
-      gtk_button_new_with_mnemonic("_Replace"),
+      findreplace,
       TRUE,
       TRUE,
       0
     );
+    findreplaceall = gtk_button_new_with_mnemonic("Replace _All");
     gtk_box_pack_start(
       GTK_BOX(innerbox),
-      gtk_button_new_with_mnemonic("Replace _All"),
+      findreplaceall,
       TRUE,
       TRUE,
       0
@@ -392,6 +402,18 @@ static void menu_find(){
       findprevious,
       "clicked",
       G_CALLBACK(menu_findprevious),
+      NULL
+    );
+    g_signal_connect(
+      findreplace,
+      "clicked",
+      G_CALLBACK(menu_findreplace),
+      NULL
+    );
+    g_signal_connect(
+      findreplaceall,
+      "clicked",
+      G_CALLBACK(menu_findreplaceall),
       NULL
     );
 }
