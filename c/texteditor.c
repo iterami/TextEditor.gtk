@@ -453,7 +453,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_cut;
     GtkWidget *menuitem_edit_delete;
     GtkWidget *menuitem_edit_deleteline;
-    GtkWidget *menuitem_edit_deleteword;
+    GtkWidget *menuitem_edit_deletenextword;
+    GtkWidget *menuitem_edit_deletepreviousword;
     GtkWidget *menuitem_edit_paste;
     GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
@@ -678,12 +679,21 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_edit_deleteword = gtk_menu_item_new_with_mnemonic("Delete _Word");
+    menuitem_edit_deletenextword = gtk_menu_item_new_with_mnemonic("Delete Next _Word");
     gtk_widget_add_accelerator(
-      menuitem_edit_deleteword,
+      menuitem_edit_deletenextword,
       "activate",
       accelgroup,
       GDK_KEY_Delete,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
+    menuitem_edit_deletepreviousword = gtk_menu_item_new_with_mnemonic("Delete Previous _Word");
+    gtk_widget_add_accelerator(
+      menuitem_edit_deletepreviousword,
+      "activate",
+      accelgroup,
+      GDK_KEY_BackSpace,
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
@@ -774,7 +784,11 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
-      menuitem_edit_deleteword
+      menuitem_edit_deletenextword
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      menuitem_edit_deletepreviousword
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_edit),
@@ -1026,7 +1040,11 @@ static void activate(GtkApplication* app, gpointer user_data){
       FALSE
     );
     gtk_widget_set_sensitive(
-      menuitem_edit_deleteword,
+      menuitem_edit_deletenextword,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_deletepreviousword,
       FALSE
     );
     gtk_widget_set_sensitive(
