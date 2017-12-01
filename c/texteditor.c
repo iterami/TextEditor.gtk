@@ -230,8 +230,7 @@ static void menu_saveas(){
     gint result = gtk_dialog_run(GTK_DIALOG(dialog_saveas));
 
     if(result == GTK_RESPONSE_ACCEPT){
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_saveas);
-        save_tab(gtk_file_chooser_get_filename(chooser));
+        save_tab(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog_saveas)));
     }
 
     gtk_widget_destroy(dialog_saveas);
