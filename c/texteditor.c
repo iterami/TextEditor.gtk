@@ -76,6 +76,13 @@ static GtkWidget* new_textview(){
       GTK_TEXT_VIEW(text_view),
       GTK_WRAP_WORD
     );
+    gtk_text_buffer_create_tag(
+      buffer,
+      "found",
+      "background",
+      "#650",
+      NULL
+    );
 
     return text_view;
 }
@@ -274,7 +281,82 @@ static void menu_save(){
     }
 }
 
+static void find_close(){
+    GtkTextIter end;
+    GtkTextIter start;
+
+    tabcontents tab = get_tab_contents();
+    gtk_text_buffer_get_start_iter(
+      tab.buffer,
+      &start
+    );
+    gtk_text_buffer_get_end_iter(
+      tab.buffer,
+      &end
+    );
+
+    gtk_text_buffer_remove_all_tags(
+      tab.buffer,
+      &start,
+      &end
+    );
+}
+
+static void menu_findnext_recursive(GtkTextBuffer *buffer, GtkTextIter start){
+    GtkTextIter match_end;
+    GtkTextIter match_start;
+    if(gtk_text_iter_forward_search(
+      &start,
+      "edited",
+      0,
+      &match_start,
+      &match_end,
+      NULL
+    )){
+        gtk_text_buffer_apply_tag_by_name(
+          buffer,
+          "found",
+          &match_start,
+          &match_end
+        );
+
+        menu_findnext_recursive(
+          buffer,
+          match_end
+        );
+    }
+}
+
 static void menu_findnext(){
+    GtkTextIter end;
+    GtkTextIter start;
+
+    tabcontents tab = get_tab_contents();
+    gtk_text_buffer_get_iter_at_mark(
+      tab.buffer,
+      &start,
+      gtk_text_buffer_get_insert(tab.buffer)
+    );
+
+    if(gtk_text_iter_get_offset(&start) == gtk_text_buffer_get_char_count(tab.buffer)){
+        gtk_text_buffer_get_start_iter(
+          tab.buffer,
+          &start
+        );
+    }
+
+    gtk_text_buffer_get_end_iter(
+      tab.buffer,
+      &end
+    );
+
+    menu_findnext_recursive(
+      tab.buffer,
+      start
+    );
+}
+
+static void menu_findprevious_recursive(){
 }
 
 static void menu_findprevious(){
@@ -339,18 +421,18 @@ static void menu_find(){
       GTK_ORIENTATION_HORIZONTAL,
       0
     );
-    findnext = gtk_button_new_with_label("←");
+    findprevious = gtk_button_new_with_label("←");
     gtk_box_pack_start(
       GTK_BOX(innerbox),
-      findnext,
+      findprevious,
       TRUE,
       TRUE,
       0
     );
-    findprevious = gtk_button_new_with_label("→");
+    findnext = gtk_button_new_with_label("→");
     gtk_box_pack_start(
       GTK_BOX(innerbox),
-      findprevious,
+      findnext,
       TRUE,
       TRUE,
       0
@@ -414,6 +496,12 @@ static void menu_find(){
       findreplaceall,
       "clicked",
       G_CALLBACK(menu_findreplaceall),
+      NULL
+    );
+    g_signal_connect_swapped(
+      find_window,
+      "destroy",
+      G_CALLBACK(find_close),
       NULL
     );
 }
