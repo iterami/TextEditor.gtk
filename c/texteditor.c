@@ -1,8 +1,8 @@
 #include <gtk/gtk.h>
 
-GtkAccelGroup *accelgroup;
 GtkClipboard *clipboard;
 GtkNotebook *notebook;
+GtkWidget *find_window;
 GtkWidget *window;
 
 typedef struct textscrolled textscrolled;
@@ -368,144 +368,6 @@ static void menu_findreplace(){
 static void menu_findreplaceall(){
 }
 
-static void menu_find(){
-    GtkWidget *find_window;
-    GtkWidget *findnext;
-    GtkWidget *findprevious;
-    GtkWidget *findreplace;
-    GtkWidget *findreplaceall;
-    GtkWidget *innerbox;
-    GtkWidget *outerbox;
-
-    // Setup mini window.
-    find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_add_accel_group(
-      GTK_WINDOW(find_window),
-      accelgroup
-    );
-    gtk_window_set_default_size(
-      GTK_WINDOW(find_window),
-      300,
-      200
-    );
-    gtk_window_set_title(
-      GTK_WINDOW(find_window),
-      "Find and Replace..."
-    );
-    gtk_window_set_attached_to(
-      GTK_WINDOW(find_window),
-      window
-    );
-    gtk_window_set_transient_for(
-      GTK_WINDOW(find_window),
-      GTK_WINDOW(window)
-    );
-    gtk_window_set_type_hint(
-      GTK_WINDOW(find_window),
-      GDK_WINDOW_TYPE_HINT_DIALOG
-    );
-
-    // Add contents to a box and show.
-    outerbox = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(outerbox),
-      new_textview(),
-      TRUE,
-      TRUE,
-      0
-    );
-    innerbox = gtk_box_new(
-      GTK_ORIENTATION_HORIZONTAL,
-      0
-    );
-    findprevious = gtk_button_new_with_label("←");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findprevious,
-      TRUE,
-      TRUE,
-      0
-    );
-    findnext = gtk_button_new_with_label("→");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findnext,
-      TRUE,
-      TRUE,
-      0
-    );
-    findreplace = gtk_button_new_with_mnemonic("_Replace");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findreplace,
-      TRUE,
-      TRUE,
-      0
-    );
-    findreplaceall = gtk_button_new_with_mnemonic("Replace _All");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findreplaceall,
-      TRUE,
-      TRUE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(outerbox),
-      innerbox,
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(outerbox),
-      new_textview(),
-      TRUE,
-      TRUE,
-      0
-    );
-    gtk_container_add(
-      GTK_CONTAINER(find_window),
-      outerbox
-    );
-    gtk_widget_show_all(find_window);
-
-    // Setup signals.
-    g_signal_connect(
-      findnext,
-      "clicked",
-      G_CALLBACK(menu_findnext),
-      NULL
-    );
-    g_signal_connect(
-      findprevious,
-      "clicked",
-      G_CALLBACK(menu_findprevious),
-      NULL
-    );
-    g_signal_connect(
-      findreplace,
-      "clicked",
-      G_CALLBACK(menu_findreplace),
-      NULL
-    );
-    g_signal_connect(
-      findreplaceall,
-      "clicked",
-      G_CALLBACK(menu_findreplaceall),
-      NULL
-    );
-    g_signal_connect_swapped(
-      find_window,
-      "destroy",
-      G_CALLBACK(find_close),
-      NULL
-    );
-}
-
 static void menu_findbottom(){
     if(get_notebook_has_pages()){
         return;
@@ -638,10 +500,13 @@ static void menu_deleteline(){
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
+    GtkAccelGroup *accelgroup;
     GtkWidget *box;
-    GtkWidget *menumenu_edit;
-    GtkWidget *menumenu_file;
-    GtkWidget *menumenu_find;
+    GtkWidget *findnext;
+    GtkWidget *findprevious;
+    GtkWidget *findreplace;
+    GtkWidget *findreplaceall;
+    GtkWidget *innerbox;
     GtkWidget *menubar;
     GtkWidget *menuitem_edit_copy;
     GtkWidget *menuitem_edit_cut;
@@ -670,6 +535,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
     GtkWidget *menuitem_find;
+    GtkWidget *menumenu_edit;
+    GtkWidget *menumenu_file;
+    GtkWidget *menumenu_find;
+    GtkWidget *outerbox;
 
     // Setup CSS.
     GtkCssProvider *provider = gtk_css_provider_new();
@@ -1104,6 +973,160 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_find
     );
 
+    // Add everything to a box and show.
+    box = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      menubar,
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      GTK_WIDGET(notebook),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_container_add(
+      GTK_CONTAINER(window),
+      box
+    );
+    gtk_widget_show_all(window);
+
+    // Setup find window.
+    find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_add_accel_group(
+      GTK_WINDOW(find_window),
+      accelgroup
+    );
+    gtk_window_set_default_size(
+      GTK_WINDOW(find_window),
+      300,
+      200
+    );
+    gtk_window_set_title(
+      GTK_WINDOW(find_window),
+      "Find and Replace..."
+    );
+    gtk_window_set_attached_to(
+      GTK_WINDOW(find_window),
+      window
+    );
+    gtk_window_set_transient_for(
+      GTK_WINDOW(find_window),
+      GTK_WINDOW(window)
+    );
+    gtk_window_set_type_hint(
+      GTK_WINDOW(find_window),
+      GDK_WINDOW_TYPE_HINT_DIALOG
+    );
+    outerbox = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(outerbox),
+      new_textview(),
+      TRUE,
+      TRUE,
+      0
+    );
+    innerbox = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      0
+    );
+    findprevious = gtk_button_new_with_label("←");
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      findprevious,
+      TRUE,
+      TRUE,
+      0
+    );
+    findnext = gtk_button_new_with_label("→");
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      findnext,
+      TRUE,
+      TRUE,
+      0
+    );
+    findreplace = gtk_button_new_with_mnemonic("_Replace");
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      findreplace,
+      TRUE,
+      TRUE,
+      0
+    );
+    findreplaceall = gtk_button_new_with_mnemonic("Replace _All");
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      findreplaceall,
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(outerbox),
+      innerbox,
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(outerbox),
+      new_textview(),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_container_add(
+      GTK_CONTAINER(find_window),
+      outerbox
+    );
+    g_signal_connect(
+      findnext,
+      "clicked",
+      G_CALLBACK(menu_findnext),
+      NULL
+    );
+    g_signal_connect(
+      findprevious,
+      "clicked",
+      G_CALLBACK(menu_findprevious),
+      NULL
+    );
+    g_signal_connect(
+      findreplace,
+      "clicked",
+      G_CALLBACK(menu_findreplace),
+      NULL
+    );
+    g_signal_connect(
+      findreplaceall,
+      "clicked",
+      G_CALLBACK(menu_findreplaceall),
+      NULL
+    );
+    g_signal_connect_swapped(
+      find_window,
+      "delete-event",
+      G_CALLBACK(gtk_widget_hide_on_delete),
+      find_window
+    );
+    g_signal_connect_swapped(
+      find_window,
+      "destroy",
+      G_CALLBACK(find_close),
+      NULL
+    );
+
     // Setup menu item callbacks.
     g_signal_connect_swapped(
       menuitem_file_newtab,
@@ -1150,8 +1173,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     g_signal_connect_swapped(
       menuitem_find_find,
       "activate",
-      G_CALLBACK(menu_find),
-      NULL
+      G_CALLBACK(gtk_widget_show_all),
+      find_window
     );
     g_signal_connect_swapped(
       menuitem_find_findnext,
@@ -1177,31 +1200,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       G_CALLBACK(menu_findtop),
       NULL
     );
-
-    // Add everything to a box and show.
-    box = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(box),
-      menubar,
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(box),
-      GTK_WIDGET(notebook),
-      TRUE,
-      TRUE,
-      0
-    );
-    gtk_container_add(
-      GTK_CONTAINER(window),
-      box
-    );
-    gtk_widget_show_all(window);
 
     // Disable nonfunctional menu items.
     gtk_widget_set_sensitive(
