@@ -392,13 +392,9 @@ static void menu_find(){
       GTK_WINDOW(find_window),
       "Find and Replace..."
     );
-    gtk_window_set_keep_above(
+    gtk_window_set_attached_to(
       GTK_WINDOW(find_window),
-      TRUE
-    );
-    gtk_window_set_modal(
-      GTK_WINDOW(find_window),
-      FALSE
+      window
     );
     gtk_window_set_transient_for(
       GTK_WINDOW(find_window),
