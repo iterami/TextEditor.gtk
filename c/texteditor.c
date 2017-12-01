@@ -690,7 +690,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_edit_cut = gtk_menu_item_new_with_mnemonic("C_ut");
+    menuitem_edit_cut = gtk_menu_item_new_with_mnemonic("Cu_t");
     gtk_widget_add_accelerator(
       menuitem_edit_cut,
       "activate",
@@ -717,7 +717,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_edit_deletenextword = gtk_menu_item_new_with_mnemonic("Delete Next _Word");
+    menuitem_edit_deletenextword = gtk_menu_item_new_with_mnemonic("Delete Ne_xt Word");
     gtk_widget_add_accelerator(
       menuitem_edit_deletenextword,
       "activate",
@@ -726,7 +726,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_edit_deletepreviousword = gtk_menu_item_new_with_mnemonic("Delete Previous _Word");
+    menuitem_edit_deletepreviousword = gtk_menu_item_new_with_mnemonic("Delete Pre_vious Word");
     gtk_widget_add_accelerator(
       menuitem_edit_deletepreviousword,
       "activate",
@@ -753,7 +753,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("_Select All");
+    menuitem_edit_selectall = gtk_menu_item_new_with_mnemonic("Select _All");
     gtk_widget_add_accelerator(
       menuitem_edit_selectall,
       "activate",
@@ -762,7 +762,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_edit_sort = gtk_menu_item_new_with_mnemonic("S_ort Lines");
+    menuitem_edit_sort = gtk_menu_item_new_with_mnemonic("_Sort Lines");
     gtk_widget_add_accelerator(
       menuitem_edit_sort,
       "activate",
@@ -850,7 +850,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     // Find menu.
     menu_find = gtk_menu_new();
-    menuitem_find = gtk_menu_item_new_with_mnemonic("_Find");
+    menuitem_find = gtk_menu_item_new_with_mnemonic("F_ind");
     menuitem_find_find = gtk_menu_item_new_with_mnemonic("_Find...");
     gtk_widget_add_accelerator(
       menuitem_find_find,
