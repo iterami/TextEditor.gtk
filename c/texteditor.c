@@ -274,78 +274,6 @@ static void menu_save(){
     }
 }
 
-static void menu_copy(){
-    if(get_notebook_has_pages()){
-        return;
-    }
-
-    tabcontents tab = get_tab_contents();
-    gtk_text_buffer_copy_clipboard(
-      tab.buffer,
-      clipboard
-    );
-}
-
-static void menu_cut(){
-    if(get_notebook_has_pages()){
-        return;
-    }
-
-    tabcontents tab = get_tab_contents();
-    gtk_text_buffer_cut_clipboard(
-      tab.buffer,
-      clipboard,
-      TRUE
-    );
-}
-
-static void menu_paste(){
-    if(get_notebook_has_pages()){
-        return;
-    }
-
-    tabcontents tab = get_tab_contents();
-    gtk_text_buffer_paste_clipboard(
-      tab.buffer,
-      clipboard,
-      FALSE,
-      TRUE
-    );
-}
-
-static void menu_delete(){
-    if(get_notebook_has_pages()){
-        return;
-    }
-
-    tabcontents tab = get_tab_contents();
-
-    if(gtk_text_buffer_get_has_selection(tab.buffer)){
-        gtk_text_buffer_delete_selection(
-          tab.buffer,
-          TRUE,
-          TRUE
-        );
-
-    }else{
-        GtkTextIter end;
-        GtkTextIter start;
-        gtk_text_buffer_get_iter_at_mark(
-          tab.buffer,
-          &start,
-          gtk_text_buffer_get_insert(tab.buffer)
-        );
-        end = start;
-        if(gtk_text_iter_forward_cursor_position(&end)){
-            gtk_text_buffer_delete(
-              tab.buffer,
-              &start,
-              &end
-            );
-        }
-    }
-}
-
 static void menu_findnext(){
 }
 
@@ -593,30 +521,6 @@ static void menu_deleteline(){
         );
     }
     gtk_text_buffer_delete(
-      tab.buffer,
-      &start,
-      &end
-    );
-}
-
-static void menu_selectall(){
-    if(get_notebook_has_pages()){
-        return;
-    }
-
-    GtkTextIter end;
-    GtkTextIter start;
-    tabcontents tab = get_tab_contents();
-
-    gtk_text_buffer_get_start_iter(
-      tab.buffer,
-      &start
-    );
-    gtk_text_buffer_get_end_iter(
-      tab.buffer,
-      &end
-    );
-    gtk_text_buffer_select_range(
       tab.buffer,
       &start,
       &end
@@ -1128,39 +1032,9 @@ static void activate(GtkApplication* app, gpointer user_data){
       window
     );
     g_signal_connect_swapped(
-      menuitem_edit_copy,
-      "activate",
-      G_CALLBACK(menu_copy),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_cut,
-      "activate",
-      G_CALLBACK(menu_cut),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_paste,
-      "activate",
-      G_CALLBACK(menu_paste),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_delete,
-      "activate",
-      G_CALLBACK(menu_delete),
-      NULL
-    );
-    g_signal_connect_swapped(
       menuitem_edit_deleteline,
       "activate",
       G_CALLBACK(menu_deleteline),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_selectall,
-      "activate",
-      G_CALLBACK(menu_selectall),
       NULL
     );
     g_signal_connect_swapped(
@@ -1233,11 +1107,31 @@ static void activate(GtkApplication* app, gpointer user_data){
       FALSE
     );
     gtk_widget_set_sensitive(
+      menuitem_edit_cut,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_copy,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_paste,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_delete,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
       menuitem_edit_deletenextword,
       FALSE
     );
     gtk_widget_set_sensitive(
       menuitem_edit_deletepreviousword,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_selectall,
       FALSE
     );
     gtk_widget_set_sensitive(
