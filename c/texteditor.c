@@ -1127,7 +1127,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     g_signal_connect_swapped(
       find_window,
-      "destroy",
+      "hide",
       G_CALLBACK(find_close),
       NULL
     );
