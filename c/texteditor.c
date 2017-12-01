@@ -346,7 +346,8 @@ static void menu_delete(){
 }
 
 static void menu_find(){
-    GtkWidget *box;
+    GtkWidget *innerbox;
+    GtkWidget *outerbox;
     GtkWidget *find_window;
 
     find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -372,27 +373,66 @@ static void menu_find(){
       GTK_WINDOW(window)
     );
 
-    box = gtk_box_new(
+    outerbox = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
     );
     gtk_box_pack_start(
-      GTK_BOX(box),
+      GTK_BOX(outerbox),
       new_textview(),
       TRUE,
       TRUE,
       0
     );
+    innerbox = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      0
+    );
     gtk_box_pack_start(
-      GTK_BOX(box),
+      GTK_BOX(innerbox),
+      gtk_button_new_with_label("←"),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_label("→"),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_mnemonic("_Replace"),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(innerbox),
+      gtk_button_new_with_mnemonic("Replace _All"),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(outerbox),
+      innerbox,
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(outerbox),
       new_textview(),
       TRUE,
       TRUE,
-      1
+      0
     );
     gtk_container_add(
       GTK_CONTAINER(find_window),
-      box
+      outerbox
     );
 
     gtk_widget_show_all(find_window);
