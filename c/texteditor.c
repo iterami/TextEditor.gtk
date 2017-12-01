@@ -332,34 +332,6 @@ static void menu_find(){
     );
     gtk_window_set_title(
       GTK_WINDOW(find_window),
-      "Find..."
-    );
-    gtk_window_set_keep_above(
-      GTK_WINDOW(find_window),
-      TRUE
-    );
-    gtk_window_set_modal(
-      GTK_WINDOW(find_window),
-      FALSE
-    );
-    gtk_window_set_transient_for(
-      GTK_WINDOW(find_window),
-      GTK_WINDOW(window)
-    );
-
-    gtk_widget_show_all(find_window);
-}
-
-static void menu_findreplace(){
-    GtkWidget *find_window;
-    find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size(
-      GTK_WINDOW(find_window),
-      300,
-      200
-    );
-    gtk_window_set_title(
-      GTK_WINDOW(find_window),
       "Find and Replace..."
     );
     gtk_window_set_keep_above(
@@ -563,7 +535,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_find_find;
     GtkWidget *menuitem_find_findnext;
     GtkWidget *menuitem_find_findprevious;
-    GtkWidget *menuitem_find_findreplace;
     GtkWidget *menuitem_find_gotobottom;
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
@@ -907,7 +878,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     // Find menu.
     menumenu_find = gtk_menu_new();
     menuitem_find = gtk_menu_item_new_with_mnemonic("F_ind");
-    menuitem_find_find = gtk_menu_item_new_with_mnemonic("_Find...");
+    menuitem_find_find = gtk_menu_item_new_with_mnemonic("_Find and Replace...");
     gtk_widget_add_accelerator(
       menuitem_find_find,
       "activate",
@@ -932,15 +903,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       accelgroup,
       GDK_KEY_g,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      GTK_ACCEL_VISIBLE
-    );
-    menuitem_find_findreplace = gtk_menu_item_new_with_mnemonic("Find and _Replace...");
-    gtk_widget_add_accelerator(
-      menuitem_find_findreplace,
-      "activate",
-      accelgroup,
-      GDK_KEY_h,
-      GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
     menuitem_find_gotobottom = gtk_menu_item_new_with_mnemonic("Go to _Bottom");
@@ -989,10 +951,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
       gtk_separator_menu_item_new()
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_find),
-      menuitem_find_findreplace
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
@@ -1092,12 +1050,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_find_find,
       "activate",
       G_CALLBACK(menu_find),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_find_findreplace,
-      "activate",
-      G_CALLBACK(menu_findreplace),
       NULL
     );
     g_signal_connect_swapped(
