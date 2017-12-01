@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 
+GtkClipboard *clipboard;
 GtkNotebook *notebook;
 GtkWidget *window;
 
@@ -249,6 +250,45 @@ static void menu_save(){
     }
 }
 
+static void menu_copy(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
+    tabcontents tab = get_tab_contents();
+    gtk_text_buffer_copy_clipboard(
+      tab.buffer,
+      clipboard
+    );
+}
+
+static void menu_cut(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
+    tabcontents tab = get_tab_contents();
+    gtk_text_buffer_cut_clipboard(
+      tab.buffer,
+      clipboard,
+      TRUE
+    );
+}
+
+static void menu_paste(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
+    tabcontents tab = get_tab_contents();
+    gtk_text_buffer_paste_clipboard(
+      tab.buffer,
+      clipboard,
+      FALSE,
+      TRUE
+    );
+}
+
 static void menu_delete(){
     if(get_notebook_has_pages()){
         return;
@@ -279,7 +319,6 @@ static void menu_delete(){
               &end
             );
         }
-
     }
 }
 
@@ -489,6 +528,9 @@ static void activate(GtkApplication* app, gpointer user_data){
       0
     );
     g_object_unref(provider);
+
+    // Setup clipboard.
+    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
     // Setup window.
     window = gtk_application_window_new(app);
@@ -955,6 +997,24 @@ static void activate(GtkApplication* app, gpointer user_data){
       window
     );
     g_signal_connect_swapped(
+      menuitem_edit_copy,
+      "activate",
+      G_CALLBACK(menu_copy),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_cut,
+      "activate",
+      G_CALLBACK(menu_cut),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_paste,
+      "activate",
+      G_CALLBACK(menu_paste),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_edit_delete,
       "activate",
       G_CALLBACK(menu_delete),
@@ -1021,18 +1081,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_redo,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_copy,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_cut,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_paste,
       FALSE
     );
     gtk_widget_set_sensitive(
