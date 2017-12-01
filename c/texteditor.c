@@ -499,6 +499,11 @@ static void menu_deleteline(){
     );
 }
 
+static void menu_find(){
+    gtk_widget_show_all(find_window);
+    gtk_window_present(GTK_WINDOW(find_window));
+}
+
 static void activate(GtkApplication* app, gpointer user_data){
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
@@ -1173,8 +1178,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     g_signal_connect_swapped(
       menuitem_find_find,
       "activate",
-      G_CALLBACK(gtk_widget_show_all),
-      find_window
+      G_CALLBACK(menu_find),
+      NULL
     );
     g_signal_connect_swapped(
       menuitem_find_findnext,
