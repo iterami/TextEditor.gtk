@@ -4,6 +4,11 @@ GtkClipboard *clipboard;
 GtkNotebook *notebook;
 GtkWidget *window;
 
+typedef struct textscrolled textscrolled;
+struct textscrolled{
+  GtkWidget *scrolled_window;
+  GtkWidget *text_view;
+};
 typedef struct tabcontents tabcontents;
 struct tabcontents{
   int page;
@@ -60,7 +65,7 @@ static gboolean check_equals_unsaved(){
     ) == 0;
 }
 
-static void new_tab(){
+static textscrolled new_text_scrolled(){
     GtkTextBuffer *buffer;
     GtkWidget *scrolled_window;
     GtkWidget *text_view;
@@ -84,9 +89,19 @@ static void new_tab(){
       GTK_CONTAINER(scrolled_window),
       text_view
     );
+
+    textscrolled result = {
+      scrolled_window,
+      text_view
+    };
+    return result;
+}
+
+static void new_tab(){
+    textscrolled contents = new_text_scrolled();
     gtk_notebook_append_page(
       notebook,
-      scrolled_window,
+      contents.scrolled_window,
       gtk_label_new("UNSAVED")
     );
 
@@ -96,7 +111,7 @@ static void new_tab(){
       notebook,
       gtk_notebook_get_n_pages(notebook) - 1
     );
-    gtk_widget_grab_focus(text_view);
+    gtk_widget_grab_focus(contents.text_view);
 }
 
 static void save_tab(const char *filename){
@@ -345,6 +360,11 @@ static void menu_find(){
     gtk_window_set_transient_for(
       GTK_WINDOW(find_window),
       GTK_WINDOW(window)
+    );
+
+    gtk_container_add(
+      GTK_CONTAINER(find_window),
+      new_text_scrolled().scrolled_window
     );
 
     gtk_widget_show_all(find_window);
