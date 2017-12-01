@@ -65,9 +65,8 @@ static gboolean check_equals_unsaved(){
     ) == 0;
 }
 
-static textscrolled new_text_scrolled(){
+static GtkWidget* new_textview(){
     GtkTextBuffer *buffer;
-    GtkWidget *scrolled_window;
     GtkWidget *text_view;
 
     buffer = gtk_text_buffer_new(NULL);
@@ -76,6 +75,14 @@ static textscrolled new_text_scrolled(){
       GTK_TEXT_VIEW(text_view),
       GTK_WRAP_WORD
     );
+
+    return text_view;
+}
+
+static textscrolled new_scrolledwindow(){
+    GtkWidget *scrolled_window;
+    GtkWidget *text_view;
+
     scrolled_window = gtk_scrolled_window_new(
       NULL,
       NULL
@@ -85,6 +92,7 @@ static textscrolled new_text_scrolled(){
       GTK_POLICY_AUTOMATIC,
       GTK_POLICY_AUTOMATIC
     );
+    text_view = new_textview();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
       text_view
@@ -98,7 +106,7 @@ static textscrolled new_text_scrolled(){
 }
 
 static void new_tab(){
-    textscrolled contents = new_text_scrolled();
+    textscrolled contents = new_scrolledwindow();
     gtk_notebook_append_page(
       notebook,
       contents.scrolled_window,
@@ -364,7 +372,7 @@ static void menu_find(){
 
     gtk_container_add(
       GTK_CONTAINER(find_window),
-      new_text_scrolled().scrolled_window
+      new_textview()
     );
 
     gtk_widget_show_all(find_window);
