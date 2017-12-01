@@ -346,7 +346,9 @@ static void menu_delete(){
 }
 
 static void menu_find(){
+    GtkWidget *box;
     GtkWidget *find_window;
+
     find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(
       GTK_WINDOW(find_window),
@@ -370,9 +372,27 @@ static void menu_find(){
       GTK_WINDOW(window)
     );
 
+    box = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      new_textview(),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      new_textview(),
+      TRUE,
+      TRUE,
+      1
+    );
     gtk_container_add(
       GTK_CONTAINER(find_window),
-      new_textview()
+      box
     );
 
     gtk_widget_show_all(find_window);
