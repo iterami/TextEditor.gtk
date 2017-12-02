@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
 
-GtkClipboard *clipboard;
 GtkNotebook *notebook;
 GtkWidget *find_window;
 GtkWidget *window;
@@ -560,9 +559,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       0
     );
     g_object_unref(provider);
-
-    // Setup clipboard.
-    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
     // Setup window.
     window = gtk_application_window_new(app);
