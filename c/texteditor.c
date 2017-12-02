@@ -39,16 +39,13 @@ static gboolean get_notebook_has_pages(){
 }
 
 static const gchar* get_current_tab_label_text(){
-    GtkWidget *label;
-
-    label = gtk_notebook_get_tab_label(
+    return gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(
       notebook,
       gtk_notebook_get_nth_page(
         notebook,
         gtk_notebook_get_current_page(notebook)
       )
-    );
-    return gtk_label_get_text(GTK_LABEL(label));
+    )));
 }
 
 static gboolean check_equals_unsaved(){
