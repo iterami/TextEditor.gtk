@@ -1,6 +1,9 @@
 #include <gtk/gtk.h>
 
+gboolean finding;
 GtkNotebook *notebook;
+GtkWidget *find_window_find;
+GtkWidget *find_window_replace;
 GtkWidget *find_window;
 GtkWidget *window;
 
@@ -274,6 +277,7 @@ static void find_close(){
     GtkTextIter end;
     GtkTextIter start;
 
+    finding = FALSE;
     tabcontents tab = get_tab_contents();
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -291,12 +295,12 @@ static void find_close(){
     );
 }
 
-static void menu_findnext_recursive(GtkTextBuffer *buffer, GtkTextIter start){
+static void menu_findall_recursive(GtkTextBuffer *buffer, gchar *findquery, GtkTextIter start){
     GtkTextIter match_end;
     GtkTextIter match_start;
     if(gtk_text_iter_forward_search(
       &start,
-      "edited",
+      findquery,
       0,
       &match_start,
       &match_end,
@@ -309,46 +313,60 @@ static void menu_findnext_recursive(GtkTextBuffer *buffer, GtkTextIter start){
           &match_end
         );
 
-        menu_findnext_recursive(
+        menu_findall_recursive(
           buffer,
+          findquery,
           match_end
         );
     }
 }
 
-static void menu_findnext(){
-    GtkTextIter end;
-    GtkTextIter start;
+static void menu_findall(){
+    GtkTextIter findend;
+    GtkTextIter findstart;
+    GtkTextIter tabstart;
 
+    finding = TRUE;
     tabcontents tab = get_tab_contents();
-    gtk_text_buffer_get_iter_at_mark(
+    gtk_text_buffer_get_start_iter(
       tab.buffer,
-      &start,
-      gtk_text_buffer_get_insert(tab.buffer)
+      &tabstart
     );
 
-    if(gtk_text_iter_get_offset(&start) == gtk_text_buffer_get_char_count(tab.buffer)){
-        gtk_text_buffer_get_start_iter(
-          tab.buffer,
-          &start
-        );
-    }
-
+    GtkTextBuffer *buffer;
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
+    gtk_text_buffer_get_start_iter(
+      tab.buffer,
+      &findstart
+    );
     gtk_text_buffer_get_end_iter(
       tab.buffer,
-      &end
+      &findend
+    );
+    gchar *findquery = gtk_text_buffer_get_text(
+      tab.buffer,
+      &findstart,
+      &findend,
+      FALSE
     );
 
-    menu_findnext_recursive(
+    menu_findall_recursive(
       tab.buffer,
-      start
+      findquery,
+      tabstart
     );
 }
 
-static void menu_findprevious_recursive(){
+static void menu_findnext(){
+    if(!finding){
+        menu_findall();
+    }
 }
 
 static void menu_findprevious(){
+    if(!finding){
+        menu_findall();
+    }
 }
 
 static void menu_findreplace(){
@@ -988,6 +1006,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_widget_show_all(window);
 
     // Setup find window.
+    finding = FALSE;
     find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_add_accel_group(
       GTK_WINDOW(find_window),
@@ -1018,9 +1037,10 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_ORIENTATION_VERTICAL,
       0
     );
+    find_window_find = new_textview();
     gtk_box_pack_start(
       GTK_BOX(outerbox),
-      new_textview(),
+      find_window_find,
       TRUE,
       TRUE,
       0
@@ -1068,9 +1088,10 @@ static void activate(GtkApplication* app, gpointer user_data){
       FALSE,
       0
     );
+    find_window_replace = new_textview();
     gtk_box_pack_start(
       GTK_BOX(outerbox),
-      new_textview(),
+      find_window_replace,
       TRUE,
       TRUE,
       0
