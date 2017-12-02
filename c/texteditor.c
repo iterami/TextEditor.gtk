@@ -273,11 +273,10 @@ static void menu_save(){
     }
 }
 
-static void find_close(){
+static void find_clear_tags(){
     GtkTextIter end;
     GtkTextIter start;
 
-    finding = NULL;
     tabcontents tab = get_tab_contents();
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -292,6 +291,34 @@ static void find_close(){
       tab.buffer,
       &start,
       &end
+  );
+}
+
+static void find_close(){
+    finding = NULL;
+    find_clear_tags();
+}
+
+static gchar* get_find_find(){
+    GtkTextBuffer *buffer;
+    GtkTextIter findend;
+    GtkTextIter findstart;
+
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
+    gtk_text_buffer_get_start_iter(
+      buffer,
+      &findstart
+    );
+    gtk_text_buffer_get_end_iter(
+      buffer,
+      &findend
+    );
+
+    return gtk_text_buffer_get_text(
+      buffer,
+      &findstart,
+      &findend,
+      FALSE
     );
 }
 
@@ -321,32 +348,15 @@ static void menu_findall_recursive(GtkTextBuffer *buffer, GtkTextIter start){
 }
 
 static void menu_findall(){
-    GtkTextIter findend;
-    GtkTextIter findstart;
     GtkTextIter tabstart;
 
+    find_clear_tags();
     tabcontents tab = get_tab_contents();
     gtk_text_buffer_get_start_iter(
       tab.buffer,
       &tabstart
     );
-
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
-    gtk_text_buffer_get_start_iter(
-      buffer,
-      &findstart
-    );
-    gtk_text_buffer_get_end_iter(
-      buffer,
-      &findend
-    );
-    finding = gtk_text_buffer_get_text(
-      buffer,
-      &findstart,
-      &findend,
-      FALSE
-    );
+    finding = get_find_find();
 
     menu_findall_recursive(
       tab.buffer,
@@ -355,13 +365,15 @@ static void menu_findall(){
 }
 
 static void menu_findnext(){
-    if(finding == NULL){
+    if(finding == NULL
+      || finding != get_find_find()){
         menu_findall();
     }
 }
 
 static void menu_findprevious(){
-    if(finding == NULL){
+    if(finding == NULL
+      || finding != get_find_find()){
         menu_findall();
     }
 }
