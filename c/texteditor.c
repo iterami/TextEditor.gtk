@@ -336,15 +336,15 @@ static void menu_findall(){
     GtkTextBuffer *buffer;
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
     gtk_text_buffer_get_start_iter(
-      tab.buffer,
+      buffer,
       &findstart
     );
     gtk_text_buffer_get_end_iter(
-      tab.buffer,
+      buffer,
       &findend
     );
     gchar *findquery = gtk_text_buffer_get_text(
-      tab.buffer,
+      buffer,
       &findstart,
       &findend,
       FALSE
