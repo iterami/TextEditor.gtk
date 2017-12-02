@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-gboolean finding;
+gchar *finding;
 GtkNotebook *notebook;
 GtkWidget *find_window_find;
 GtkWidget *find_window_replace;
@@ -277,7 +277,7 @@ static void find_close(){
     GtkTextIter end;
     GtkTextIter start;
 
-    finding = FALSE;
+    finding = NULL;
     tabcontents tab = get_tab_contents();
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -295,12 +295,12 @@ static void find_close(){
     );
 }
 
-static void menu_findall_recursive(GtkTextBuffer *buffer, gchar *findquery, GtkTextIter start){
+static void menu_findall_recursive(GtkTextBuffer *buffer, GtkTextIter start){
     GtkTextIter match_end;
     GtkTextIter match_start;
     if(gtk_text_iter_forward_search(
       &start,
-      findquery,
+      finding,
       0,
       &match_start,
       &match_end,
@@ -315,7 +315,6 @@ static void menu_findall_recursive(GtkTextBuffer *buffer, gchar *findquery, GtkT
 
         menu_findall_recursive(
           buffer,
-          findquery,
           match_end
         );
     }
@@ -326,7 +325,6 @@ static void menu_findall(){
     GtkTextIter findstart;
     GtkTextIter tabstart;
 
-    finding = TRUE;
     tabcontents tab = get_tab_contents();
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -343,7 +341,7 @@ static void menu_findall(){
       buffer,
       &findend
     );
-    gchar *findquery = gtk_text_buffer_get_text(
+    finding = gtk_text_buffer_get_text(
       buffer,
       &findstart,
       &findend,
@@ -352,19 +350,18 @@ static void menu_findall(){
 
     menu_findall_recursive(
       tab.buffer,
-      findquery,
       tabstart
     );
 }
 
 static void menu_findnext(){
-    if(!finding){
+    if(finding == NULL){
         menu_findall();
     }
 }
 
 static void menu_findprevious(){
-    if(!finding){
+    if(finding == NULL){
         menu_findall();
     }
 }
@@ -1006,7 +1003,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_widget_show_all(window);
 
     // Setup find window.
-    finding = FALSE;
+    finding = NULL;
     find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_add_accel_group(
       GTK_WINDOW(find_window),
