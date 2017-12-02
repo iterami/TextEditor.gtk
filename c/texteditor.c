@@ -544,10 +544,8 @@ static void activate(GtkApplication* app, gpointer user_data){
 
     // Setup CSS.
     GtkCssProvider *provider = gtk_css_provider_new();
-    GdkDisplay *display = gdk_display_get_default();
-    GdkScreen *screen = gdk_display_get_default_screen(display);
     gtk_style_context_add_provider_for_screen(
-      screen,
+      gdk_display_get_default_screen(gdk_display_get_default()),
       GTK_STYLE_PROVIDER(provider),
       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
