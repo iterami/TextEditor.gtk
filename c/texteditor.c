@@ -18,13 +18,11 @@ struct tabcontents{
 
 struct tabcontents get_tab_contents(){
     int page = gtk_notebook_get_current_page(notebook);
-    GtkWidget *scroll_view;
-    scroll_view = gtk_notebook_get_nth_page(
+    GtkWidget *text_view;
+    text_view = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
       notebook,
       page
-    );
-    GtkWidget *text_view;
-    text_view = gtk_bin_get_child(GTK_BIN(scroll_view));
+    )));
     GtkTextBuffer *buffer;
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
 
