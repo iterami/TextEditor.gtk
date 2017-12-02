@@ -39,7 +39,6 @@ static gboolean get_notebook_has_pages(){
 }
 
 static const gchar* get_current_tab_label_text(){
-    const gchar *text;
     GtkWidget *label;
 
     label = gtk_notebook_get_tab_label(
@@ -49,8 +48,7 @@ static const gchar* get_current_tab_label_text(){
         gtk_notebook_get_current_page(notebook)
       )
     );
-    text = gtk_label_get_text(GTK_LABEL(label));
-    return text;
+    return gtk_label_get_text(GTK_LABEL(label));
 }
 
 static gboolean check_equals_unsaved(){
