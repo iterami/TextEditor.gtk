@@ -54,11 +54,8 @@ static const gchar* get_current_tab_label_text(){
 }
 
 static gboolean check_equals_unsaved(){
-    const gchar *text;
-    text = get_current_tab_label_text();
-
     return g_strcmp0(
-      text,
+      get_current_tab_label_text(),
       "UNSAVED"
     ) == 0;
 }
