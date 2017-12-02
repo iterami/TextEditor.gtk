@@ -322,7 +322,7 @@ static gchar* get_find_find(){
     );
 }
 
-static void menu_findall_recursive(GtkTextBuffer *buffer, GtkTextIter start){
+static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
     GtkTextIter match_end;
     GtkTextIter match_start;
     if(gtk_text_iter_forward_search(
@@ -340,14 +340,16 @@ static void menu_findall_recursive(GtkTextBuffer *buffer, GtkTextIter start){
           &match_end
         );
 
-        menu_findall_recursive(
+        menu_find_recursive(
           buffer,
           match_end
         );
     }
 }
 
-static void menu_findall(){
+static void menu_find(){
+    gtk_widget_show_all(find_window);
+
     GtkTextIter tabstart;
 
     find_clear_tags();
@@ -358,7 +360,7 @@ static void menu_findall(){
     );
     finding = get_find_find();
 
-    menu_findall_recursive(
+    menu_find_recursive(
       tab.buffer,
       tabstart
     );
@@ -367,15 +369,69 @@ static void menu_findall(){
 static void menu_findnext(){
     if(finding == NULL
       || finding != get_find_find()){
-        menu_findall();
+        menu_find();
     }
+
+    tabcontents tab = get_tab_contents();
+    GtkTextIter cursor;
+    gtk_text_buffer_get_iter_at_mark(
+      tab.buffer,
+      &cursor,
+      gtk_text_buffer_get_insert(tab.buffer)
+    );
+    gtk_text_iter_forward_to_tag_toggle(
+      &cursor,
+      gtk_text_tag_table_lookup(
+        gtk_text_buffer_get_tag_table(tab.buffer),
+        "found"
+      )
+    );
+    gtk_text_buffer_place_cursor(
+      tab.buffer,
+      &cursor
+    );
+    gtk_text_view_scroll_to_iter(
+      GTK_TEXT_VIEW(tab.text_view),
+      &cursor,
+      0,
+      TRUE,
+      0,
+      0
+    );
 }
 
 static void menu_findprevious(){
     if(finding == NULL
       || finding != get_find_find()){
-        menu_findall();
+        menu_find();
     }
+
+    tabcontents tab = get_tab_contents();
+    GtkTextIter cursor;
+    gtk_text_buffer_get_iter_at_mark(
+      tab.buffer,
+      &cursor,
+      gtk_text_buffer_get_insert(tab.buffer)
+    );
+    gtk_text_iter_backward_to_tag_toggle(
+      &cursor,
+      gtk_text_tag_table_lookup(
+        gtk_text_buffer_get_tag_table(tab.buffer),
+        "found"
+      )
+    );
+    gtk_text_buffer_place_cursor(
+      tab.buffer,
+      &cursor
+    );
+    gtk_text_view_scroll_to_iter(
+      GTK_TEXT_VIEW(tab.text_view),
+      &cursor,
+      0,
+      TRUE,
+      0,
+      0
+    );
 }
 
 static void menu_findreplace(){
@@ -513,11 +569,6 @@ static void menu_deleteline(){
       &start,
       &end
     );
-}
-
-static void menu_find(){
-    gtk_widget_show_all(find_window);
-    gtk_window_present(GTK_WINDOW(find_window));
 }
 
 static void activate(GtkApplication* app, gpointer user_data){
