@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-#include <stdio.h>
 
 gchar *finding;
 GtkNotebook *notebook;
