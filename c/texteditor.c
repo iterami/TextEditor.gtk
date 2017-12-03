@@ -393,17 +393,43 @@ static void menu_findnext(){
       &cursor,
       gtk_text_buffer_get_insert(tab.buffer)
     );
-    gtk_text_iter_forward_to_tag_toggle(
+    GtkTextTag *tag_found;
+    tag_found = gtk_text_tag_table_lookup(
+      gtk_text_buffer_get_tag_table(tab.buffer),
+      "found"
+    );
+    if(gtk_text_iter_forward_to_tag_toggle(
       &cursor,
-      gtk_text_tag_table_lookup(
-        gtk_text_buffer_get_tag_table(tab.buffer),
-        "found"
-      )
-    );
-    gtk_text_buffer_place_cursor(
-      tab.buffer,
-      &cursor
-    );
+      tag_found
+    )){
+        GtkTextIter end;
+        GtkTextIter start;
+        if(gtk_text_iter_begins_tag(
+          &cursor,
+          tag_found
+        )){
+            start = cursor;
+            gtk_text_iter_forward_to_tag_toggle(
+              &cursor,
+              tag_found
+            );
+            end = cursor;
+
+        }else{
+            end = cursor;
+            gtk_text_iter_backward_to_tag_toggle(
+              &cursor,
+              tag_found
+            );
+            start = cursor;
+        }
+
+        gtk_text_buffer_select_range(
+          tab.buffer,
+          &end,
+          &start
+        );
+    }
     gtk_text_view_scroll_to_iter(
       GTK_TEXT_VIEW(tab.text_view),
       &cursor,
@@ -427,17 +453,43 @@ static void menu_findprevious(){
       &cursor,
       gtk_text_buffer_get_insert(tab.buffer)
     );
-    gtk_text_iter_backward_to_tag_toggle(
+    GtkTextTag *tag_found;
+    tag_found = gtk_text_tag_table_lookup(
+      gtk_text_buffer_get_tag_table(tab.buffer),
+      "found"
+    );
+    if(gtk_text_iter_backward_to_tag_toggle(
       &cursor,
-      gtk_text_tag_table_lookup(
-        gtk_text_buffer_get_tag_table(tab.buffer),
-        "found"
-      )
-    );
-    gtk_text_buffer_place_cursor(
-      tab.buffer,
-      &cursor
-    );
+      tag_found
+    )){
+        GtkTextIter end;
+        GtkTextIter start;
+        if(gtk_text_iter_begins_tag(
+          &cursor,
+          tag_found
+        )){
+            start = cursor;
+            gtk_text_iter_forward_to_tag_toggle(
+              &cursor,
+              tag_found
+            );
+            end = cursor;
+
+        }else{
+            end = cursor;
+            gtk_text_iter_backward_to_tag_toggle(
+              &cursor,
+              tag_found
+            );
+            start = cursor;
+        }
+
+        gtk_text_buffer_select_range(
+          tab.buffer,
+          &start,
+          &end
+        );
+    }
     gtk_text_view_scroll_to_iter(
       GTK_TEXT_VIEW(tab.text_view),
       &cursor,
