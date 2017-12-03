@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <stdio.h>
 
 gchar *finding;
 GtkNotebook *notebook;
@@ -19,8 +20,11 @@ struct tabcontents{
   GtkTextBuffer *buffer;
 };
 
-struct tabcontents get_tab_contents(){
-    int page = gtk_notebook_get_current_page(notebook);
+struct tabcontents get_tab_contents(gint page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
     GtkWidget *text_view;
     text_view = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
       notebook,
@@ -130,7 +134,7 @@ static void save_tab(const char *filename){
     gchar *content;
     GtkTextIter end;
     GtkTextIter start;
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
 
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -210,7 +214,7 @@ static void menu_open(){
                     new_tab();
                 }
 
-                tabcontents tab =  get_tab_contents();
+                tabcontents tab =  get_tab_contents(-1);
 
                 gtk_text_buffer_set_text(
                   tab.buffer,
@@ -277,21 +281,27 @@ static void find_clear_tags(){
     GtkTextIter end;
     GtkTextIter start;
 
-    tabcontents tab = get_tab_contents();
-    gtk_text_buffer_get_start_iter(
-      tab.buffer,
-      &start
-    );
-    gtk_text_buffer_get_end_iter(
-      tab.buffer,
-      &end
-    );
+    gint page;
+    page = gtk_notebook_get_n_pages(notebook) - 1;
 
-    gtk_text_buffer_remove_all_tags(
-      tab.buffer,
-      &start,
-      &end
-  );
+    while(page >= 0){
+        tabcontents tab = get_tab_contents(page);
+        gtk_text_buffer_get_start_iter(
+          tab.buffer,
+          &start
+        );
+        gtk_text_buffer_get_end_iter(
+          tab.buffer,
+          &end
+        );
+
+        gtk_text_buffer_remove_all_tags(
+          tab.buffer,
+          &start,
+          &end
+        );
+        page--;
+    }
 }
 
 static void find_close(){
@@ -353,7 +363,7 @@ static void menu_find(){
     GtkTextIter tabstart;
 
     find_clear_tags();
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
     gtk_text_buffer_get_start_iter(
       tab.buffer,
       &tabstart
@@ -372,7 +382,7 @@ static void menu_findnext(){
         menu_find();
     }
 
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
     GtkTextIter cursor;
     gtk_text_buffer_get_iter_at_mark(
       tab.buffer,
@@ -406,7 +416,7 @@ static void menu_findprevious(){
         menu_find();
     }
 
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
     GtkTextIter cursor;
     gtk_text_buffer_get_iter_at_mark(
       tab.buffer,
@@ -446,7 +456,7 @@ static void menu_findbottom(){
     }
 
     GtkTextIter end;
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
 
     gtk_text_buffer_get_end_iter(
       tab.buffer,
@@ -473,7 +483,7 @@ static void menu_findtop(){
     }
 
     GtkTextIter start;
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
 
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -502,7 +512,7 @@ static void menu_deleteline(){
     GtkTextIter end;
     GtkTextIter endall;
     GtkTextIter start;
-    tabcontents tab = get_tab_contents();
+    tabcontents tab = get_tab_contents(-1);
 
     GtkTextIter line;
     gtk_text_buffer_get_iter_at_mark(
