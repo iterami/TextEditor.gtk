@@ -7,6 +7,8 @@ GtkNotebook *notebook;
 GtkWidget *find_window_find;
 GtkWidget *find_window_replace;
 GtkWidget *find_window;
+GtkWidget *menuitem_edit_redo;
+GtkWidget *menuitem_edit_undo;
 GtkWidget *window;
 
 typedef struct textscrolled textscrolled;
@@ -42,10 +44,41 @@ struct tabcontents get_tab_contents(gint page){
     return result;
 }
 
+static void undolist_append(GList *list){
+}
+
+static void undolist_clear(GList *list){
+}
+
+static void undolist_clearall(){
+    undolist_clear(undolist);
+    undolist_clear(redolist);
+    gtk_widget_set_sensitive(
+      menuitem_edit_undo,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_redo,
+      FALSE
+    );
+}
+
 static void menu_undo(){
+    if(g_list_length(undolist)){
+        gtk_widget_set_sensitive(
+          menuitem_edit_redo,
+          TRUE
+        );
+    }
 }
 
 static void menu_redo(){
+    if(g_list_length(redolist)){
+        gtk_widget_set_sensitive(
+          menuitem_edit_undo,
+          TRUE
+        );
+    }
 }
 
 static gboolean get_notebook_has_pages(){
@@ -665,10 +698,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_deletenextword;
     GtkWidget *menuitem_edit_deletepreviousword;
     GtkWidget *menuitem_edit_paste;
-    GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
     GtkWidget *menuitem_edit_sort;
-    GtkWidget *menuitem_edit_undo;
     GtkWidget *menuitem_edit;
     GtkWidget *menuitem_file_closetab;
     GtkWidget *menuitem_file_newtab;
