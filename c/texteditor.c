@@ -360,6 +360,17 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
 static void menu_find(){
     gtk_widget_show_all(find_window);
 
+    finding = get_find_find();
+    if(finding != NULL){
+        int length = 0;
+        while(finding[length] != '\0'){
+            length++;
+        }
+        if(length == 0){
+            return;
+        }
+    }
+
     GtkTextIter tabstart;
 
     find_clear_tags();
@@ -368,7 +379,6 @@ static void menu_find(){
       tab.buffer,
       &tabstart
     );
-    finding = get_find_find();
 
     menu_find_recursive(
       tab.buffer,
