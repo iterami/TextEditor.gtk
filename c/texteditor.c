@@ -1,6 +1,8 @@
 #include <gtk/gtk.h>
 
-gchar *finding;
+gchar *finding = NULL;
+GList *redolist = NULL;
+GList *undolist = NULL;
 GtkNotebook *notebook;
 GtkWidget *find_window_find;
 GtkWidget *find_window_replace;
@@ -38,6 +40,12 @@ struct tabcontents get_tab_contents(gint page){
       buffer
     };
     return result;
+}
+
+static void menu_undo(){
+}
+
+static void menu_redo(){
 }
 
 static gboolean get_notebook_has_pages(){
@@ -1136,7 +1144,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_widget_show_all(window);
 
     // Setup find window.
-    finding = NULL;
     find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_add_accel_group(
       GTK_WINDOW(find_window),
@@ -1289,6 +1296,18 @@ static void activate(GtkApplication* app, gpointer user_data){
       "activate",
       G_CALLBACK(gtk_widget_destroy),
       window
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_redo,
+      "activate",
+      G_CALLBACK(menu_redo),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_undo,
+      "activate",
+      G_CALLBACK(menu_undo),
+      NULL
     );
     g_signal_connect_swapped(
       menuitem_edit_deleteline,
