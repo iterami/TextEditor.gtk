@@ -361,11 +361,7 @@ static void menu_find(){
 
     finding = get_find_find();
     if(finding != NULL){
-        int length = 0;
-        while(finding[length] != '\0'){
-            length++;
-        }
-        if(length == 0){
+        if(finding[0] == '\0'){
             return;
         }
     }
