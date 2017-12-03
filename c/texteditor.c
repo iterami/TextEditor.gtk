@@ -1323,7 +1323,7 @@ int main(int argc, char **argv){
 
     app = gtk_application_new(
       "com.iterami.texteditor",
-      G_APPLICATION_FLAGS_NONE
+      0
     );
     g_signal_connect(
       app,
