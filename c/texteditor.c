@@ -360,10 +360,9 @@ static void menu_find(){
     gtk_widget_show_all(find_window);
 
     finding = get_find_find();
-    if(finding != NULL){
-        if(finding[0] == '\0'){
-            return;
-        }
+    if(finding != NULL
+      && finding[0] == '\0'){
+        return;
     }
 
     GtkTextIter tabstart;
