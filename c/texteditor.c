@@ -381,6 +381,10 @@ static void menu_find(){
 }
 
 static void menu_findnext(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
     if(finding == NULL
       || finding != get_find_find()){
         menu_find();
@@ -441,6 +445,10 @@ static void menu_findnext(){
 }
 
 static void menu_findprevious(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
     if(finding == NULL
       || finding != get_find_find()){
         menu_find();
