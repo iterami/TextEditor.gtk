@@ -126,7 +126,7 @@ static void new_tab(){
 }
 
 static void save_tab(const char *filename){
-    if(filename == NULL){
+    if(!filename){
         filename = get_current_tab_label_text();
     }
 
@@ -360,7 +360,7 @@ static void menu_find(){
     gtk_widget_show_all(find_window);
 
     finding = get_find_find();
-    if(finding != NULL
+    if(finding
       && finding[0] == '\0'){
         return;
     }
@@ -385,7 +385,7 @@ static void menu_findnext(){
         return;
     }
 
-    if(finding == NULL
+    if(!finding
       || finding != get_find_find()){
         menu_find();
     }
@@ -449,7 +449,7 @@ static void menu_findprevious(){
         return;
     }
 
-    if(finding == NULL
+    if(!finding
       || finding != get_find_find()){
         menu_find();
     }
