@@ -48,6 +48,16 @@ static void undolist_append(GList *list){
 }
 
 static void undolist_clear(GList *list){
+    GList *looplist = list;
+    while(looplist){
+        g_free(list->data);
+        list = g_list_delete_link(
+          list,
+          looplist
+        );
+
+        looplist = looplist->next;
+    }
 }
 
 static void undolist_clearall(){
