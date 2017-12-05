@@ -33,11 +33,12 @@ static struct tabcontents get_tab_contents(gint page){
     }
 
     static GtkWidget *text_view;
+    static GtkTextBuffer *buffer;
+
     text_view = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
       notebook,
       page
     )));
-    static GtkTextBuffer *buffer;
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
 
     tabcontents result = {
@@ -52,7 +53,9 @@ static void undolist_append(GList *list){
 }
 
 static void undolist_clear(GList *list){
-    GList *looplist = list;
+    static GList *looplist;
+
+    looplist = list;
     while(looplist){
         g_free(list->data);
         list = g_list_delete_link(
@@ -164,18 +167,21 @@ static textscrolled new_scrolledwindow(){
 }
 
 static void new_tab(){
-    textscrolled contents = new_scrolledwindow();
+    static gint page;
+    static textscrolled contents;
+
+    contents = new_scrolledwindow();
     gtk_notebook_append_page(
       notebook,
       contents.scrolled_window,
       gtk_label_new("UNSAVED")
     );
-
     gtk_widget_show_all(window);
 
+    page = gtk_notebook_get_n_pages(notebook) - 1;
     gtk_notebook_set_current_page(
       notebook,
-      gtk_notebook_get_n_pages(notebook) - 1
+      page
     );
     gtk_widget_grab_focus(contents.text_view);
 }
@@ -188,7 +194,8 @@ static void save_tab(const char *filename){
     static gchar *content;
     static GtkTextIter end;
     static GtkTextIter start;
-    tabcontents tab = get_tab_contents(-1);
+    static tabcontents tab;
+    tab = get_tab_contents(-1);
 
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -237,6 +244,7 @@ static void close_tab(){
 
 static void menu_open(){
     static GtkWidget *dialog_open;
+
     dialog_open = gtk_file_chooser_dialog_new(
       "Open File",
       GTK_WINDOW(window),
@@ -249,10 +257,11 @@ static void menu_open(){
     );
     if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
         static char *filename;
-        static gssize length;
         static gchar *content;
+        static gssize length;
+        static GtkFileChooser *chooser;
 
-        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog_open);
+        chooser = GTK_FILE_CHOOSER(dialog_open);
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)){
@@ -266,7 +275,8 @@ static void menu_open(){
                     new_tab();
                 }
 
-                tabcontents tab =  get_tab_contents(-1);
+                static tabcontents tab;
+                tab =  get_tab_contents(-1);
 
                 gtk_text_buffer_set_text(
                   tab.buffer,
@@ -328,14 +338,14 @@ static void menu_save(){
 }
 
 static void find_clear_tags(){
+    static gint page;
     static GtkTextIter end;
     static GtkTextIter start;
 
-    static gint page;
     page = gtk_notebook_get_n_pages(notebook) - 1;
-
     while(page >= 0){
-        tabcontents tab = get_tab_contents(page);
+        static tabcontents tab;
+        tab = get_tab_contents(page);
         gtk_text_buffer_get_start_iter(
           tab.buffer,
           &start
@@ -417,9 +427,10 @@ static void menu_find(){
     }
 
     static GtkTextIter tabstart;
+    static tabcontents tab;
 
     find_clear_tags();
-    tabcontents tab = get_tab_contents(-1);
+    tab = get_tab_contents(-1);
     gtk_text_buffer_get_start_iter(
       tab.buffer,
       &tabstart
@@ -441,14 +452,16 @@ static void menu_findnext(){
         menu_find();
     }
 
-    tabcontents tab = get_tab_contents(-1);
     static GtkTextIter cursor;
+    static GtkTextTag *tag_found;
+    static tabcontents tab;
+
+    tab = get_tab_contents(-1);
     gtk_text_buffer_get_iter_at_mark(
       tab.buffer,
       &cursor,
       gtk_text_buffer_get_insert(tab.buffer)
     );
-    static GtkTextTag *tag_found;
     tag_found = gtk_text_tag_table_lookup(
       gtk_text_buffer_get_tag_table(tab.buffer),
       "found"
@@ -459,6 +472,7 @@ static void menu_findnext(){
     )){
         static GtkTextIter end;
         static GtkTextIter start;
+
         if(gtk_text_iter_begins_tag(
           &cursor,
           tag_found
@@ -505,14 +519,16 @@ static void menu_findprevious(){
         menu_find();
     }
 
-    tabcontents tab = get_tab_contents(-1);
     static GtkTextIter cursor;
+    static GtkTextTag *tag_found;
+    static tabcontents tab;
+
+    tab = get_tab_contents(-1);
     gtk_text_buffer_get_iter_at_mark(
       tab.buffer,
       &cursor,
       gtk_text_buffer_get_insert(tab.buffer)
     );
-    static GtkTextTag *tag_found;
     tag_found = gtk_text_tag_table_lookup(
       gtk_text_buffer_get_tag_table(tab.buffer),
       "found"
@@ -523,6 +539,7 @@ static void menu_findprevious(){
     )){
         static GtkTextIter end;
         static GtkTextIter start;
+
         if(gtk_text_iter_begins_tag(
           &cursor,
           tag_found
@@ -568,7 +585,8 @@ static void menu_findbottom(){
     }
 
     static GtkTextIter end;
-    tabcontents tab = get_tab_contents(-1);
+    static tabcontents tab;
+    tab = get_tab_contents(-1);
 
     gtk_text_buffer_get_end_iter(
       tab.buffer,
@@ -595,7 +613,8 @@ static void menu_findtop(){
     }
 
     static GtkTextIter start;
-    tabcontents tab = get_tab_contents(-1);
+    static tabcontents tab;
+    tab = get_tab_contents(-1);
 
     gtk_text_buffer_get_start_iter(
       tab.buffer,
@@ -621,24 +640,27 @@ static void menu_deleteline(){
         return;
     }
 
+    static gint endlinenumber;
+    static gint linenumber;
     static GtkTextIter end;
     static GtkTextIter endall;
-    static GtkTextIter start;
-    tabcontents tab = get_tab_contents(-1);
-
     static GtkTextIter line;
+    static GtkTextIter start;
+    static tabcontents tab;
+    tab = get_tab_contents(-1);
+
     gtk_text_buffer_get_iter_at_mark(
       tab.buffer,
       &line,
       gtk_text_buffer_get_insert(tab.buffer)
     );
-    gint linenumber = gtk_text_iter_get_line(&line);
+    linenumber = gtk_text_iter_get_line(&line);
     gtk_text_buffer_get_iter_at_line(
       tab.buffer,
       &endall,
       linenumber + 1
     );
-    gint endlinenumber = gtk_text_iter_get_line(&endall);
+    endlinenumber = gtk_text_iter_get_line(&endall);
 
     // Deleting first line.
     if(linenumber == 0){
@@ -695,6 +717,7 @@ static void menu_deleteline(){
 
 static void activate(GtkApplication* app, gpointer user_data){
     static GtkAccelGroup *accelgroup;
+    static GtkCssProvider *provider;
     static GtkWidget *box;
     static GtkWidget *findnext;
     static GtkWidget *findprevious;
@@ -732,7 +755,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     static GtkWidget *outerbox;
 
     // Setup CSS.
-    GtkCssProvider *provider = gtk_css_provider_new();
+    provider = gtk_css_provider_new();
     gtk_style_context_add_provider_for_screen(
       gdk_display_get_default_screen(gdk_display_get_default()),
       GTK_STYLE_PROVIDER(provider),
