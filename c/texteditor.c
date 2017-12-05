@@ -52,6 +52,36 @@ static struct tabcontents get_tab_contents(gint page){
     return result;
 }
 
+static undotab *undolist_getcurrentlist(){
+    static tabcontents tab;
+    tab = get_tab_contents(-1);
+
+    undotab *tabresult;
+    tabresult = g_list_nth_data(
+      undotablist,
+      tab.page
+    );
+    return tabresult;
+}
+
+static void undolist_append(){
+    /*
+    undotab *undotablists;
+    undotablists = undolist_getcurrentlist();
+
+    undolistitem *newundolistitem = g_malloc(sizeof(undolistitem));
+    newundolistitem->end = 0;
+    newundolistitem->start = 0;
+    newundolistitem->type = 0;
+    newundolistitem->value = "";
+
+    g_list_append(
+      undotablists.undolist,
+      newundolistitem
+    );
+    */
+}
+
 static void menu_undo(){
 }
 
