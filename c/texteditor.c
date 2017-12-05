@@ -1,7 +1,6 @@
 #include <gtk/gtk.h>
 
 static gchar *finding = NULL;
-static GList *undolistlist;
 static GtkNotebook *notebook;
 static GtkWidget *find_window_find;
 static GtkWidget *find_window_replace;
@@ -19,16 +18,6 @@ typedef struct tabcontents{
   GtkWidget *text_view;
   GtkTextBuffer *buffer;
 } tabcontents;
-typedef struct undolists{
-  GList *redolist;
-  GList *undolist;
-} undolists;
-typedef struct undolistitem{
-  gchar *value;
-  gint end;
-  gint start;
-  gint type;
-} undolistitem;
 
 static struct tabcontents get_tab_contents(gint page){
     if(page < 0){
@@ -52,57 +41,10 @@ static struct tabcontents get_tab_contents(gint page){
     return result;
 }
 
-static void undolist_append(GList *list){
-}
-
-static void undolist_clear(GList *list){
-    static GList *looplist;
-
-    looplist = list;
-    while(looplist){
-        g_free(list->data);
-        list = g_list_delete_link(
-          list,
-          looplist
-        );
-
-        looplist = looplist->next;
-    }
-}
-
-static void undolist_clearall(){
-    //undolist_clear(undolist);
-    //undolist_clear(redolist);
-    gtk_widget_set_sensitive(
-      menuitem_edit_undo,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_redo,
-      FALSE
-    );
-}
-
 static void menu_undo(){
-    /*
-    if(g_list_length(undolist)){
-        gtk_widget_set_sensitive(
-          menuitem_edit_redo,
-          TRUE
-        );
-    }
-    */
 }
 
 static void menu_redo(){
-    /*
-    if(g_list_length(redolist)){
-        gtk_widget_set_sensitive(
-          menuitem_edit_undo,
-          TRUE
-        );
-    }
-    */
 }
 
 static gboolean get_notebook_has_pages(){
@@ -191,12 +133,6 @@ static void new_tab(){
       page
     );
     gtk_widget_grab_focus(contents.text_view);
-
-    undolistlist = g_list_insert(
-      undolistlist,
-      NULL,
-      page
-    );
 }
 
 static void save_tab(const char *filename){
@@ -258,21 +194,6 @@ static void close_tab(){
       notebook,
       gtk_notebook_get_current_page(notebook)
     );
-
-    looplist = undolistlist;
-    pageloop = 0;
-    while(pageloop <= page){
-        if(pageloop == page){
-            g_free(undolistlist->data);
-            undolistlist = g_list_delete_link(
-              undolistlist,
-              looplist
-            );
-        }
-
-        pageloop++;
-        looplist = looplist->next;
-    }
 }
 
 static void menu_open(){
