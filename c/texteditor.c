@@ -145,9 +145,13 @@ static void new_tab(){
     );
     gtk_widget_grab_focus(contents.text_view);
 
+    undotab *newundotablist = g_malloc(sizeof(undotab));
+    newundotablist->redolist = NULL;
+    newundotablist->undolist = NULL;
+
     undotablist = g_list_insert(
       undotablist,
-      NULL,
+      newundotablist,
       page
     );
 }
