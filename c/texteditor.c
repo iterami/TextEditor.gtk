@@ -11,17 +11,21 @@ GtkWidget *menuitem_edit_redo;
 GtkWidget *menuitem_edit_undo;
 GtkWidget *window;
 
-typedef struct textscrolled textscrolled;
-struct textscrolled{
+typedef struct textscrolled{
   GtkWidget *scrolled_window;
   GtkWidget *text_view;
-};
-typedef struct tabcontents tabcontents;
-struct tabcontents{
+} textscrolled;
+typedef struct tabcontents{
   int page;
   GtkWidget *text_view;
   GtkTextBuffer *buffer;
-};
+} tabcontents;
+typedef struct undolistitem{
+  gchar *value;
+  gint end;
+  gint start;
+  gint type;
+} undolistitem;
 
 struct tabcontents get_tab_contents(gint page){
     if(page < 0){
