@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 
 static gchar *finding = NULL;
+static GList *undotablist;
 static GtkNotebook *notebook;
 static GtkWidget *find_window_find;
 static GtkWidget *find_window_replace;
@@ -18,6 +19,16 @@ typedef struct tabcontents{
   GtkWidget *text_view;
   GtkTextBuffer *buffer;
 } tabcontents;
+typedef struct undolistitem{
+  gchar *value;
+  gint end;
+  gint start;
+  gint type;
+} undolistitem;
+typedef struct undotab{
+  GList *undolist;
+  GList *redolist;
+} undotab;
 
 static struct tabcontents get_tab_contents(gint page){
     if(page < 0){
@@ -133,6 +144,12 @@ static void new_tab(){
       page
     );
     gtk_widget_grab_focus(contents.text_view);
+
+    undotablist = g_list_insert(
+      undotablist,
+      NULL,
+      page
+    );
 }
 
 static void save_tab(const char *filename){
@@ -192,8 +209,23 @@ static void close_tab(){
     page = gtk_notebook_get_current_page(notebook);
     gtk_notebook_remove_page(
       notebook,
-      gtk_notebook_get_current_page(notebook)
+      page
     );
+
+    looplist = undotablist;
+    pageloop = 0;
+    while(pageloop <= page){
+        if(pageloop == page){
+            g_free(undotablist->data);
+            undotablist = g_list_delete_link(
+              undotablist,
+              looplist
+            );
+        }
+
+        pageloop++;
+        looplist = looplist->next;
+    }
 }
 
 static void menu_open(){
