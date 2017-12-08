@@ -87,13 +87,14 @@ static GtkWidget* new_textview(){
 
 static void new_tab(){
     static gint page;
+    static GtkNotebook *tabnotebook;
     static GtkWidget *box;
     static GtkWidget *scrolled_window;
     static GtkWidget *text_view;
 
     box = gtk_box_new(
       GTK_ORIENTATION_HORIZONTAL,
-      0
+      1
     );
     text_view = new_textview();
     scrolled_window = gtk_scrolled_window_new(
@@ -116,15 +117,29 @@ static void new_tab(){
       TRUE,
       0
     );
-    /*
+    tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_append_page(
+      tabnotebook,
+      new_textview(),
+      gtk_label_new("Map")
+    );
+    gtk_notebook_append_page(
+      tabnotebook,
+      new_textview(),
+      gtk_label_new("Undo")
+    );
+    gtk_notebook_append_page(
+      tabnotebook,
+      new_textview(),
+      gtk_label_new("Info")
+    );
     gtk_box_pack_start(
       GTK_BOX(box),
-      gtk_button_new_with_label("test"),
+      GTK_WIDGET(tabnotebook),
       FALSE,
       FALSE,
       0
     );
-    */
     gtk_notebook_append_page(
       notebook,
       box,
