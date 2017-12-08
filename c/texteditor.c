@@ -1,7 +1,6 @@
 #include <gtk/gtk.h>
 
 static gchar *finding = NULL;
-static GList *undotablist;
 static GtkNotebook *notebook;
 static GtkWidget *find_window_find;
 static GtkWidget *find_window_replace;
@@ -10,25 +9,11 @@ static GtkWidget *menuitem_edit_redo;
 static GtkWidget *menuitem_edit_undo;
 static GtkWidget *window;
 
-typedef struct textscrolled{
-  GtkWidget *scrolled_window;
-  GtkWidget *text_view;
-} textscrolled;
 typedef struct tabcontents{
   int page;
   GtkWidget *text_view;
   GtkTextBuffer *buffer;
 } tabcontents;
-typedef struct undolistitem{
-  gchar *value;
-  gint end;
-  gint start;
-  gint type;
-} undolistitem;
-typedef struct undotab{
-  GList *undolist;
-  GList *redolist;
-} undotab;
 
 static struct tabcontents get_tab_contents(gint page){
     if(page < 0){
@@ -50,36 +35,6 @@ static struct tabcontents get_tab_contents(gint page){
       buffer
     };
     return result;
-}
-
-static undotab *undolist_getcurrentlist(){
-    static tabcontents tab;
-    tab = get_tab_contents(-1);
-
-    undotab *tabresult;
-    tabresult = g_list_nth_data(
-      undotablist,
-      tab.page
-    );
-    return tabresult;
-}
-
-static void undolist_append(){
-    /*
-    undotab *undotablists;
-    undotablists = undolist_getcurrentlist();
-
-    undolistitem *newundolistitem = g_malloc(sizeof(undolistitem));
-    newundolistitem->end = 0;
-    newundolistitem->start = 0;
-    newundolistitem->type = 0;
-    newundolistitem->value = "";
-
-    g_list_append(
-      undotablists.undolist,
-      newundolistitem
-    );
-    */
 }
 
 static void menu_undo(){
@@ -130,10 +85,17 @@ static GtkWidget* new_textview(){
     return text_view;
 }
 
-static textscrolled new_scrolledwindow(){
+static void new_tab(){
+    static gint page;
+    static GtkWidget *box;
     static GtkWidget *scrolled_window;
     static GtkWidget *text_view;
 
+    box = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      0
+    );
+    text_view = new_textview();
     scrolled_window = gtk_scrolled_window_new(
       NULL,
       NULL
@@ -143,27 +105,29 @@ static textscrolled new_scrolledwindow(){
       GTK_POLICY_AUTOMATIC,
       GTK_POLICY_AUTOMATIC
     );
-    text_view = new_textview();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
       text_view
     );
-
-    textscrolled result = {
+    gtk_box_pack_start(
+      GTK_BOX(box),
       scrolled_window,
-      text_view
-    };
-    return result;
-}
-
-static void new_tab(){
-    static gint page;
-    static textscrolled contents;
-
-    contents = new_scrolledwindow();
+      TRUE,
+      TRUE,
+      0
+    );
+    /*
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      gtk_button_new_with_label("test"),
+      FALSE,
+      FALSE,
+      0
+    );
+    */
     gtk_notebook_append_page(
       notebook,
-      contents.scrolled_window,
+      box,
       gtk_label_new("UNSAVED")
     );
     gtk_widget_show_all(window);
@@ -173,17 +137,7 @@ static void new_tab(){
       notebook,
       page
     );
-    gtk_widget_grab_focus(contents.text_view);
-
-    undotab *newundotablist = g_malloc(sizeof(undotab));
-    newundotablist->redolist = NULL;
-    newundotablist->undolist = NULL;
-
-    undotablist = g_list_insert(
-      undotablist,
-      newundotablist,
-      page
-    );
+    gtk_widget_grab_focus(text_view);
 }
 
 static void save_tab(const char *filename){
@@ -245,21 +199,6 @@ static void close_tab(){
       notebook,
       page
     );
-
-    looplist = undotablist;
-    pageloop = 0;
-    while(pageloop <= page){
-        if(pageloop == page){
-            g_free(undotablist->data);
-            undotablist = g_list_delete_link(
-              undotablist,
-              looplist
-            );
-        }
-
-        pageloop++;
-        looplist = looplist->next;
-    }
 }
 
 static void menu_open(){
