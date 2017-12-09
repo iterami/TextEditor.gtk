@@ -22,19 +22,30 @@ static struct tabcontents get_tab_contents(gint page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
+    static GtkNotebook *tabnotebook;
+    static GtkWidget *box;
+    static GtkWidget *redo_text_view;
     static GtkWidget *text_view;
-    static GtkTextBuffer *text_buffer;
+    static GtkWidget *undo_text_view;
 
-    text_view = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
+    box = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
       notebook,
       page
     )));
-    text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    GList *children = gtk_container_get_children(GTK_CONTAINER(box));
+    text_view = g_list_nth_data(
+      children,
+      0
+    );
+    tabnotebook = g_list_nth_data(
+      children,
+      1
+    );
 
     tabcontents result = {
       page,
       text_view,
-      text_buffer
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view))
     };
     return result;
 }
