@@ -50,20 +50,28 @@ static struct tabcontents get_tab_contents(gint page){
     return result;
 }
 
+static gboolean get_notebook_has_pages(){
+    return gtk_notebook_get_n_pages(notebook) <= 0;
+}
+
 static void menu_undo(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
     static tabcontents tab;
 
     tab = get_tab_contents(-1);
 }
 
 static void menu_redo(){
+    if(get_notebook_has_pages()){
+        return;
+    }
+
     static tabcontents tab;
 
     tab = get_tab_contents(-1);
-}
-
-static gboolean get_notebook_has_pages(){
-    return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
 static const gchar* get_current_tab_label_text(){
@@ -105,7 +113,6 @@ static GtkWidget* new_textview(){
 }
 
 static void new_tab(){
-    static gint page;
     static GtkNotebook *tabnotebook;
     static GtkWidget *scrolled_window;
     static GtkWidget *tabbox;
@@ -185,10 +192,9 @@ static void new_tab(){
     );
     gtk_widget_show_all(window);
 
-    page = gtk_notebook_get_n_pages(notebook) - 1;
     gtk_notebook_set_current_page(
       notebook,
-      page
+      gtk_notebook_get_n_pages(notebook) - 1
     );
     gtk_widget_grab_focus(text_view);
 }
@@ -243,14 +249,9 @@ static void close_tab(){
         return;
     }
 
-    static gint page;
-    static gint pageloop;
-    static GList *looplist;
-
-    page = gtk_notebook_get_current_page(notebook);
     gtk_notebook_remove_page(
       notebook,
-      page
+      gtk_notebook_get_current_page(notebook)
     );
 }
 
