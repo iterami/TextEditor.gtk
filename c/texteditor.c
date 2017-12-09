@@ -54,10 +54,10 @@ static gboolean get_notebook_has_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
-static void text_inserted(){
+static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
 }
 
-static void text_deleted(){
+static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
 }
 
 static void menu_undo(){
