@@ -54,6 +54,12 @@ static gboolean get_notebook_has_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
+static void text_inserted(){
+}
+
+static void text_deleted(){
+}
+
 static void menu_undo(){
     if(get_notebook_has_pages()){
         return;
@@ -197,6 +203,21 @@ static void new_tab(){
       gtk_notebook_get_n_pages(notebook) - 1
     );
     gtk_widget_grab_focus(text_view);
+
+    GtkTextBuffer *buffer;
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    g_signal_connect_swapped(
+      buffer,
+      "insert-text",
+      G_CALLBACK(text_inserted),
+      NULL
+    );
+    g_signal_connect_swapped(
+      buffer,
+      "delete-range",
+      G_CALLBACK(text_deleted),
+      NULL
+    );
 }
 
 static void save_tab(const char *filename){
