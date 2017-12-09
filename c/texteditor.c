@@ -107,11 +107,12 @@ static GtkWidget* new_textview(){
 static void new_tab(){
     static gint page;
     static GtkNotebook *tabnotebook;
-    static GtkWidget *box;
     static GtkWidget *scrolled_window;
+    static GtkWidget *tabbox;
     static GtkWidget *text_view;
+    static GtkWidget *undobox;
 
-    box = gtk_box_new(
+    tabbox = gtk_box_new(
       GTK_ORIENTATION_HORIZONTAL,
       1
     );
@@ -130,7 +131,7 @@ static void new_tab(){
       text_view
     );
     gtk_box_pack_start(
-      GTK_BOX(box),
+      GTK_BOX(tabbox),
       scrolled_window,
       TRUE,
       TRUE,
@@ -142,9 +143,27 @@ static void new_tab(){
       new_textview(),
       gtk_label_new("Map")
     );
+    undobox = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      1
+    );
+    gtk_box_pack_start(
+      GTK_BOX(undobox),
+      new_textview(),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(undobox),
+      new_textview(),
+      TRUE,
+      TRUE,
+      0
+    );
     gtk_notebook_append_page(
       tabnotebook,
-      new_textview(),
+      undobox,
       gtk_label_new("Undo")
     );
     gtk_notebook_append_page(
@@ -153,7 +172,7 @@ static void new_tab(){
       gtk_label_new("Info")
     );
     gtk_box_pack_start(
-      GTK_BOX(box),
+      GTK_BOX(tabbox),
       GTK_WIDGET(tabnotebook),
       FALSE,
       FALSE,
@@ -161,7 +180,7 @@ static void new_tab(){
     );
     gtk_notebook_append_page(
       notebook,
-      box,
+      tabbox,
       gtk_label_new("UNSAVED")
     );
     gtk_widget_show_all(window);
