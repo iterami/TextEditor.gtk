@@ -17,27 +17,48 @@ typedef struct tabcontents{
   GtkTextBuffer *redo_buffer;
 } tabcontents;
 
-static struct tabcontents get_tab_contents(gint page){
-    if(page < 0){
-        page = gtk_notebook_get_current_page(notebook);
-    }
-
-    static GtkNotebook *tabnotebook;
+static GList* get_tabbox_children(GtkNotebook *notebook, gint page){
     static GtkWidget *box;
-    static GtkWidget *redo_text_view;
-    static GtkWidget *text_view;
-    static GtkWidget *undo_text_view;
 
     box = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
       notebook,
       page
     )));
     GList *children = gtk_container_get_children(GTK_CONTAINER(box));
+
+    return children;
+}
+
+static struct tabcontents get_tab_contents(gint page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    static GtkTextBuffer *redo_text_view;
+    static GtkTextBuffer *undo_text_view;
+    static GtkWidget *text_view;
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
     text_view = g_list_nth_data(
       children,
       0
     );
-    tabnotebook = g_list_nth_data(
+    // Switch to sidebar notebook.
+    children = get_tabbox_children(
+      g_list_nth_data(
+        children,
+        1
+      ),
+      1
+    );
+    undo_text_view = g_list_nth_data(
+      children,
+      0
+    );
+    redo_text_view = g_list_nth_data(
       children,
       1
     );
@@ -45,7 +66,9 @@ static struct tabcontents get_tab_contents(gint page){
     tabcontents result = {
       page,
       text_view,
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view))
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view)),
+      undo_text_view,
+      redo_text_view
     };
     return result;
 }
