@@ -17,16 +17,15 @@ typedef struct tabcontents{
   GtkTextBuffer *redo_buffer;
 } tabcontents;
 
-static GList* get_tabbox_children(GtkNotebook *notebook, gint page){
-    static GtkWidget *box;
+static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page){
+    static GtkWidget *inside;
 
-    box = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
-      notebook,
+    inside = gtk_notebook_get_nth_page(
+      tabnotebook,
       page
-    )));
-    GList *children = gtk_container_get_children(GTK_CONTAINER(box));
+    );
 
-    return children;
+    return gtk_container_get_children(GTK_CONTAINER(inside));
 }
 
 static struct tabcontents get_tab_contents(gint page){
@@ -34,41 +33,35 @@ static struct tabcontents get_tab_contents(gint page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    static GtkTextBuffer *redo_text_view;
-    static GtkTextBuffer *undo_text_view;
+    static GtkTextBuffer *redo_textbuffer;
+    static GtkTextBuffer *undo_textbuffer;
+    static GtkWidget *tabundopane;
     static GtkWidget *text_view;
 
     GList *children = get_tabbox_children(
       notebook,
       page
     );
-    text_view = g_list_nth_data(
+    text_view = gtk_bin_get_child(GTK_BIN(g_list_nth_data(
       children,
       0
-    );
-    // Switch to sidebar notebook.
-    children = get_tabbox_children(
+  )));
+    tabundopane = gtk_notebook_get_nth_page(
       g_list_nth_data(
         children,
         1
       ),
       1
     );
-    undo_text_view = g_list_nth_data(
-      children,
-      0
-    );
-    redo_text_view = g_list_nth_data(
-      children,
-      1
-    );
+    undo_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane))))));
+    redo_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane))))));
 
     tabcontents result = {
       page,
       text_view,
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view)),
-      undo_text_view,
-      redo_text_view
+      undo_textbuffer,
+      redo_textbuffer
     };
     return result;
 }
@@ -78,9 +71,44 @@ static gboolean get_notebook_has_pages(){
 }
 
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
+    GtkTextIter first;
+    static tabcontents tab;
+
+    tab = get_tab_contents(-1);
+    gtk_text_buffer_get_start_iter(
+      tab.undo_buffer,
+      &first
+    );
+
+    gtk_text_buffer_insert(
+      tab.undo_buffer,
+      &first,
+      value,
+      -1
+    );
 }
 
 static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
+    GtkTextIter first;
+    static tabcontents tab;
+
+    tab = get_tab_contents(-1);
+    gtk_text_buffer_get_start_iter(
+      tab.undo_buffer,
+      &first
+    );
+
+    gtk_text_buffer_insert(
+      tab.undo_buffer,
+      &first,
+      gtk_text_buffer_get_text(
+        buffer,
+        start,
+        end,
+        TRUE
+      ),
+      -1
+    );
 }
 
 static void menu_undo(){
@@ -141,18 +169,9 @@ static GtkWidget* new_textview(){
     return text_view;
 }
 
-static void new_tab(){
-    static GtkNotebook *tabnotebook;
-    static GtkWidget *scrolled_window;
-    static GtkWidget *tabbox;
-    static GtkWidget *text_view;
-    static GtkWidget *undobox;
+static GtkWidget* new_scrolled_window(){
+    GtkWidget *scrolled_window;
 
-    tabbox = gtk_box_new(
-      GTK_ORIENTATION_HORIZONTAL,
-      1
-    );
-    text_view = new_textview();
     scrolled_window = gtk_scrolled_window_new(
       NULL,
       NULL
@@ -162,6 +181,25 @@ static void new_tab(){
       GTK_POLICY_AUTOMATIC,
       GTK_POLICY_AUTOMATIC
     );
+
+    return scrolled_window;
+}
+
+static void new_tab(){
+    static GtkNotebook *tabnotebook;
+    static GtkWidget *scrolled_window_redo;
+    static GtkWidget *scrolled_window_undo;
+    static GtkWidget *scrolled_window;
+    static GtkWidget *tabbox;
+    static GtkWidget *text_view;
+    static GtkWidget *undopaned;
+
+    tabbox = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      1
+    );
+    text_view = new_textview();
+    scrolled_window = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
       text_view
@@ -179,27 +217,32 @@ static void new_tab(){
       new_textview(),
       gtk_label_new("Map")
     );
-    undobox = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      1
+    undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    scrolled_window_undo = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_undo),
+      new_textview()
     );
-    gtk_box_pack_start(
-      GTK_BOX(undobox),
-      new_textview(),
+    gtk_paned_pack1(
+      GTK_PANED(undopaned),
+      scrolled_window_undo,
       TRUE,
-      TRUE,
-      0
+      TRUE
     );
-    gtk_box_pack_start(
-      GTK_BOX(undobox),
-      new_textview(),
+    scrolled_window_redo = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_redo),
+      new_textview()
+    );
+    gtk_paned_pack2(
+      GTK_PANED(undopaned),
+      scrolled_window_redo,
       TRUE,
-      TRUE,
-      0
+      TRUE
     );
     gtk_notebook_append_page(
       tabnotebook,
-      undobox,
+      undopaned,
       gtk_label_new("Undo")
     );
     gtk_notebook_append_page(
