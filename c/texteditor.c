@@ -43,7 +43,7 @@ static struct tabcontents get_tab_contents(gint page){
     text_view = gtk_bin_get_child(GTK_BIN(g_list_nth_data(
       children,
       0
-  )));
+    )));
     tabundopane = gtk_notebook_get_nth_page(
       g_list_nth_data(
         children,
