@@ -102,7 +102,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
       tab.undo_buffer,
       &first,
       gtk_text_buffer_get_text(
-        buffer,
+        tab.text_buffer,
         start,
         end,
         TRUE
