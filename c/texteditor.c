@@ -77,7 +77,7 @@ static char* undoredo_entry(gchar *value, gboolean inserted){
         length++;
     }
 
-    printf("%s\n",g_locale_to_utf8(value,length,NULL,NULL,NULL));
+    value = g_locale_to_utf8(value,length,NULL,NULL,NULL);
 
     char *entry = g_malloc(length + 6);
 
