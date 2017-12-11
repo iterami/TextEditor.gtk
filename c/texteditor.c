@@ -5,8 +5,6 @@ static GtkNotebook *notebook;
 static GtkWidget *find_window_find;
 static GtkWidget *find_window_replace;
 static GtkWidget *find_window;
-static GtkWidget *menuitem_edit_redo;
-static GtkWidget *menuitem_edit_undo;
 static GtkWidget *window;
 
 typedef struct tabcontents{
@@ -869,8 +867,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     static GtkWidget *menuitem_edit_deletenextword;
     static GtkWidget *menuitem_edit_deletepreviousword;
     static GtkWidget *menuitem_edit_paste;
+    static GtkWidget *menuitem_edit_redo;
     static GtkWidget *menuitem_edit_selectall;
     static GtkWidget *menuitem_edit_sort;
+    static GtkWidget *menuitem_edit_undo;
     static GtkWidget *menuitem_edit;
     static GtkWidget *menuitem_file_closetab;
     static GtkWidget *menuitem_file_newtab;
@@ -1551,14 +1551,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     // Disable nonfunctional menu items.
     gtk_widget_set_sensitive(
       menuitem_file_print,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_undo,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_redo,
       FALSE
     );
     gtk_widget_set_sensitive(
