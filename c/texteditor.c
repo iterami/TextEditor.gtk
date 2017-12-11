@@ -70,6 +70,19 @@ static gboolean get_notebook_has_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
+static char* undoredo_entry(gchar *value){
+    char *entry = g_malloc(7);
+
+    entry[0] = '"';
+    entry[1] = *value;
+    entry[2] = '"';
+    entry[3] = ',';
+    entry[4] = '\r';
+    entry[5] = '\n';
+
+    return entry;
+}
+
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
     GtkTextIter first;
     static tabcontents tab;
@@ -80,12 +93,14 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
       &first
     );
 
+    char *entry = undoredo_entry(value);
     gtk_text_buffer_insert(
       tab.undo_buffer,
       &first,
-      value,
+      entry,
       -1
     );
+    g_free(entry);
 }
 
 static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
