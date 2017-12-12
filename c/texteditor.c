@@ -60,7 +60,7 @@ static struct tabcontents get_tab_contents(gint page){
     return result;
 }
 
-static gboolean get_notebook_has_pages(){
+static gboolean get_notebook_no_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
@@ -153,7 +153,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
 }
 
 static void menu_undo(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -163,7 +163,7 @@ static void menu_undo(){
 }
 
 static void menu_redo(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -373,7 +373,7 @@ static void save_tab(const char *filename){
 }
 
 static void close_tab(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -411,7 +411,7 @@ static void menu_open(){
               length,
               NULL
             )){
-                if(get_notebook_has_pages()
+                if(get_notebook_no_pages()
                   || !check_equals_unsaved()){
                     new_tab();
                 }
@@ -443,7 +443,7 @@ static void menu_open(){
 }
 
 static void menu_saveas(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -466,7 +466,7 @@ static void menu_saveas(){
 }
 
 static void menu_save(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -562,6 +562,9 @@ static void menu_find(){
     gtk_widget_show_all(find_window);
 
     finding = get_find_find();
+    if(get_notebook_no_pages()){
+        return;
+    }
     if(finding
       && finding[0] == '\0'){
         return;
@@ -584,7 +587,7 @@ static void menu_find(){
 }
 
 static void menu_findnext(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -651,7 +654,7 @@ static void menu_findnext(){
 }
 
 static void menu_findprevious(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -721,7 +724,7 @@ static void menu_findreplaceall(){
 }
 
 static void menu_findbottom(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -749,7 +752,7 @@ static void menu_findbottom(){
 }
 
 static void menu_findtop(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
@@ -777,7 +780,7 @@ static void menu_findtop(){
 }
 
 static void menu_deleteline(){
-    if(get_notebook_has_pages()){
+    if(get_notebook_no_pages()){
         return;
     }
 
