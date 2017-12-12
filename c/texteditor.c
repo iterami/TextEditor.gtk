@@ -16,14 +16,10 @@ typedef struct tabcontents{
 } tabcontents;
 
 static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page){
-    static GtkWidget *inside;
-
-    inside = gtk_notebook_get_nth_page(
+    return gtk_container_get_children(GTK_CONTAINER(gtk_notebook_get_nth_page(
       tabnotebook,
       page
-    );
-
-    return gtk_container_get_children(GTK_CONTAINER(inside));
+    )));
 }
 
 static struct tabcontents get_tab_contents(gint page){
@@ -68,16 +64,25 @@ static gboolean get_notebook_has_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
-static char* undoredo_entry(gchar *value, gboolean inserted){
+static gchar* undoredo_entry(gchar *value, gboolean inserted){
     int length = 0;
     int lengthloop = 0;
     while(value[length] != '\0'){
+        if(value[length] == '"'){
+            value[length] = '\"';
+        }
         length++;
     }
 
-    value = g_locale_to_utf8(value,length,NULL,NULL,NULL);
+    value = g_locale_to_utf8(
+      value,
+      length,
+      NULL,
+      NULL,
+      NULL
+    );
 
-    char *entry = g_malloc(length + 6);
+    gchar *entry = g_malloc(length + 6);
 
     entry[0] = '"';
     while(lengthloop < length){
