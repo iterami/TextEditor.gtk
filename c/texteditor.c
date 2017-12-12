@@ -64,7 +64,7 @@ static gboolean get_notebook_no_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
-static gchar* undoredo_entry(gchar *value, gboolean inserted){
+static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line){
     int length = 0;
     int lengthloop = 0;
     while(value[length] != '\0'){
@@ -82,8 +82,9 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted){
       NULL
     );
 
-    gchar *entry = g_malloc(length + 6);
+    gchar *entry = g_malloc(sizeof(char) * (length + 7));
 
+    // String.
     entry[0] = '"';
     while(lengthloop < length){
         entry[lengthloop + 1] = value[lengthloop];
@@ -91,12 +92,28 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted){
     }
     entry[length + 1] = '"';
     entry[length + 2] = ',';
+
+    // 1 == Inserted, 0 == Deleted.
     if(inserted){
         entry[length + 3] = '1';
     }else{
         entry[length + 3] = '0';
     }
     entry[length + 4] = ',';
+
+    // Line Number.
+    entry[length + 5] = ',';
+
+    // Position Number.
+    entry[length + 6] = ',';
+
+    entry = g_locale_to_utf8(
+      entry,
+      length + 7,
+      NULL,
+      NULL,
+      NULL
+    );
 
     return entry;
 }
@@ -113,7 +130,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
 
     char *entry = undoredo_entry(
       value,
-      TRUE
+      TRUE,
+      gtk_text_iter_get_line(iter)
     );
     gtk_text_buffer_insert(
       tab.undo_buffer,
@@ -141,7 +159,8 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
         end,
         TRUE
       ),
-      FALSE
+      FALSE,
+      gtk_text_iter_get_line(start)
     );
     gtk_text_buffer_insert(
       tab.undo_buffer,
