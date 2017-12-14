@@ -64,52 +64,72 @@ static gboolean get_notebook_no_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
-static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line){
+static int get_string_length(gchar *string){
     int length = 0;
-    int lengthloop = 0;
-    while(value[length] != '\0'){
-        if(value[length] == '"'){
-            value[length] = '\"';
+
+    while(string[length] != '\0'){
+        if(string[length] == '"'){
+            string[length] = '\"';
         }
         length++;
     }
 
+    return length;
+}
+
+static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line){
+    char linestring[10];
+    int length_line = 0;
+    int length_value = get_string_length(value);
+
     value = g_locale_to_utf8(
       value,
-      length,
+      length_value,
       NULL,
       NULL,
       NULL
     );
+    sprintf(
+      linestring,
+      "%i",
+      line
+    );
+    length_line = get_string_length(linestring);
 
-    gchar *entry = g_malloc(sizeof(char) * (length + 7));
+    gchar *entry = g_malloc(length_value + length_line);
 
     // String.
     entry[0] = '"';
-    while(lengthloop < length){
-        entry[lengthloop + 1] = value[lengthloop];
-        lengthloop++;
+    int loopi = 0;
+    while(loopi < length_value){
+        entry[loopi + 1] = value[loopi];
+        loopi++;
     }
-    entry[length + 1] = '"';
-    entry[length + 2] = ',';
+    entry[length_value + 1] = '"';
+    entry[length_value + 2] = ',';
 
     // 1 == Inserted, 0 == Deleted.
     if(inserted){
-        entry[length + 3] = '1';
+        entry[length_value + 3] = '1';
     }else{
-        entry[length + 3] = '0';
+        entry[length_value + 3] = '0';
     }
-    entry[length + 4] = ',';
+    entry[length_value + 4] = ',';
 
     // Line Number.
-    entry[length + 5] = ',';
+    loopi = 0;
+    while(loopi < length_line){
+        entry[length_value + loopi + 5] = linestring[loopi];
+        loopi++;
+    }
+    entry[length_value + length_line + 5] = ',';
 
     // Position Number.
-    entry[length + 6] = ',';
+    entry[length_value + length_line + 6] = ',';
 
     entry = g_locale_to_utf8(
       entry,
-      length + 7,
+      length_value + length_line + 7,
       NULL,
       NULL,
       NULL
