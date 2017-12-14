@@ -65,31 +65,31 @@ static gboolean get_notebook_no_pages(){
 }
 
 static int get_int_length(gint integer){
-    if(integer > 1000000000){
+    if(integer > 999999999){
         return 10;
 
-    }else if(integer > 100000000){
+    }else if(integer > 99999999){
         return 9;
 
-    }else if(integer > 10000000){
+    }else if(integer > 9999999){
         return 8;
 
-    }else if(integer > 1000000){
+    }else if(integer > 999999){
         return 7;
 
-    }else if(integer > 100000){
+    }else if(integer > 99999){
         return 6;
 
-    }else if(integer > 10000){
+    }else if(integer > 9999){
         return 5;
 
-    }else if(integer > 1000){
+    }else if(integer > 999){
         return 4;
 
-    }else if(integer > 100){
+    }else if(integer > 99){
         return 3;
 
-    }else if(integer > 10){
+    }else if(integer > 9){
         return 2;
     }
 
@@ -191,7 +191,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
       value,
       TRUE,
       gtk_text_iter_get_line(iter),
-      0//gtk_text_iter_get_line_offset(iter)
+      gtk_text_iter_get_line_offset(iter)
     );
     gtk_text_buffer_insert(
       tab.undo_buffer,
@@ -221,7 +221,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
       ),
       FALSE,
       gtk_text_iter_get_line(start),
-      0//gtk_text_iter_get_line_offset(start)
+      gtk_text_iter_get_line_offset(start)
     );
     gtk_text_buffer_insert(
       tab.undo_buffer,
