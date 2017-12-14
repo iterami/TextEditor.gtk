@@ -64,23 +64,52 @@ static gboolean get_notebook_no_pages(){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
-static int get_string_length(gchar *string){
-    int length = 0;
+static int get_int_length(gint integer){
+    if(integer > 1000000000){
+        return 10;
 
-    while(string[length] != '\0'){
-        if(string[length] == '"'){
-            string[length] = '\"';
-        }
-        length++;
+    }else if(integer > 100000000){
+        return 9;
+
+    }else if(integer > 10000000){
+        return 8;
+
+    }else if(integer > 1000000){
+        return 7;
+
+    }else if(integer > 100000){
+        return 6;
+
+    }else if(integer > 10000){
+        return 5;
+
+    }else if(integer > 1000){
+        return 4;
+
+    }else if(integer > 100){
+        return 3;
+
+    }else if(integer > 10){
+        return 2;
     }
 
-    return length;
+    return 1;
 }
 
-static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line){
-    char linestring[10];
-    int length_line = 0;
-    int length_value = get_string_length(value);
+static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
+    gint length_line = get_int_length(line);
+    gint length_lineoffset = get_int_length(lineoffset);
+    gint length_value = 0;
+
+    char linestring[length_line];
+    char lineoffsetstring[length_lineoffset];
+
+    while(value[length_value] != '\0'){
+        if(value[length_value] == '"'){
+            value[length_value] = '\"';
+        }
+        length_value++;
+    }
 
     value = g_locale_to_utf8(
       value,
@@ -94,13 +123,17 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line){
       "%i",
       line
     );
-    length_line = get_string_length(linestring);
+    sprintf(
+      lineoffsetstring,
+      "%i",
+      lineoffset
+    );
 
-    gchar *entry = g_malloc(length_value + length_line);
+    gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 8);
 
     // String.
     entry[0] = '"';
-    int loopi = 0;
+    gint loopi = 0;
     while(loopi < length_value){
         entry[loopi + 1] = value[loopi];
         loopi++;
@@ -125,11 +158,17 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line){
     entry[length_value + length_line + 5] = ',';
 
     // Position Number.
-    entry[length_value + length_line + 6] = ',';
+    loopi = 0;
+    while(loopi < length_lineoffset){
+        entry[length_value + length_line + loopi + 6] = lineoffsetstring[loopi];
+        loopi++;
+    }
+    entry[length_value + length_line + length_lineoffset + 6] = ',';
+    entry[length_value + length_line + length_lineoffset + 7] = '\0';
 
     entry = g_locale_to_utf8(
       entry,
-      length_value + length_line + 7,
+      length_value + length_line + length_lineoffset + 7,
       NULL,
       NULL,
       NULL
@@ -151,7 +190,8 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
     char *entry = undoredo_entry(
       value,
       TRUE,
-      gtk_text_iter_get_line(iter)
+      gtk_text_iter_get_line(iter),
+      0//gtk_text_iter_get_line_offset(iter)
     );
     gtk_text_buffer_insert(
       tab.undo_buffer,
@@ -180,7 +220,8 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
         TRUE
       ),
       FALSE,
-      gtk_text_iter_get_line(start)
+      gtk_text_iter_get_line(start),
+      0//gtk_text_iter_get_line_offset(start)
     );
     gtk_text_buffer_insert(
       tab.undo_buffer,
