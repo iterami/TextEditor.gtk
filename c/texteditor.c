@@ -129,7 +129,7 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
       lineoffset
     );
 
-    gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 8);
+    gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 9);
 
     // String.
     entry[0] = '"';
@@ -164,11 +164,12 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
         loopi++;
     }
     entry[length_value + length_line + length_lineoffset + 6] = ',';
-    entry[length_value + length_line + length_lineoffset + 7] = '\0';
+    entry[length_value + length_line + length_lineoffset + 7] = '\n';
+    entry[length_value + length_line + length_lineoffset + 8] = '\0';
 
     entry = g_locale_to_utf8(
       entry,
-      length_value + length_line + length_lineoffset + 7,
+      length_value + length_line + length_lineoffset + 8,
       NULL,
       NULL,
       NULL
