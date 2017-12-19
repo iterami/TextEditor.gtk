@@ -129,47 +129,44 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
       lineoffset
     );
 
-    gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 9);
-
-    // String.
-    entry[0] = '"';
-    gint loopi = 0;
-    while(loopi < length_value){
-        entry[loopi + 1] = value[loopi];
-        loopi++;
-    }
-    entry[length_value + 1] = '"';
-    entry[length_value + 2] = ',';
+    gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 6);
 
     // 1 == Inserted, 0 == Deleted.
     if(inserted){
-        entry[length_value + 3] = '1';
+        entry[0] = '1';
     }else{
-        entry[length_value + 3] = '0';
+        entry[0] = '0';
     }
-    entry[length_value + 4] = ',';
+    entry[1] = ',';
 
     // Line Number.
-    loopi = 0;
+    gint loopi = 0;
     while(loopi < length_line){
-        entry[length_value + loopi + 5] = linestring[loopi];
+        entry[loopi + 2] = linestring[loopi];
         loopi++;
     }
-    entry[length_value + length_line + 5] = ',';
+    entry[length_line + 2] = ',';
 
     // Position Number.
     loopi = 0;
     while(loopi < length_lineoffset){
-        entry[length_value + length_line + loopi + 6] = lineoffsetstring[loopi];
+        entry[length_line + loopi + 3] = lineoffsetstring[loopi];
         loopi++;
     }
-    entry[length_value + length_line + length_lineoffset + 6] = ',';
-    entry[length_value + length_line + length_lineoffset + 7] = '\n';
-    entry[length_value + length_line + length_lineoffset + 8] = '\0';
+    entry[length_line + length_lineoffset + 3] = ',';
+
+    // String.
+    loopi = 0;
+    while(loopi < length_value){
+        entry[length_line + length_lineoffset + loopi + 4] = value[loopi];
+        loopi++;
+    }
+    entry[length_value + length_line + length_lineoffset + 4] = '\n';
+    entry[length_value + length_line + length_lineoffset + 5] = '\0';
 
     entry = g_locale_to_utf8(
       entry,
-      length_value + length_line + length_lineoffset + 8,
+      length_value + length_line + length_lineoffset + 5,
       NULL,
       NULL,
       NULL
