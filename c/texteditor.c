@@ -105,9 +105,6 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     char lineoffsetstring[length_lineoffset];
 
     while(value[length_value] != '\0'){
-        if(value[length_value] == '"'){
-            value[length_value] = '\"';
-        }
         length_value++;
     }
 
@@ -118,6 +115,16 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
       NULL,
       NULL
     );
+    gchar newvalue[length_value];
+    gint loopi = 0;
+    while(loopi < length_line){
+        newvalue[loopi] = value[loopi];
+        if(newvalue[loopi] == '\n'){
+            //newvalue[loopi] = 'H';
+        }
+        loopi++;
+    }
+
     sprintf(
       linestring,
       "%i",
@@ -140,7 +147,7 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     entry[1] = ',';
 
     // Line Number.
-    gint loopi = 0;
+    loopi = 0;
     while(loopi < length_line){
         entry[loopi + 2] = linestring[loopi];
         loopi++;
@@ -158,7 +165,7 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     // String.
     loopi = 0;
     while(loopi < length_value){
-        entry[length_line + length_lineoffset + loopi + 4] = value[loopi];
+        entry[length_line + length_lineoffset + loopi + 4] = newvalue[loopi];
         loopi++;
     }
     entry[length_value + length_line + length_lineoffset + 4] = '\n';
