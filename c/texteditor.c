@@ -120,7 +120,7 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     while(loopi < length_line){
         newvalue[loopi] = value[loopi];
         if(newvalue[loopi] == '\n'){
-            //newvalue[loopi] = 'H';
+            newvalue[loopi] = 30;
         }
         loopi++;
     }
@@ -242,9 +242,37 @@ static void menu_undo(){
         return;
     }
 
+    static GtkTextIter redostart;
+    static GtkTextIter undoend;
+    static GtkTextIter undostart;
     static tabcontents tab;
 
     tab = get_tab_contents(-1);
+    gtk_text_buffer_get_start_iter(
+      tab.redo_buffer,
+      &redostart
+    );
+    gtk_text_buffer_get_start_iter(
+      tab.undo_buffer,
+      &undostart
+    );
+    gtk_text_buffer_get_iter_at_line(
+      tab.undo_buffer,
+      &undoend,
+      1
+    );
+
+    gtk_text_buffer_insert(
+      tab.redo_buffer,
+      &redostart,
+      gtk_text_buffer_get_text(
+        tab.undo_buffer,
+        &undostart,
+        &undoend,
+        TRUE
+      ),
+      -1
+    );
 }
 
 static void menu_redo(){
@@ -252,9 +280,37 @@ static void menu_redo(){
         return;
     }
 
+    static GtkTextIter redoend;
+    static GtkTextIter redostart;
+    static GtkTextIter undostart;
     static tabcontents tab;
 
     tab = get_tab_contents(-1);
+    gtk_text_buffer_get_start_iter(
+      tab.redo_buffer,
+      &redostart
+    );
+    gtk_text_buffer_get_iter_at_line(
+      tab.redo_buffer,
+      &redoend,
+      1
+    );
+    gtk_text_buffer_get_start_iter(
+      tab.undo_buffer,
+      &undostart
+    );
+
+    gtk_text_buffer_insert(
+      tab.undo_buffer,
+      &undostart,
+      gtk_text_buffer_get_text(
+        tab.redo_buffer,
+        &redostart,
+        &redoend,
+        TRUE
+      ),
+      -1
+    );
 }
 
 static const gchar* get_current_tab_label_text(){
