@@ -117,7 +117,7 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     );
     gchar newvalue[length_value];
     gint loopi = 0;
-    while(loopi < length_line){
+    while(loopi < length_value){
         newvalue[loopi] = value[loopi];
         if(newvalue[loopi] == '\n'){
             newvalue[loopi] = 30;
