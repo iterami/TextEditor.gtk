@@ -205,6 +205,22 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
       -1
     );
     g_free(entry);
+
+    GtkTextIter redoend;
+    GtkTextIter redostart;
+    gtk_text_buffer_get_start_iter(
+      tab.redo_buffer,
+      &redostart
+    );
+    gtk_text_buffer_get_end_iter(
+      tab.redo_buffer,
+      &redoend
+    );
+    gtk_text_buffer_delete(
+      tab.redo_buffer,
+      &redostart,
+      &redoend
+    );
 }
 
 static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
@@ -235,6 +251,22 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
       -1
     );
     g_free(entry);
+
+    GtkTextIter redoend;
+    GtkTextIter redostart;
+    gtk_text_buffer_get_start_iter(
+      tab.redo_buffer,
+      &redostart
+    );
+    gtk_text_buffer_get_end_iter(
+      tab.redo_buffer,
+      &redoend
+    );
+    gtk_text_buffer_delete(
+      tab.redo_buffer,
+      &redostart,
+      &redoend
+    );
 }
 
 static void menu_undo(){
