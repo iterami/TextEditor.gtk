@@ -305,6 +305,11 @@ static void menu_undo(){
       ),
       -1
     );
+    gtk_text_buffer_delete(
+      tab.undo_buffer,
+      &undostart,
+      &undoend
+    );
 }
 
 static void menu_redo(){
@@ -342,6 +347,11 @@ static void menu_redo(){
         TRUE
       ),
       -1
+    );
+    gtk_text_buffer_delete(
+      tab.redo_buffer,
+      &redostart,
+      &redoend
     );
 }
 
