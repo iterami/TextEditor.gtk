@@ -101,8 +101,8 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     gint length_lineoffset = get_int_length(lineoffset);
     gint length_value = 0;
 
-    char linestring[length_line];
     char lineoffsetstring[length_lineoffset];
+    char linestring[length_line];
 
     while(value[length_value] != '\0'){
         length_value++;
@@ -302,6 +302,16 @@ static void menu_undo(){
       TRUE
     );
 
+    gint loopi = 0;
+    gint delimiteri = 0;
+    while(entry[loopi] != '\0'){
+        if(entry[loopi] == ','
+          && delimiteri < 2){
+            delimiteri++;
+        }
+        loopi++;
+    }
+
     gtk_text_buffer_insert(
       tab.redo_buffer,
       &redostart,
@@ -347,6 +357,16 @@ static void menu_redo(){
       &redoend,
       TRUE
     );
+
+    gint loopi = 0;
+    gint delimiteri = 0;
+    while(entry[loopi] != '\0'){
+        if(entry[loopi] == ','
+          && delimiteri < 2){
+            delimiteri++;
+        }
+        loopi++;
+    }
 
     gtk_text_buffer_insert(
       tab.undo_buffer,
