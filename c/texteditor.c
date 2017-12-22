@@ -341,6 +341,20 @@ static void menu_undo(){
     }
     lineoffset[length_lineoffset] = '\0';
 
+    loopi = length_line + length_lineoffset + 4;
+    int length_value = 0;
+    while(entry[loopi] != '\n'){
+        length_value++;
+        loopi++;
+    }
+    gchar value[length_value + 1];
+    loopi = 0;
+    while(loopi < length_value){
+        value[loopi] = entry[loopi + length_line + length_lineoffset + 4];
+        loopi++;
+    }
+    value[length_value] = '\0';
+
     gtk_text_buffer_insert(
       tab.redo_buffer,
       &redostart,
@@ -425,6 +439,20 @@ static void menu_redo(){
         loopi++;
     }
     lineoffset[length_lineoffset] = '\0';
+
+    loopi = length_line + length_lineoffset + 4;
+    int length_value = 0;
+    while(entry[loopi] != '\n'){
+        length_value++;
+        loopi++;
+    }
+    gchar value[length_value + 1];
+    loopi = 0;
+    while(loopi < length_value){
+        value[loopi] = entry[loopi + length_line + length_lineoffset + 4];
+        loopi++;
+    }
+    value[length_value] = '\0';
 
     gtk_text_buffer_insert(
       tab.undo_buffer,
