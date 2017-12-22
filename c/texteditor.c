@@ -319,13 +319,13 @@ static void menu_undo(){
         length_line++;
         loopi++;
     }
-    gchar line[length_line + 1];
+    gint line = 0;
     loopi = 0;
     while(loopi < length_line){
-        line[loopi] = entry[loopi + 2];
+        line *= 10;
+        line += entry[loopi + 2] - '0';
         loopi++;
     }
-    line[length_line] = '\0';
 
     loopi = length_line + 3;
     int length_lineoffset = 0;
@@ -333,13 +333,13 @@ static void menu_undo(){
         length_lineoffset++;
         loopi++;
     }
-    gchar lineoffset[length_lineoffset + 1];
+    gint lineoffset = 0;
     loopi = 0;
     while(loopi < length_lineoffset){
-        lineoffset[loopi] = entry[loopi + length_line + 3];
+        lineoffset *= 10;
+        lineoffset += entry[loopi + length_line + 3] - '0';
         loopi++;
     }
-    lineoffset[length_lineoffset] = '\0';
 
     loopi = length_line + length_lineoffset + 4;
     int length_value = 0;
@@ -418,13 +418,13 @@ static void menu_redo(){
         length_line++;
         loopi++;
     }
-    gchar line[length_line + 1];
+    gint line = 0;
     loopi = 0;
     while(loopi < length_line){
-        line[loopi] = entry[loopi + 2];
+        line *= 10;
+        line += entry[loopi + 2] - '0';
         loopi++;
     }
-    line[length_line] = '\0';
 
     loopi = length_line + 3;
     int length_lineoffset = 0;
@@ -432,13 +432,13 @@ static void menu_redo(){
         length_lineoffset++;
         loopi++;
     }
-    gchar lineoffset[length_lineoffset + 1];
+    gint lineoffset = 0;
     loopi = 0;
     while(loopi < length_lineoffset){
-        lineoffset[loopi] = entry[loopi + length_line + 3];
+        lineoffset *= 10;
+        lineoffset += entry[loopi + length_line + 3] - '0';
         loopi++;
     }
-    lineoffset[length_lineoffset] = '\0';
 
     loopi = length_line + length_lineoffset + 4;
     int length_value = 0;
