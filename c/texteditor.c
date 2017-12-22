@@ -400,19 +400,34 @@ static void menu_undo(){
 
     // Repeat entry.
     block_insertdelete_signals(tab.text_buffer);
+    gtk_text_buffer_get_iter_at_line_offset(
+      tab.text_buffer,
+      &selectstart,
+      line,
+      lineoffset
+    );
+    gtk_text_buffer_place_cursor(
+      tab.text_buffer,
+      &selectstart
+    );
     if(inserted){
-
-    }else{
-        gtk_text_buffer_get_iter_at_line_offset(
+        selectend = selectstart;
+        gtk_text_iter_forward_chars(
+           &selectend,
+           length_value
+        );
+        gtk_text_buffer_select_range(
           tab.text_buffer,
           &selectstart,
-          line,
-          lineoffset
+          &selectend
         );
-        gtk_text_buffer_place_cursor(
+        gtk_text_buffer_delete_selection(
           tab.text_buffer,
-          &selectstart
+          FALSE,
+          TRUE
         );
+
+    }else{
         gtk_text_buffer_insert(
           tab.text_buffer,
           &selectstart,
@@ -528,17 +543,17 @@ static void menu_redo(){
 
     // Repeat entry.
     block_insertdelete_signals(tab.text_buffer);
+    gtk_text_buffer_get_iter_at_line_offset(
+      tab.text_buffer,
+      &selectstart,
+      line,
+      lineoffset
+    );
+    gtk_text_buffer_place_cursor(
+      tab.text_buffer,
+      &selectstart
+    );
     if(inserted){
-        gtk_text_buffer_get_iter_at_line_offset(
-          tab.text_buffer,
-          &selectstart,
-          line,
-          lineoffset
-        );
-        gtk_text_buffer_place_cursor(
-          tab.text_buffer,
-          &selectstart
-        );
         gtk_text_buffer_insert(
           tab.text_buffer,
           &selectstart,
@@ -547,6 +562,21 @@ static void menu_redo(){
         );
 
     }else{
+        selectend = selectstart;
+        gtk_text_iter_forward_chars(
+           &selectend,
+           length_value
+        );
+        gtk_text_buffer_select_range(
+          tab.text_buffer,
+          &selectstart,
+          &selectend
+        );
+        gtk_text_buffer_delete_selection(
+          tab.text_buffer,
+          FALSE,
+          TRUE
+        );
     }
     unblock_insertdelete_signals(tab.text_buffer);
 }
