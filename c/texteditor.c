@@ -17,9 +17,9 @@ typedef struct tabcontents{
 
 typedef struct undoentry{
   gchar *entry;
-  gint length_value;
-  gint length_line;
-  gint length_lineoffset;
+  gint valueoffset;
+  gint line;
+  gint lineoffset;
 } undoentry;
 
 static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page){
@@ -188,9 +188,9 @@ static struct undoentry undoredo_entry(gchar *value, gboolean inserted, gint lin
 
     undoentry result = {
       entry,
-      length_value,
-      length_line,
-      length_lineoffset
+      length_line + length_lineoffset + 4,
+      line,
+      lineoffset
     };
     return result;
 }
