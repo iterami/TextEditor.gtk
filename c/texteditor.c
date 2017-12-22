@@ -15,6 +15,13 @@ typedef struct tabcontents{
   GtkTextBuffer *redo_buffer;
 } tabcontents;
 
+typedef struct undoentry{
+  gchar *entry;
+  gint length_value;
+  gint length_line;
+  gint length_lineoffset;
+} undoentry;
+
 static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page){
     return gtk_container_get_children(GTK_CONTAINER(gtk_notebook_get_nth_page(
       tabnotebook,
@@ -96,7 +103,7 @@ static int get_int_length(gint integer){
     return 1;
 }
 
-static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
+static struct undoentry undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
     gint length_line = get_int_length(line);
     gint length_lineoffset = get_int_length(lineoffset);
     gint length_value = 0;
@@ -179,12 +186,19 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
       NULL
     );
 
-    return entry;
+    undoentry result = {
+      entry,
+      length_value,
+      length_line,
+      length_lineoffset
+    };
+    return result;
 }
 
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
     GtkTextIter first;
     static tabcontents tab;
+    static undoentry entry;
 
     tab = get_tab_contents(-1);
     gtk_text_buffer_get_start_iter(
@@ -192,7 +206,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
       &first
     );
 
-    char *entry = undoredo_entry(
+    entry = undoredo_entry(
       value,
       TRUE,
       gtk_text_iter_get_line(iter),
@@ -201,10 +215,10 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
     gtk_text_buffer_insert(
       tab.undo_buffer,
       &first,
-      entry,
+      entry.entry,
       -1
     );
-    g_free(entry);
+    g_free(entry.entry);
 
     GtkTextIter redoend;
     GtkTextIter redostart;
@@ -226,6 +240,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
 static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
     GtkTextIter first;
     static tabcontents tab;
+    static undoentry entry;
 
     tab = get_tab_contents(-1);
     gtk_text_buffer_get_start_iter(
@@ -233,7 +248,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
       &first
     );
 
-    char *entry = undoredo_entry(
+    entry = undoredo_entry(
       gtk_text_buffer_get_text(
         tab.text_buffer,
         start,
@@ -247,10 +262,10 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
     gtk_text_buffer_insert(
       tab.undo_buffer,
       &first,
-      entry,
+      entry.entry,
       -1
     );
-    g_free(entry);
+    g_free(entry.entry);
 
     GtkTextIter redoend;
     GtkTextIter redostart;
@@ -302,16 +317,6 @@ static void menu_undo(){
       TRUE
     );
 
-    gint loopi = 0;
-    gint delimiteri = 0;
-    while(entry[loopi] != '\0'){
-        if(entry[loopi] == ','
-          && delimiteri < 2){
-            delimiteri++;
-        }
-        loopi++;
-    }
-
     gtk_text_buffer_insert(
       tab.redo_buffer,
       &redostart,
@@ -357,16 +362,6 @@ static void menu_redo(){
       &redoend,
       TRUE
     );
-
-    gint loopi = 0;
-    gint delimiteri = 0;
-    while(entry[loopi] != '\0'){
-        if(entry[loopi] == ','
-          && delimiteri < 2){
-            delimiteri++;
-        }
-        loopi++;
-    }
 
     gtk_text_buffer_insert(
       tab.undo_buffer,
