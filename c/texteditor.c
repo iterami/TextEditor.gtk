@@ -282,10 +282,6 @@ static void menu_undo(){
 
     tab = get_tab_contents(-1);
     gtk_text_buffer_get_start_iter(
-      tab.redo_buffer,
-      &redostart
-    );
-    gtk_text_buffer_get_start_iter(
       tab.undo_buffer,
       &undostart
     );
@@ -293,6 +289,16 @@ static void menu_undo(){
       tab.undo_buffer,
       &undoend,
       1
+    );
+    if(gtk_text_iter_compare(
+      &undostart,
+      &undoend
+    ) == 0){
+        return;
+    }
+    gtk_text_buffer_get_start_iter(
+      tab.redo_buffer,
+      &redostart
     );
 
     entry = gtk_text_buffer_get_text(
@@ -369,6 +375,12 @@ static void menu_redo(){
       &redoend,
       1
     );
+    if(gtk_text_iter_compare(
+      &redostart,
+      &redoend
+    ) == 0){
+        return;
+    }
     gtk_text_buffer_get_start_iter(
       tab.undo_buffer,
       &undostart
