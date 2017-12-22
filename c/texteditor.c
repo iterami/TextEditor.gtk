@@ -391,6 +391,9 @@ static void menu_undo(){
     loopi = 0;
     while(loopi < length_value){
         value[loopi] = entry[loopi + length_line + length_lineoffset + 4];
+        if(value[loopi] == 30){
+            value[loopi] = '\n';
+        }
         loopi++;
     }
     value[length_value] = '\0';
@@ -516,6 +519,9 @@ static void menu_redo(){
     loopi = 0;
     while(loopi < length_value){
         value[loopi] = entry[loopi + length_line + length_lineoffset + 4];
+        if(value[loopi] == 30){
+            value[loopi] = '\n';
+        }
         loopi++;
     }
     value[length_value] = '\0';
