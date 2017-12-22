@@ -17,7 +17,8 @@ typedef struct tabcontents{
 
 typedef struct undoentry{
   gchar *entry;
-  gint valueoffset;
+  gchar *value;
+  gboolean inserted;
   gint line;
   gint lineoffset;
 } undoentry;
@@ -188,7 +189,8 @@ static struct undoentry undoredo_entry(gchar *value, gboolean inserted, gint lin
 
     undoentry result = {
       entry,
-      length_line + length_lineoffset + 4,
+      value,
+      inserted,
       line,
       lineoffset
     };
