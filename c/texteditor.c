@@ -15,6 +15,21 @@ typedef struct tabcontents{
   GtkTextBuffer *redo_buffer;
 } tabcontents;
 
+static void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
+    gtk_text_buffer_place_cursor(
+      text_buffer,
+      iter
+    );
+    gtk_text_view_scroll_to_iter(
+      GTK_TEXT_VIEW(text_view),
+      iter,
+      0,
+      TRUE,
+      0,
+      0
+    );
+}
+
 static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page){
     return gtk_container_get_children(GTK_CONTAINER(gtk_notebook_get_nth_page(
       tabnotebook,
@@ -406,7 +421,8 @@ static void menu_undo(){
       line,
       lineoffset
     );
-    gtk_text_buffer_place_cursor(
+    place_cursor(
+      tab.text_view,
       tab.text_buffer,
       &selectstart
     );
@@ -549,7 +565,8 @@ static void menu_redo(){
       line,
       lineoffset
     );
-    gtk_text_buffer_place_cursor(
+    place_cursor(
+      tab.text_view,
       tab.text_buffer,
       &selectstart
     );
@@ -834,6 +851,16 @@ static void menu_open(){
                   content,
                   length
                 );
+                gtk_text_buffer_set_text(
+                  tab.undo_buffer,
+                  "",
+                  0
+                );
+                gtk_text_buffer_set_text(
+                  tab.redo_buffer,
+                  "",
+                  0
+                );
                 gtk_notebook_set_tab_label(
                   notebook,
                   gtk_notebook_get_nth_page(
@@ -1054,13 +1081,11 @@ static void menu_findnext(){
           &start
         );
     }
-    gtk_text_view_scroll_to_iter(
-      GTK_TEXT_VIEW(tab.text_view),
-      &cursor,
-      0,
-      TRUE,
-      0,
-      0
+
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &cursor
     );
 }
 
@@ -1121,13 +1146,11 @@ static void menu_findprevious(){
           &end
         );
     }
-    gtk_text_view_scroll_to_iter(
-      GTK_TEXT_VIEW(tab.text_view),
-      &cursor,
-      0,
-      TRUE,
-      0,
-      0
+
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &cursor
     );
 }
 
@@ -1148,17 +1171,10 @@ static void menu_findbottom(){
       &end
     );
 
-    gtk_text_buffer_place_cursor(
+    place_cursor(
+      tab.text_view,
       tab.text_buffer,
       &end
-    );
-    gtk_text_view_scroll_to_iter(
-      GTK_TEXT_VIEW(tab.text_view),
-      &end,
-      0,
-      TRUE,
-      0,
-      0
     );
 }
 
@@ -1176,17 +1192,10 @@ static void menu_findtop(){
       &start
     );
 
-    gtk_text_buffer_place_cursor(
+    place_cursor(
+      tab.text_view,
       tab.text_buffer,
       &start
-    );
-    gtk_text_view_scroll_to_iter(
-      GTK_TEXT_VIEW(tab.text_view),
-      &start,
-      0,
-      TRUE,
-      0,
-      0
     );
 }
 
