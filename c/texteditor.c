@@ -315,10 +315,6 @@ static void menu_undo(){
         return;
     }
 
-    static gchar *entry;
-    static GtkTextIter redostart;
-    static GtkTextIter selectend;
-    static GtkTextIter selectstart;
     static GtkTextIter undoend;
     static GtkTextIter undostart;
     static tabcontents tab;
@@ -339,6 +335,12 @@ static void menu_undo(){
     ) == 0){
         return;
     }
+
+    static gchar *entry;
+    static GtkTextIter redostart;
+    static GtkTextIter selectend;
+    static GtkTextIter selectstart;
+
     gtk_text_buffer_get_start_iter(
       tab.redo_buffer,
       &redostart
@@ -459,12 +461,8 @@ static void menu_redo(){
         return;
     }
 
-    static gchar *entry;
     static GtkTextIter redoend;
     static GtkTextIter redostart;
-    static GtkTextIter selectend;
-    static GtkTextIter selectstart;
-    static GtkTextIter undostart;
     static tabcontents tab;
 
     tab = get_tab_contents(-1);
@@ -483,6 +481,12 @@ static void menu_redo(){
     ) == 0){
         return;
     }
+
+    static gchar *entry;
+    static GtkTextIter selectend;
+    static GtkTextIter selectstart;
+    static GtkTextIter undostart;
+
     gtk_text_buffer_get_start_iter(
       tab.undo_buffer,
       &undostart
