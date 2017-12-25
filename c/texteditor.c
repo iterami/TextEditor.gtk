@@ -785,13 +785,14 @@ static void save_tab(const char *filename){
       &end,
       FALSE
     );
-
     g_file_set_contents(
       filename,
       content,
       -1,
       NULL
     );
+    g_free(content);
+
     gtk_notebook_set_tab_label(
       notebook,
       gtk_notebook_get_nth_page(
@@ -800,8 +801,6 @@ static void save_tab(const char *filename){
       ),
       gtk_label_new(filename)
     );
-
-    g_free(content);
 }
 
 static void close_tab(){
