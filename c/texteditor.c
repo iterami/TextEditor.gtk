@@ -837,46 +837,45 @@ static void menu_open(){
         chooser = GTK_FILE_CHOOSER(dialog_open);
         filename = gtk_file_chooser_get_filename(chooser);
 
-        if(g_file_get_contents(filename, &content, &length, NULL)){
-            if(g_utf8_validate(
-              content,
-              length,
-              NULL
-            )){
-                if(get_notebook_no_pages()
-                  || !check_equals_unsaved()){
-                    new_tab();
-                }
-
-                static tabcontents tab;
-                tab =  get_tab_contents(-1);
-
-                block_insertdelete_signals(tab.text_buffer);
-                gtk_text_buffer_set_text(
-                  tab.text_buffer,
-                  content,
-                  length
-                );
-                gtk_text_buffer_set_text(
-                  tab.undo_buffer,
-                  "",
-                  0
-                );
-                gtk_text_buffer_set_text(
-                  tab.redo_buffer,
-                  "",
-                  0
-                );
-                gtk_notebook_set_tab_label(
-                  notebook,
-                  gtk_notebook_get_nth_page(
-                    notebook,
-                    tab.page
-                  ),
-                  gtk_label_new(filename)
-                );
-                unblock_insertdelete_signals(tab.text_buffer);
+        if(g_file_get_contents(filename, &content, &length, NULL)
+          && g_utf8_validate(
+            content,
+            length,
+            NULL
+          )){
+            if(get_notebook_no_pages()
+              || !check_equals_unsaved()){
+                new_tab();
             }
+
+            static tabcontents tab;
+            tab =  get_tab_contents(-1);
+
+            block_insertdelete_signals(tab.text_buffer);
+            gtk_text_buffer_set_text(
+              tab.text_buffer,
+              content,
+              length
+            );
+            gtk_text_buffer_set_text(
+              tab.undo_buffer,
+              "",
+              0
+            );
+            gtk_text_buffer_set_text(
+              tab.redo_buffer,
+              "",
+              0
+            );
+            gtk_notebook_set_tab_label(
+              notebook,
+              gtk_notebook_get_nth_page(
+                notebook,
+                tab.page
+              ),
+              gtk_label_new(filename)
+            );
+            unblock_insertdelete_signals(tab.text_buffer);
         }
 
         g_free(content);
