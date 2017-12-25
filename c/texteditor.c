@@ -338,7 +338,6 @@ static void menu_undo(){
 
     static gchar *entry;
     static GtkTextIter redostart;
-    static GtkTextIter selectend;
     static GtkTextIter selectstart;
 
     gtk_text_buffer_get_start_iter(
@@ -429,6 +428,8 @@ static void menu_undo(){
       &selectstart
     );
     if(inserted){
+        static GtkTextIter selectend;
+
         selectend = selectstart;
         gtk_text_iter_forward_chars(
            &selectend,
@@ -483,7 +484,6 @@ static void menu_redo(){
     }
 
     static gchar *entry;
-    static GtkTextIter selectend;
     static GtkTextIter selectstart;
     static GtkTextIter undostart;
 
@@ -583,6 +583,8 @@ static void menu_redo(){
         );
 
     }else{
+        static GtkTextIter selectend;
+
         selectend = selectstart;
         gtk_text_iter_forward_chars(
            &selectend,
