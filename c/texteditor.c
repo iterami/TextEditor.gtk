@@ -771,10 +771,6 @@ static void save_tab(const char *filename){
     static tabcontents tab;
     tab = get_tab_contents(-1);
 
-    gtk_text_buffer_get_start_iter(
-      tab.text_buffer,
-      &start
-    );
     gtk_text_buffer_get_end_iter(
       tab.text_buffer,
       &end
@@ -796,16 +792,16 @@ static void save_tab(const char *filename){
               1
             );
 
-            gtk_text_buffer_get_start_iter(
-              tab.text_buffer,
-              &start
-            );
             gtk_text_buffer_get_end_iter(
               tab.text_buffer,
               &end
             );
         }
     }
+    gtk_text_buffer_get_start_iter(
+      tab.text_buffer,
+      &start
+    );
 
     content = gtk_text_buffer_get_text(
       tab.text_buffer,
