@@ -1211,7 +1211,6 @@ static void menu_deleteline(){
     static gint endlinenumber;
     static gint linenumber;
     static GtkTextIter end;
-    static GtkTextIter endall;
     static GtkTextIter line;
     static GtkTextIter start;
     static tabcontents tab;
@@ -1225,10 +1224,10 @@ static void menu_deleteline(){
     linenumber = gtk_text_iter_get_line(&line);
     gtk_text_buffer_get_iter_at_line(
       tab.text_buffer,
-      &endall,
+      &end,
       linenumber + 1
     );
-    endlinenumber = gtk_text_iter_get_line(&endall);
+    endlinenumber = gtk_text_iter_get_line(&end);
 
     // Deleting first line.
     if(linenumber == 0){
