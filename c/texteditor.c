@@ -766,6 +766,7 @@ static void save_tab(const char *filename){
 
     static gchar *content;
     static GtkTextIter end;
+    static GtkTextIter last;
     static GtkTextIter start;
     static tabcontents tab;
     tab = get_tab_contents(-1);
@@ -778,6 +779,33 @@ static void save_tab(const char *filename){
       tab.text_buffer,
       &end
     );
+    last = end;
+    if(gtk_text_iter_backward_char(&last)){
+        gchar *lastchar;
+        lastchar = gtk_text_buffer_get_text(
+          tab.text_buffer,
+          &last,
+          &end,
+          TRUE
+        );
+        if(lastchar[0] != '\n'){
+            gtk_text_buffer_insert(
+              tab.text_buffer,
+              &end,
+              "\n",
+              1
+            );
+
+            gtk_text_buffer_get_start_iter(
+              tab.text_buffer,
+              &start
+            );
+            gtk_text_buffer_get_end_iter(
+              tab.text_buffer,
+              &end
+            );
+        }
+    }
 
     content = gtk_text_buffer_get_text(
       tab.text_buffer,
