@@ -772,15 +772,51 @@ static void save_tab(const char *filename){
     static tabcontents tab;
     tab = get_tab_contents(-1);
 
-    block_insertdelete_signals(tab.text_buffer);
-
     // Trim line endings.
-    /*
-    gint linecount = gtk_text_buffer_get_line_count(tab.text_buffer);
-    while(linecount >= 0){
-        linecount--;
+    gint linei = gtk_text_buffer_get_line_count(tab.text_buffer);
+    while(linei >= 0){
+        linei--;
+        gtk_text_buffer_get_iter_at_line(
+          tab.text_buffer,
+          &checkend,
+          linei
+        );
+        gtk_text_iter_forward_to_line_end(&checkend);
+        checkstart = checkend;
+        if(gtk_text_iter_backward_char(&checkstart)){
+            gchar *checked;
+            checked = gtk_text_buffer_get_text(
+              tab.text_buffer,
+              &checkstart,
+              &checkend,
+              TRUE
+            );
+            if(checked[0] == ' '){
+                while(checked[0] == ' '){
+                    if(gtk_text_iter_backward_char(&checkstart)){
+                        checked = gtk_text_buffer_get_text(
+                          tab.text_buffer,
+                          &checkstart,
+                          &checkend,
+                          TRUE
+                        );
+
+                    }else{
+                        break;
+                    }
+                }
+                gtk_text_iter_forward_char(&checkstart);
+                gtk_text_buffer_delete(
+                  tab.text_buffer,
+                  &checkstart,
+                  &checkend
+                );
+            }
+            g_free(checked);
+        }
     }
-    */
+
+    block_insertdelete_signals(tab.text_buffer);
 
     gtk_text_buffer_get_end_iter(
       tab.text_buffer,
@@ -809,6 +845,7 @@ static void save_tab(const char *filename){
               &end
             );
         }
+        g_free(lastchar);
     }
     gtk_text_buffer_get_start_iter(
       tab.text_buffer,
