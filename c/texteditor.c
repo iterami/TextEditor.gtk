@@ -765,22 +765,34 @@ static void save_tab(const char *filename){
     }
 
     static gchar *content;
+    static GtkTextIter checkend;
+    static GtkTextIter checkstart;
     static GtkTextIter end;
-    static GtkTextIter last;
     static GtkTextIter start;
     static tabcontents tab;
     tab = get_tab_contents(-1);
+
+    block_insertdelete_signals(tab.text_buffer);
+
+    // Trim line endings.
+    /*
+    gint linecount = gtk_text_buffer_get_line_count(tab.text_buffer);
+    while(linecount >= 0){
+        linecount--;
+    }
+    */
 
     gtk_text_buffer_get_end_iter(
       tab.text_buffer,
       &end
     );
-    last = end;
-    if(gtk_text_iter_backward_char(&last)){
+    // Make sure file ends with newline.
+    checkstart = end;
+    if(gtk_text_iter_backward_char(&checkstart)){
         gchar *lastchar;
         lastchar = gtk_text_buffer_get_text(
           tab.text_buffer,
-          &last,
+          &checkstart,
           &end,
           TRUE
         );
@@ -825,6 +837,8 @@ static void save_tab(const char *filename){
       ),
       gtk_label_new(filename)
     );
+
+    unblock_insertdelete_signals(tab.text_buffer);
 }
 
 static void close_tab(){
