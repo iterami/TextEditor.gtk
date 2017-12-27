@@ -792,6 +792,7 @@ static void save_tab(const char *filename){
               TRUE
             );
             if(checked[0] == ' '){
+                gboolean forward = TRUE;
                 while(checked[0] == ' '){
                     if(gtk_text_iter_backward_char(&checkstart)){
                         checked = gtk_text_buffer_get_text(
@@ -802,10 +803,13 @@ static void save_tab(const char *filename){
                         );
 
                     }else{
+                        forward = FALSE;
                         break;
                     }
                 }
-                gtk_text_iter_forward_char(&checkstart);
+                if(forward){
+                    gtk_text_iter_forward_char(&checkstart);
+                }
                 gtk_text_buffer_delete(
                   tab.text_buffer,
                   &checkstart,
