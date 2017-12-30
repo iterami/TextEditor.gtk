@@ -1409,11 +1409,59 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_STYLE_PROVIDER(provider),
       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
+    const gchar *name;
+    static gint length_name = 0;
+    name = g_get_user_name();
+    while(name[length_name] != '\0'){
+        length_name++;
+    }
+    gchar *path = g_malloc(length_name + 35);
+    path[0] = '/';
+    path[1] = 'h';
+    path[2] = 'o';
+    path[3] = 'm';
+    path[4] = 'e';
+    path[5] = '/';
+    static gint loopi = 0;
+    while(loopi < length_name){
+        path[loopi + 6] = name[loopi];
+        loopi++;
+    }
+    path[length_name + 6] = '/';
+    path[length_name + 7] = '.';
+    path[length_name + 8] = 'i';
+    path[length_name + 9] = 't';
+    path[length_name + 10] = 'e';
+    path[length_name + 11] = 'r';
+    path[length_name + 12] = 'a';
+    path[length_name + 13] = 'm';
+    path[length_name + 14] = 'i';
+    path[length_name + 15] = '/';
+    path[length_name + 16] = 'c';
+    path[length_name + 17] = 's';
+    path[length_name + 18] = 's';
+    path[length_name + 19] = '/';
+    path[length_name + 20] = 't';
+    path[length_name + 21] = 'e';
+    path[length_name + 22] = 'x';
+    path[length_name + 23] = 't';
+    path[length_name + 24] = 'e';
+    path[length_name + 25] = 'd';
+    path[length_name + 26] = 'i';
+    path[length_name + 27] = 't';
+    path[length_name + 28] = 'o';
+    path[length_name + 29] = 'r';
+    path[length_name + 30] = '.';
+    path[length_name + 31] = 'c';
+    path[length_name + 32] = 's';
+    path[length_name + 33] = 's';
+    path[length_name + 34] = '\0';
     gtk_css_provider_load_from_file(
       provider,
-      g_file_new_for_path("~/.iterami/css/texteditor.css"),
+      g_file_new_for_path(path),
       0
     );
+    g_free(path);
     g_object_unref(provider);
 
     // Setup window.
