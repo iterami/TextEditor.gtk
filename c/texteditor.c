@@ -1411,7 +1411,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_css_provider_load_from_file(
       provider,
-      g_file_new_for_path("../css/style.css"),
+      g_file_new_for_path("css/style.css"),
       0
     );
     g_object_unref(provider);
