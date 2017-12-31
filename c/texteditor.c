@@ -908,6 +908,13 @@ static void menu_open(){
       NULL
     );
     chooser = GTK_FILE_CHOOSER(dialog_open);
+    if(!check_equals_unsaved()){
+        gtk_file_chooser_set_file(
+          chooser,
+          g_file_new_for_path(get_current_tab_label_text()),
+          NULL
+        );
+    }
     gtk_file_chooser_set_show_hidden(
       chooser,
       TRUE
@@ -987,6 +994,13 @@ static void menu_saveas(){
       NULL
     );
     chooser = GTK_FILE_CHOOSER(dialog_saveas);
+    if(!check_equals_unsaved()){
+        gtk_file_chooser_set_file(
+          chooser,
+          g_file_new_for_path(get_current_tab_label_text()),
+          NULL
+        );
+    }
     gtk_file_chooser_set_do_overwrite_confirmation(
       chooser,
       TRUE
