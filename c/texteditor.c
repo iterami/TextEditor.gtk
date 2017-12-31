@@ -1159,6 +1159,7 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
 
 static void menu_find(){
     gtk_widget_show_all(find_window);
+    gtk_window_present(GTK_WINDOW(find_window));
 
     finding = get_find_find();
     if(get_notebook_no_pages()){
