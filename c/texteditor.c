@@ -894,6 +894,7 @@ static void close_tab(){
 }
 
 static void menu_open(){
+    static GtkFileChooser *chooser;
     static GtkWidget *dialog_open;
 
     dialog_open = gtk_file_chooser_dialog_new(
@@ -906,13 +907,17 @@ static void menu_open(){
       GTK_RESPONSE_ACCEPT,
       NULL
     );
+    chooser = GTK_FILE_CHOOSER(dialog_open);
+    gtk_file_chooser_set_show_hidden(
+      chooser,
+      TRUE
+    );
+
     if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
         static char *filename;
         static gchar *content;
         static gssize length;
-        static GtkFileChooser *chooser;
 
-        chooser = GTK_FILE_CHOOSER(dialog_open);
         filename = gtk_file_chooser_get_filename(chooser);
 
         if(g_file_get_contents(filename, &content, &length, NULL)
@@ -968,7 +973,9 @@ static void menu_saveas(){
         return;
     }
 
+    static GtkFileChooser *chooser;
     static GtkWidget *dialog_saveas;
+
     dialog_saveas = gtk_file_chooser_dialog_new(
       "Save File",
       GTK_WINDOW(window),
@@ -979,8 +986,18 @@ static void menu_saveas(){
       GTK_RESPONSE_ACCEPT,
       NULL
     );
+    chooser = GTK_FILE_CHOOSER(dialog_saveas);
+    gtk_file_chooser_set_do_overwrite_confirmation(
+      chooser,
+      TRUE
+    );
+    gtk_file_chooser_set_show_hidden(
+      chooser,
+      TRUE
+    );
+
     if(gtk_dialog_run(GTK_DIALOG(dialog_saveas)) == GTK_RESPONSE_ACCEPT){
-        save_tab(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog_saveas)));
+        save_tab(gtk_file_chooser_get_filename(chooser));
     }
 
     gtk_widget_destroy(dialog_saveas);
