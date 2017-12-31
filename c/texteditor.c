@@ -17,15 +17,15 @@ typedef struct tabcontents{
 
 static gchar* construct_common_path(gchar *file){
     const gchar *name;
-    static gint length_name = 0;
     static gint length_file = 0;
+    static gint length_name = 0;
 
+    while(file[length_file] != '\0'){
+        length_file++;
+    }
     name = g_get_user_name();
     while(name[length_name] != '\0'){
         length_name++;
-    }
-    while(file[length_file] != '\0'){
-        length_file++;
     }
 
     gchar *path = g_malloc(length_name + length_file + 17);
@@ -41,6 +41,7 @@ static gchar* construct_common_path(gchar *file){
         path[loopi + 6] = name[loopi];
         loopi++;
     }
+    g_free((gchar*)name);
     path[length_name + 6] = '/';
     path[length_name + 7] = '.';
     path[length_name + 8] = 'i';
