@@ -1157,10 +1157,7 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
     }
 }
 
-static void menu_find(){
-    gtk_widget_show_all(find_window);
-    gtk_window_present(GTK_WINDOW(find_window));
-
+static void menu_refind(){
     finding = get_find_find();
     if(get_notebook_no_pages()){
         return;
@@ -1186,6 +1183,13 @@ static void menu_find(){
     );
 }
 
+static void menu_find(){
+    gtk_widget_show_all(find_window);
+    gtk_window_present(GTK_WINDOW(find_window));
+
+    menu_refind();
+}
+
 static void menu_findnext(){
     if(get_notebook_no_pages()){
         return;
@@ -1193,7 +1197,7 @@ static void menu_findnext(){
 
     if(!finding
       || finding != get_find_find()){
-        menu_find();
+        menu_refind();
     }
 
     static GtkTextIter cursor;
@@ -1258,7 +1262,7 @@ static void menu_findprevious(){
 
     if(!finding
       || finding != get_find_find()){
-        menu_find();
+        menu_refind();
     }
 
     static GtkTextIter cursor;
