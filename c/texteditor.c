@@ -1187,6 +1187,26 @@ static void menu_find(){
     gtk_widget_show_all(find_window);
     gtk_window_present(GTK_WINDOW(find_window));
 
+    static GtkTextBuffer *buffer;
+    static GtkTextIter findend;
+    static GtkTextIter findstart;
+
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
+    gtk_text_buffer_get_start_iter(
+      buffer,
+      &findstart
+    );
+    gtk_text_buffer_get_end_iter(
+      buffer,
+      &findend
+    );
+
+    gtk_text_buffer_select_range(
+      buffer,
+      &findstart,
+      &findend
+    );
+
     menu_refind();
 }
 
