@@ -1537,7 +1537,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_window_maximize(GTK_WINDOW(window));
     gtk_window_set_title(
       GTK_WINDOW(window),
-      "TextEditor.c"
+      "TextEditor.gtk"
     );
 
     // Setup notebook and tab with scrollable text view.
