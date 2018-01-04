@@ -1494,6 +1494,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     static GtkWidget *menuitem_file_saveas;
     static GtkWidget *menuitem_file;
     static GtkWidget *menuitem_find_find;
+    static GtkWidget *menuitem_find_findhide;
     static GtkWidget *menuitem_find_findnext;
     static GtkWidget *menuitem_find_findprevious;
     static GtkWidget *menuitem_find_gotobottom;
@@ -1855,6 +1856,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_find_findhide = gtk_menu_item_new_with_mnemonic("_Hide Find Window");
+    gtk_widget_add_accelerator(
+      menuitem_find_findhide,
+      "activate",
+      accelgroup,
+      GDK_KEY_Escape,
+      0,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_findnext = gtk_menu_item_new_with_mnemonic("Find _Next");
     gtk_widget_add_accelerator(
       menuitem_find_findnext,
@@ -1907,6 +1917,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
       menuitem_find_find
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_find),
+      menuitem_find_findhide
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
@@ -2143,6 +2157,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       "activate",
       G_CALLBACK(menu_find),
       NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_find_findhide,
+      "activate",
+      G_CALLBACK(gtk_widget_hide),
+      find_window
     );
     g_signal_connect_swapped(
       menuitem_find_findnext,
