@@ -1138,7 +1138,7 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
     if(gtk_text_iter_forward_search(
       &start,
       finding,
-      0,
+      GTK_TEXT_SEARCH_CASE_INSENSITIVE,
       &match_start,
       &match_end,
       NULL
