@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 
+static const gchar *name;
 static gchar *finding = NULL;
 static GtkNotebook *notebook;
 static GtkWidget *find_window_find;
@@ -16,14 +17,12 @@ typedef struct tabcontents{
 } tabcontents;
 
 static gchar* construct_common_path(gchar *file){
-    const gchar *name;
-    static gint length_file = 0;
-    static gint length_name = 0;
+    gint length_file = 0;
+    gint length_name = 0;
 
     while(file[length_file] != '\0'){
         length_file++;
     }
-    name = g_get_user_name();
     while(name[length_name] != '\0'){
         length_name++;
     }
@@ -36,12 +35,11 @@ static gchar* construct_common_path(gchar *file){
     path[3] = 'm';
     path[4] = 'e';
     path[5] = '/';
-    static gint loopi = 0;
+    gint loopi = 0;
     while(loopi < length_name){
         path[loopi + 6] = name[loopi];
         loopi++;
     }
-    g_free((gchar*)name);
     path[length_name + 6] = '/';
     path[length_name + 7] = '.';
     path[length_name + 8] = 'i';
@@ -806,6 +804,19 @@ static void new_tab(){
     );
 }
 
+static void update_opened_files(){
+    gchar *path = construct_common_path("config/texteditor.cfg");
+
+    g_file_set_contents(
+      path,
+      "test",
+      -1,
+      NULL
+    );
+
+    g_free(path);
+}
+
 static void save_tab(const char *filename){
     if(!filename){
         filename = get_current_tab_label_text();
@@ -927,6 +938,8 @@ static void save_tab(const char *filename){
     );
 
     unblock_insertdelete_signals(tab.text_buffer);
+
+    update_opened_files();
 }
 
 static void close_tab(){
@@ -938,6 +951,8 @@ static void close_tab(){
       notebook,
       gtk_notebook_get_current_page(notebook)
     );
+
+    update_opened_files();
 }
 
 static void menu_open(){
@@ -1020,6 +1035,8 @@ static void menu_open(){
     }
 
     gtk_widget_destroy(dialog_open);
+
+    update_opened_files();
 }
 
 static void menu_saveas(){
@@ -1062,6 +1079,8 @@ static void menu_saveas(){
     }
 
     gtk_widget_destroy(dialog_saveas);
+
+    update_opened_files();
 }
 
 static void menu_save(){
@@ -1078,7 +1097,7 @@ static void menu_save(){
 }
 
 static void find_clear_tags(){
-    static gint page;
+    gint page;
     static GtkTextIter end;
     static GtkTextIter start;
 
@@ -1390,8 +1409,8 @@ static void menu_deleteline(){
         return;
     }
 
-    static gint endlinenumber;
-    static gint linenumber;
+    gint endlinenumber;
+    gint linenumber;
     static GtkTextIter end;
     static GtkTextIter line;
     static GtkTextIter start;
@@ -1506,6 +1525,8 @@ static void activate(GtkApplication* app, gpointer user_data){
     static GtkWidget *menumenu_find;
     static GtkWidget *outerbox;
 
+    name = g_get_user_name();
+
     // Setup CSS.
     provider = gtk_css_provider_new();
     gtk_style_context_add_provider_for_screen(
@@ -1513,9 +1534,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_STYLE_PROVIDER(provider),
       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
-    const gchar *name;
-    static gint length_name = 0;
-    name = g_get_user_name();
+    gint length_name = 0;
     while(name[length_name] != '\0'){
         length_name++;
     }
