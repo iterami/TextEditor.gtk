@@ -805,16 +805,72 @@ static void new_tab(){
 }
 
 static void update_opened_files(){
-    gchar *path = construct_common_path("config/texteditor.cfg");
+    gint page = 0;
+    gint pages;
+    gchar *content;
+    GtkTextBuffer *buffer;
+    GtkTextIter end;
+    GtkTextIter start;
+    GtkWidget *temptextview;
 
+    buffer = gtk_text_buffer_new(NULL);
+    temptextview = gtk_text_view_new_with_buffer(buffer);
+
+    pages = gtk_notebook_get_n_pages(notebook) - 1;
+    while(page <= pages){
+        gtk_text_buffer_get_end_iter(
+          buffer,
+          &end
+        );
+
+        gtk_text_buffer_insert(
+          buffer,
+          &end,
+          gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(
+            notebook,
+            gtk_notebook_get_nth_page(
+              notebook,
+              page
+            )
+          ))),
+          -1
+        );
+        gtk_text_buffer_insert(
+          buffer,
+          &end,
+          "\n",
+          1
+        );
+
+        page++;
+    }
+
+    gtk_text_buffer_get_start_iter(
+      buffer,
+      &start
+    );
+    gtk_text_buffer_get_end_iter(
+      buffer,
+      &end
+    );
+
+    content = gtk_text_buffer_get_text(
+      buffer,
+      &start,
+      &end,
+      FALSE
+    );
+    gchar *path = construct_common_path("config/texteditor.cfg");
     g_file_set_contents(
       path,
-      "test",
+      content,
       -1,
       NULL
     );
-
+    g_free(content);
     g_free(path);
+
+    gtk_widget_destroy(temptextview);
 }
 
 static void save_tab(const char *filename){
