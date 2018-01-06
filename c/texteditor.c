@@ -811,10 +811,10 @@ static void update_opened_files(){
     GtkTextBuffer *buffer;
     GtkTextIter end;
     GtkTextIter start;
-    GtkWidget *temptextview;
+    GtkWidget *temp_text_view;
 
     buffer = gtk_text_buffer_new(NULL);
-    temptextview = gtk_text_view_new_with_buffer(buffer);
+    temp_text_view = gtk_text_view_new_with_buffer(buffer);
 
     pages = gtk_notebook_get_n_pages(notebook) - 1;
     while(page <= pages){
@@ -870,7 +870,7 @@ static void update_opened_files(){
     g_free(content);
     g_free(path);
 
-    gtk_widget_destroy(temptextview);
+    gtk_widget_destroy(temp_text_view);
 }
 
 static void save_tab(const char *filename){
@@ -1011,6 +1011,60 @@ static void close_tab(){
     update_opened_files();
 }
 
+static void open_file(char *filename){
+    gchar *content;
+    gssize length;
+
+    if(g_file_get_contents(
+        filename,
+        &content,
+        &length,
+        NULL
+      ) && g_utf8_validate(
+        content,
+        length,
+        NULL
+      )){
+        if(get_notebook_no_pages()
+          || !check_equals_unsaved()){
+            new_tab();
+        }
+
+        tabcontents tab;
+        tab =  get_tab_contents(-1);
+
+        block_insertdelete_signals(tab.text_buffer);
+        gtk_text_buffer_set_text(
+          tab.text_buffer,
+          content,
+          length
+        );
+        gtk_text_buffer_set_text(
+          tab.undo_buffer,
+          "",
+          0
+        );
+        gtk_text_buffer_set_text(
+          tab.redo_buffer,
+          "",
+          0
+        );
+        gtk_notebook_set_tab_label(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            tab.page
+          ),
+          gtk_label_new(filename)
+        );
+        unblock_insertdelete_signals(tab.text_buffer);
+    }
+
+    g_free(content);
+
+    update_opened_files();
+}
+
 static void menu_open(){
     GtkFileChooser *chooser;
     GtkWidget *dialog_open;
@@ -1040,59 +1094,14 @@ static void menu_open(){
 
     if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
         char *filename;
-        gchar *content;
-        gssize length;
 
         filename = gtk_file_chooser_get_filename(chooser);
+        open_file(filename);
 
-        if(g_file_get_contents(filename, &content, &length, NULL)
-          && g_utf8_validate(
-            content,
-            length,
-            NULL
-          )){
-            if(get_notebook_no_pages()
-              || !check_equals_unsaved()){
-                new_tab();
-            }
-
-            tabcontents tab;
-            tab =  get_tab_contents(-1);
-
-            block_insertdelete_signals(tab.text_buffer);
-            gtk_text_buffer_set_text(
-              tab.text_buffer,
-              content,
-              length
-            );
-            gtk_text_buffer_set_text(
-              tab.undo_buffer,
-              "",
-              0
-            );
-            gtk_text_buffer_set_text(
-              tab.redo_buffer,
-              "",
-              0
-            );
-            gtk_notebook_set_tab_label(
-              notebook,
-              gtk_notebook_get_nth_page(
-                notebook,
-                tab.page
-              ),
-              gtk_label_new(filename)
-            );
-            unblock_insertdelete_signals(tab.text_buffer);
-        }
-
-        g_free(content);
         g_free(filename);
     }
 
     gtk_widget_destroy(dialog_open);
-
-    update_opened_files();
 }
 
 static void menu_saveas(){
@@ -2305,6 +2314,66 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_find_gotoline,
       FALSE
     );
+
+    // Open previously opened files.
+    gchar *temp_path = construct_common_path("config/texteditor.cfg");
+    gchar *temp_content;
+    gssize temp_length;
+
+    if(g_file_get_contents(
+      temp_path,
+      &temp_content,
+      &temp_length,
+      NULL
+    )){
+        GtkTextIter temp_end;
+        GtkTextIter temp_start;
+        GtkTextBuffer *temp_buffer;
+        GtkWidget *temp_text_view;
+
+        temp_buffer = gtk_text_buffer_new(NULL);
+        temp_text_view = gtk_text_view_new_with_buffer(temp_buffer);
+        gtk_text_buffer_set_text(
+          temp_buffer,
+          temp_content,
+          temp_length
+        );
+
+        gint lines = gtk_text_buffer_get_line_count(temp_buffer);
+        gint line = 0;
+        while(line < lines){
+            char *filename;
+
+            gtk_text_buffer_get_iter_at_line(
+              temp_buffer,
+              &temp_start,
+              line
+            );
+            gtk_text_buffer_get_iter_at_line(
+              temp_buffer,
+              &temp_end,
+              line + 1
+            );
+            if(gtk_text_iter_backward_char(&temp_end)){
+                filename = gtk_text_buffer_get_text(
+                  temp_buffer,
+                  &temp_start,
+                  &temp_end,
+                  TRUE
+                );
+
+                open_file(filename);
+            }
+
+            g_free(filename);
+            line++;
+        }
+
+        gtk_widget_destroy(temp_text_view);
+    }
+
+    g_free(temp_path);
+    g_free(temp_content);
 }
 
 int main(int argc, char **argv){
