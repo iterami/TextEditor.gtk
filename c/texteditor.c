@@ -1941,7 +1941,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     // Find menu.
     menumenu_find = gtk_menu_new();
     menuitem_find = gtk_menu_item_new_with_mnemonic("F_ind");
-    menuitem_find_find = gtk_menu_item_new_with_mnemonic("_Find and Replace...");
+    menuitem_find_find = gtk_menu_item_new_with_mnemonic("_Find/Replace...");
     gtk_widget_add_accelerator(
       menuitem_find_find,
       "activate",
@@ -1950,7 +1950,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_find_findhide = gtk_menu_item_new_with_mnemonic("_Hide Find Window");
+    menuitem_find_findhide = gtk_menu_item_new_with_mnemonic("_Hide Find/Replace");
     gtk_widget_add_accelerator(
       menuitem_find_findhide,
       "activate",
@@ -2087,7 +2087,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_window_set_title(
       GTK_WINDOW(find_window),
-      "Find and Replace..."
+      "Find/Replace..."
     );
     gtk_window_set_attached_to(
       GTK_WINDOW(find_window),
