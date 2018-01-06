@@ -1343,18 +1343,24 @@ static void menu_findnext(){
             start = cursor;
         }
 
+        place_cursor(
+          tab.text_view,
+          tab.text_buffer,
+          &cursor
+        );
         gtk_text_buffer_select_range(
           tab.text_buffer,
           &end,
           &start
         );
-    }
 
-    place_cursor(
-      tab.text_view,
-      tab.text_buffer,
-      &cursor
-    );
+    }else{
+        place_cursor(
+          tab.text_view,
+          tab.text_buffer,
+          &cursor
+        );
+    }
 }
 
 static void menu_findprevious(){
@@ -1408,18 +1414,24 @@ static void menu_findprevious(){
             start = cursor;
         }
 
+        place_cursor(
+          tab.text_view,
+          tab.text_buffer,
+          &cursor
+        );
         gtk_text_buffer_select_range(
           tab.text_buffer,
-          &start,
-          &end
+          &end,
+          &start
+        );
+
+    }else{
+        place_cursor(
+          tab.text_view,
+          tab.text_buffer,
+          &cursor
         );
     }
-
-    place_cursor(
-      tab.text_view,
-      tab.text_buffer,
-      &cursor
-    );
 }
 
 static void menu_findreplaceall(){
