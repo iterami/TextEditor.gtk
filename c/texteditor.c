@@ -994,8 +994,6 @@ static void save_tab(const char *filename){
     );
 
     unblock_insertdelete_signals(tab.text_buffer);
-
-    update_opened_files();
 }
 
 static void close_tab(){
