@@ -1421,8 +1421,8 @@ static void menu_findprevious(){
         );
         gtk_text_buffer_select_range(
           tab.text_buffer,
-          &end,
-          &start
+          &start,
+          &end
         );
 
     }else{
