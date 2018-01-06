@@ -860,7 +860,7 @@ static void update_opened_files(){
       &end,
       FALSE
     );
-    gchar *path = construct_common_path("config/texteditor.cfg");
+    gchar *path = construct_common_path("cfg/texteditor.cfg");
     g_file_set_contents(
       path,
       content,
@@ -2314,7 +2314,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
 
     // Open previously opened files.
-    gchar *temp_path = construct_common_path("config/texteditor.cfg");
+    gchar *temp_path = construct_common_path("cfg/texteditor.cfg");
     gchar *temp_content;
     gssize temp_length;
 
