@@ -1280,13 +1280,6 @@ static void menu_findnext(){
           &end,
           &start
         );
-
-    }else{
-        place_cursor(
-          tab.text_view,
-          tab.text_buffer,
-          &cursor
-        );
     }
 }
 
@@ -1350,13 +1343,6 @@ static void menu_findprevious(){
           tab.text_buffer,
           &start,
           &end
-        );
-
-    }else{
-        place_cursor(
-          tab.text_view,
-          tab.text_buffer,
-          &cursor
         );
     }
 }
