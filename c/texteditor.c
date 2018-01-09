@@ -42,7 +42,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_file_closetab;
     GtkWidget *menuitem_file_newtab;
     GtkWidget *menuitem_file_open;
-    GtkWidget *menuitem_file_print;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menuitem_file_save;
     GtkWidget *menuitem_file_saveas;
@@ -140,15 +139,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_file_print = gtk_menu_item_new_with_mnemonic("_Print...");
-    gtk_widget_add_accelerator(
-      menuitem_file_print,
-      "activate",
-      accelgroup,
-      GDK_KEY_p,
-      GDK_CONTROL_MASK,
-      GTK_ACCEL_VISIBLE
-    );
     menuitem_file_quit = gtk_menu_item_new_with_mnemonic("_Quit");
     gtk_widget_add_accelerator(
       menuitem_file_quit,
@@ -207,14 +197,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_file),
       menuitem_file_saveas
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_file),
-      gtk_separator_menu_item_new()
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_file),
-      menuitem_file_print
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_file),
@@ -744,10 +726,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
 
     // Disable nonfunctional menu items.
-    gtk_widget_set_sensitive(
-      menuitem_file_print,
-      FALSE
-    );
     gtk_widget_set_sensitive(
       menuitem_edit_cut,
       FALSE
@@ -2270,17 +2248,6 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
         }
         loopi++;
     }
-
-    sprintf(
-      linestring,
-      "%i",
-      line
-    );
-    sprintf(
-      lineoffsetstring,
-      "%i",
-      lineoffset
-    );
 
     gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 6);
 
