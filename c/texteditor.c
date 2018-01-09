@@ -2249,6 +2249,17 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
         loopi++;
     }
 
+    sprintf(
+      linestring,
+      "%i",
+      line
+    );
+    sprintf(
+      lineoffsetstring,
+      "%i",
+      lineoffset
+    );
+
     gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 6);
 
     // 1 == Inserted, 0 == Deleted.
