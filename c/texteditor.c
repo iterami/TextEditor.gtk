@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-
 #include "texteditor.h"
 
 static const gchar *name;
