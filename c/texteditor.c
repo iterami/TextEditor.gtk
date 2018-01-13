@@ -865,12 +865,9 @@ static void find_clear_tags(){
     while(page >= 0){
         tabcontents tab;
         tab = get_tab_contents(page);
-        gtk_text_buffer_get_start_iter(
+        gtk_text_buffer_get_bounds(
           tab.text_buffer,
-          &start
-        );
-        gtk_text_buffer_get_end_iter(
-          tab.text_buffer,
+          &start,
           &end
         );
 
@@ -904,12 +901,9 @@ static gchar* get_find_find(){
     GtkTextIter findstart;
 
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
-    gtk_text_buffer_get_start_iter(
+    gtk_text_buffer_get_bounds(
       buffer,
-      &findstart
-    );
-    gtk_text_buffer_get_end_iter(
-      buffer,
+      &findstart,
       &findend
     );
 
@@ -1113,12 +1107,9 @@ static void menu_find(){
     GtkTextIter findstart;
 
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
-    gtk_text_buffer_get_start_iter(
+    gtk_text_buffer_get_bounds(
       buffer,
-      &findstart
-    );
-    gtk_text_buffer_get_end_iter(
-      buffer,
+      &findstart,
       &findend
     );
 
@@ -2106,12 +2097,9 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
 
     GtkTextIter redoend;
     GtkTextIter redostart;
-    gtk_text_buffer_get_start_iter(
+    gtk_text_buffer_get_bounds(
       tab.redo_buffer,
-      &redostart
-    );
-    gtk_text_buffer_get_end_iter(
-      tab.redo_buffer,
+      &redostart,
       &redoend
     );
     gtk_text_buffer_delete(
@@ -2147,12 +2135,9 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
 
     GtkTextIter redoend;
     GtkTextIter redostart;
-    gtk_text_buffer_get_start_iter(
+    gtk_text_buffer_get_bounds(
       tab.redo_buffer,
-      &redostart
-    );
-    gtk_text_buffer_get_end_iter(
-      tab.redo_buffer,
+      &redostart,
       &redoend
     );
     gtk_text_buffer_delete(
@@ -2302,12 +2287,9 @@ static void update_opened_files(){
         page++;
     }
 
-    gtk_text_buffer_get_start_iter(
+    gtk_text_buffer_get_bounds(
       buffer,
-      &start
-    );
-    gtk_text_buffer_get_end_iter(
-      buffer,
+      &start,
       &end
     );
 
