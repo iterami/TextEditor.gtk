@@ -2,7 +2,6 @@ static void activate(GtkApplication* app, gpointer user_data);
 static void block_insertdelete_signals(GtkTextBuffer *text_buffer);
 static gboolean check_equals_unsaved();
 static void close_tab();
-static gchar* construct_common_path(gchar *file);
 static void find_clear_tags();
 static void find_close();
 static const gchar* get_current_tab_label_text();
