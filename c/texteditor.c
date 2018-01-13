@@ -1103,10 +1103,36 @@ static void menu_find(){
     gtk_window_present(GTK_WINDOW(find_window));
 
     GtkTextBuffer *buffer;
+    tabcontents tab;
+
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
+    tab = get_tab_contents(-1);
+
+    if(gtk_text_buffer_get_has_selection(tab.text_buffer)){
+        GtkTextIter end;
+        GtkTextIter start;
+        gtk_text_buffer_get_selection_bounds(
+          tab.text_buffer,
+          &start,
+          &end
+        );
+
+        finding = gtk_text_buffer_get_text(
+          tab.text_buffer,
+          &start,
+          &end,
+          TRUE
+        );
+        gtk_text_buffer_set_text(
+          buffer,
+          finding,
+          -1
+        );
+    }
+
     GtkTextIter findend;
     GtkTextIter findstart;
 
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
     gtk_text_buffer_get_bounds(
       buffer,
       &findstart,
