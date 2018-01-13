@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include "texteditor.h"
-#include "../../common/c/gtk.h"
+#include "../../common/c/gtk.c"
 
 static gchar *finding = NULL;
 static GtkNotebook *notebook;

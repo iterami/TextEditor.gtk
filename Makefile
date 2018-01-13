@@ -6,7 +6,7 @@ texteditor: c/texteditor.c
 	mkdir -p ~/.iterami/css
 	touch ~/.iterami/cfg/texteditor.cfg
 	cp css/texteditor.css ~/.iterami/css
-	gcc c/texteditor.c ../common/c/gtk.c `pkg-config --cflags --libs gtk+-3.0` -o ~/.iterami/texteditor
+	gcc c/texteditor.c `pkg-config --cflags --libs gtk+-3.0` -o ~/.iterami/texteditor
 
 clean:
 	rm ~/.iterami/texteditor
