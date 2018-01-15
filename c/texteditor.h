@@ -1,3 +1,18 @@
+static gchar *finding = NULL;
+static GtkNotebook *notebook;
+static GtkWidget *find_window_find;
+static GtkWidget *find_window_replace;
+static GtkWidget *find_window;
+static GtkWidget *window;
+
+typedef struct tabcontents{
+  int page;
+  GtkWidget *text_view;
+  GtkTextBuffer *text_buffer;
+  GtkTextBuffer *undo_buffer;
+  GtkTextBuffer *redo_buffer;
+} tabcontents;
+
 static void activate(GtkApplication* app, gpointer user_data);
 static void block_insertdelete_signals(GtkTextBuffer *text_buffer);
 static gboolean check_equals_unsaved();
