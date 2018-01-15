@@ -732,7 +732,7 @@ static void activate(GtkApplication* app, gpointer user_data){
                   temp_buffer,
                   &temp_start,
                   &temp_end,
-                  TRUE
+                  FALSE
                 );
 
                 open_file(filename);
@@ -1047,7 +1047,7 @@ static void menu_find(){
           tab.text_buffer,
           &start,
           &end,
-          TRUE
+          FALSE
         );
         gtk_text_buffer_set_text(
           buffer,
@@ -1350,7 +1350,7 @@ static void menu_redo(){
       tab.redo_buffer,
       &redostart,
       &redoend,
-      TRUE
+      FALSE
     );
 
     gtk_text_buffer_insert(
@@ -1580,7 +1580,7 @@ static void menu_undo(){
       tab.undo_buffer,
       &undostart,
       &undoend,
-      TRUE
+      FALSE
     );
 
     gtk_text_buffer_insert(
@@ -1925,7 +1925,7 @@ static void save_tab(const char *filename){
               tab.text_buffer,
               &checkstart,
               &checkend,
-              TRUE
+              FALSE
             );
             if(checked[0] == ' '){
                 gboolean forward = TRUE;
@@ -1935,7 +1935,7 @@ static void save_tab(const char *filename){
                           tab.text_buffer,
                           &checkstart,
                           &checkend,
-                          TRUE
+                          FALSE
                         );
 
                     }else{
@@ -1970,7 +1970,7 @@ static void save_tab(const char *filename){
           tab.text_buffer,
           &checkstart,
           &end,
-          TRUE
+          FALSE
         );
         if(lastchar[0] != '\n'){
             gtk_text_buffer_insert(
@@ -2033,7 +2033,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
         tab.text_buffer,
         start,
         end,
-        TRUE
+        FALSE
       ),
       FALSE,
       gtk_text_iter_get_line(start),
