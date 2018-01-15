@@ -3,8 +3,9 @@
 #include "../../common/c/gtk.c"
 
 static void activate(GtkApplication* app, gpointer user_data){
+    init_gtk("css/texteditor.css");
+
     GtkAccelGroup *accelgroup;
-    GtkCssProvider *provider;
     GtkWidget *box;
     GtkWidget *findreplaceall;
     GtkWidget *menubar;
@@ -40,28 +41,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menumenu_file;
     GtkWidget *menumenu_find;
     GtkWidget *outerbox;
-
-    name = g_get_user_name();
-
-    // Setup CSS.
-    provider = gtk_css_provider_new();
-    gtk_style_context_add_provider_for_screen(
-      gdk_display_get_default_screen(gdk_display_get_default()),
-      GTK_STYLE_PROVIDER(provider),
-      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
-    );
-    gint length_name = 0;
-    while(name[length_name] != '\0'){
-        length_name++;
-    }
-    gchar *path = construct_common_path("css/texteditor.css");
-    gtk_css_provider_load_from_file(
-      provider,
-      g_file_new_for_path(path),
-      0
-    );
-    g_free(path);
-    g_object_unref(provider);
 
     // Setup window.
     window = gtk_application_window_new(app);
@@ -1852,15 +1831,15 @@ static void open_file(char *filename){
     gssize length;
 
     if(g_file_get_contents(
-        filename,
-        &content,
-        &length,
-        NULL
-      ) && g_utf8_validate(
-        content,
-        length,
-        NULL
-      )){
+      filename,
+      &content,
+      &length,
+      NULL
+    ) && g_utf8_validate(
+      content,
+      length,
+      NULL
+    )){
         if(get_notebook_no_pages()
           || !check_equals_unsaved()){
             new_tab();
