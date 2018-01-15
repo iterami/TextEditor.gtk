@@ -21,10 +21,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkAccelGroup *accelgroup;
     GtkCssProvider *provider;
     GtkWidget *box;
-    GtkWidget *findnext;
-    GtkWidget *findprevious;
     GtkWidget *findreplaceall;
-    GtkWidget *innerbox;
     GtkWidget *menubar;
     GtkWidget *menuitem_edit_copy;
     GtkWidget *menuitem_edit_cut;
@@ -52,6 +49,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_find_gotobottom;
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
+    GtkWidget *menuitem_find_replace;
     GtkWidget *menuitem_find;
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
@@ -418,6 +416,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
       GTK_ACCEL_VISIBLE
     );
+    menuitem_find_replace = gtk_menu_item_new_with_mnemonic("_Replace All");
+    gtk_widget_add_accelerator(
+      menuitem_find_replace,
+      "activate",
+      accelgroup,
+      GDK_KEY_h,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_find_gotobottom = gtk_menu_item_new_with_mnemonic("Go to _Bottom");
     gtk_widget_add_accelerator(
       menuitem_find_gotobottom,
@@ -464,6 +471,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
       menuitem_find_findprevious
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_find),
+      menuitem_find_replace
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
@@ -552,42 +563,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       find_window_find,
       TRUE,
       TRUE,
-      0
-    );
-    innerbox = gtk_box_new(
-      GTK_ORIENTATION_HORIZONTAL,
-      0
-    );
-    findprevious = gtk_button_new_with_label("←");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findprevious,
-      TRUE,
-      TRUE,
-      0
-    );
-    findnext = gtk_button_new_with_label("→");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findnext,
-      TRUE,
-      TRUE,
-      0
-    );
-    findreplaceall = gtk_button_new_with_mnemonic("_Replace All");
-    gtk_box_pack_start(
-      GTK_BOX(innerbox),
-      findreplaceall,
-      TRUE,
-      TRUE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(outerbox),
-      innerbox,
-      FALSE,
-      FALSE,
-      0
+      1
     );
     find_window_replace = new_textview();
     gtk_box_pack_start(
@@ -600,24 +576,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_container_add(
       GTK_CONTAINER(find_window),
       outerbox
-    );
-    g_signal_connect(
-      findnext,
-      "clicked",
-      G_CALLBACK(menu_findnext),
-      NULL
-    );
-    g_signal_connect(
-      findprevious,
-      "clicked",
-      G_CALLBACK(menu_findprevious),
-      NULL
-    );
-    g_signal_connect(
-      findreplaceall,
-      "clicked",
-      G_CALLBACK(menu_findreplaceall),
-      NULL
     );
     g_signal_connect_swapped(
       find_window,
@@ -755,6 +713,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_sort,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_find_replace,
       FALSE
     );
     gtk_widget_set_sensitive(
