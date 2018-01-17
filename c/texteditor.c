@@ -996,9 +996,9 @@ static void menu_deleteline(){
         gtk_text_buffer_get_iter_at_line(
           tab.text_buffer,
           &start,
-          linenumber - 1
+          linenumber
         );
-        gtk_text_iter_forward_to_line_end(&start);
+        gtk_text_iter_backward_char(&start);
         gtk_text_buffer_get_end_iter(
           tab.text_buffer,
           &end
@@ -1017,6 +1017,7 @@ static void menu_deleteline(){
           linenumber + 1
         );
     }
+
     gtk_text_buffer_delete(
       tab.text_buffer,
       &start,
