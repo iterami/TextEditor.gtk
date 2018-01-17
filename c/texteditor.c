@@ -2048,17 +2048,10 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
     );
     g_free(entry);
 
-    GtkTextIter redoend;
-    GtkTextIter redostart;
-    gtk_text_buffer_get_bounds(
+    gtk_text_buffer_set_text(
       tab.redo_buffer,
-      &redostart,
-      &redoend
-    );
-    gtk_text_buffer_delete(
-      tab.redo_buffer,
-      &redostart,
-      &redoend
+      "",
+      0
     );
 }
 
@@ -2086,17 +2079,10 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
     );
     g_free(entry);
 
-    GtkTextIter redoend;
-    GtkTextIter redostart;
-    gtk_text_buffer_get_bounds(
+    gtk_text_buffer_set_text(
       tab.redo_buffer,
-      &redostart,
-      &redoend
-    );
-    gtk_text_buffer_delete(
-      tab.redo_buffer,
-      &redostart,
-      &redoend
+      "",
+      0
     );
 }
 
