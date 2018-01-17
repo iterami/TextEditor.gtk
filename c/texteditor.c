@@ -1763,12 +1763,7 @@ static void new_tab(){
     gtk_notebook_append_page(
       tabnotebook,
       undopaned,
-      gtk_label_new("Undo")
-    );
-    gtk_notebook_append_page(
-      tabnotebook,
-      new_textview(),
-      gtk_label_new("Info")
+      gtk_label_new("Undo/Redo")
     );
     gtk_box_pack_start(
       GTK_BOX(tabbox),
