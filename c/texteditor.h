@@ -11,6 +11,7 @@ typedef struct tabcontents{
   GtkTextBuffer *text_buffer;
   GtkTextBuffer *undo_buffer;
   GtkTextBuffer *redo_buffer;
+  GtkTextBuffer *map_buffer;
 } tabcontents;
 
 static void activate(GtkApplication* app, gpointer user_data);

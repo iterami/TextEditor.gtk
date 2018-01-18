@@ -889,8 +889,8 @@ static struct tabcontents get_tab_contents(gint page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkTextBuffer *redo_textbuffer;
-    GtkTextBuffer *undo_textbuffer;
+    GtkNotebook *tabnotebook;
+    GtkWidget *tabmappane;
     GtkWidget *tabundopane;
     GtkWidget *text_view;
 
@@ -902,22 +902,26 @@ static struct tabcontents get_tab_contents(gint page){
       children,
       0
     )));
-    tabundopane = gtk_notebook_get_nth_page(
-      g_list_nth_data(
-        children,
-        1
-      ),
+    tabnotebook = g_list_nth_data(
+      children,
       1
     );
-    undo_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane))))));
-    redo_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane))))));
+    tabmappane = gtk_notebook_get_nth_page(
+      tabnotebook,
+      0
+    );
+    tabundopane = gtk_notebook_get_nth_page(
+      tabnotebook,
+      1
+    );
 
     tabcontents result = {
       page,
       text_view,
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view)),
-      undo_textbuffer,
-      redo_textbuffer
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane)))))),
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane)))))),
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(tabmappane))))
     };
     return result;
 }
