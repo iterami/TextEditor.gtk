@@ -43,7 +43,7 @@ static void menu_saveas();
 static void menu_undo();
 static GtkWidget* new_scrolled_window();
 static void new_tab();
-static GtkWidget* new_textview();
+static GtkWidget* new_textview(gboolean map);
 static void open_file(char *filename);
 static void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter);
 static void save_tab(const char *filename);

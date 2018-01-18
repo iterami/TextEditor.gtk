@@ -521,7 +521,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       GTK_ORIENTATION_VERTICAL,
       0
     );
-    find_window_find = new_textview();
+    find_window_find = new_textview(FALSE);
     gtk_box_pack_start(
       GTK_BOX(outerbox),
       find_window_find,
@@ -529,7 +529,7 @@ static void activate(GtkApplication* app, gpointer user_data){
       TRUE,
       1
     );
-    find_window_replace = new_textview();
+    find_window_replace = new_textview(FALSE);
     gtk_box_pack_start(
       GTK_BOX(outerbox),
       find_window_replace,
@@ -1726,7 +1726,7 @@ static void new_tab(){
       GTK_ORIENTATION_HORIZONTAL,
       1
     );
-    text_view = new_textview();
+    text_view = new_textview(FALSE);
     scrolled_window = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
@@ -1742,14 +1742,14 @@ static void new_tab(){
     tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_append_page(
       tabnotebook,
-      new_textview(),
+      new_textview(TRUE),
       gtk_label_new("Map")
     );
     undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
     scrolled_window_undo = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_undo),
-      new_textview()
+      new_textview(FALSE)
     );
     gtk_paned_pack1(
       GTK_PANED(undopaned),
@@ -1760,7 +1760,7 @@ static void new_tab(){
     scrolled_window_redo = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_redo),
-      new_textview()
+      new_textview(FALSE)
     );
     gtk_paned_pack2(
       GTK_PANED(undopaned),
@@ -1809,7 +1809,7 @@ static void new_tab(){
     );
 }
 
-static GtkWidget* new_textview(){
+static GtkWidget* new_textview(gboolean map){
     GtkTextBuffer *buffer;
     GtkWidget *text_view;
 
@@ -1826,6 +1826,17 @@ static GtkWidget* new_textview(){
       "#650",
       NULL
     );
+
+    if(map){
+        gtk_text_view_set_editable(
+          GTK_TEXT_VIEW(text_view),
+          FALSE
+        );
+        gtk_widget_set_name(
+          text_view,
+          "map"
+        );
+    }
 
     return text_view;
 }
