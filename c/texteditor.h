@@ -51,4 +51,5 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value);
 static void unblock_insertdelete_signals(GtkTextBuffer *text_buffer);
 static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset);
+static void update_map();
 static void update_opened_files();

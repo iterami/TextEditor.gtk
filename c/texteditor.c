@@ -1463,6 +1463,7 @@ static void menu_redo(){
     unblock_insertdelete_signals(tab.text_buffer);
 
     menu_refind();
+    update_map();
 }
 
 static void menu_refind(){
@@ -1695,6 +1696,7 @@ static void menu_undo(){
     unblock_insertdelete_signals(tab.text_buffer);
 
     menu_refind();
+    update_map();
 }
 
 static GtkWidget* new_scrolled_window(){
@@ -1715,6 +1717,7 @@ static GtkWidget* new_scrolled_window(){
 
 static void new_tab(){
     GtkNotebook *tabnotebook;
+    GtkWidget *scrolled_window_map;
     GtkWidget *scrolled_window_redo;
     GtkWidget *scrolled_window_undo;
     GtkWidget *scrolled_window;
@@ -1740,9 +1743,14 @@ static void new_tab(){
       0
     );
     tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
+    scrolled_window_map = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_map),
+      new_textview(TRUE)
+    );
     gtk_notebook_append_page(
       tabnotebook,
-      new_textview(TRUE),
+      scrolled_window_map,
       gtk_label_new("Map")
     );
     undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
@@ -1899,6 +1907,8 @@ static void open_file(char *filename){
           tab.text_buffer,
           &start
         );
+
+        update_map();
     }
 
     g_free(content);
@@ -2074,6 +2084,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
     g_free(entry);
 
     menu_refind();
+    update_map();
 
     gtk_text_buffer_set_text(
       tab.redo_buffer,
@@ -2107,6 +2118,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
     g_free(entry);
 
     menu_refind();
+    update_map();
 
     gtk_text_buffer_set_text(
       tab.redo_buffer,
@@ -2212,6 +2224,30 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     );
 
     return entry;
+}
+
+static void update_map(){
+    GtkTextIter end;
+    GtkTextIter start;
+    tabcontents tab;
+
+    tab = get_tab_contents(-1);
+    gtk_text_buffer_get_bounds(
+      tab.text_buffer,
+      &start,
+      &end
+    );
+
+    gtk_text_buffer_set_text(
+      tab.map_buffer,
+      gtk_text_buffer_get_text(
+        tab.text_buffer,
+        &start,
+        &end,
+        FALSE
+      ),
+      -1
+    );
 }
 
 static void update_opened_files(){
