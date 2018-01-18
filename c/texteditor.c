@@ -3,7 +3,7 @@
 #include "../../common/gtk/gtk.c"
 
 static void activate(GtkApplication* app, gpointer user_data){
-    init_gtk("css/texteditor.css");
+    init_gtk();
 
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
