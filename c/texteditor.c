@@ -1842,7 +1842,7 @@ static void open_file(char *filename){
         }
 
         tabcontents tab;
-        tab =  get_tab_contents(-1);
+        tab = get_tab_contents(-1);
 
         block_insertdelete_signals(tab.text_buffer);
         gtk_text_buffer_set_text(
@@ -1869,6 +1869,17 @@ static void open_file(char *filename){
           gtk_label_new(filename)
         );
         unblock_insertdelete_signals(tab.text_buffer);
+
+        GtkTextIter start;
+        gtk_text_buffer_get_start_iter(
+          tab.text_buffer,
+          &start
+        );
+        place_cursor(
+          tab.text_view,
+          tab.text_buffer,
+          &start
+        );
     }
 
     g_free(content);
