@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include "texteditor.h"
-#include "../../common/c/gtk.c"
+#include "../../common/gtk/gtk.c"
 
 static void activate(GtkApplication* app, gpointer user_data){
     init_gtk("css/texteditor.css");
