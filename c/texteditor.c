@@ -1321,6 +1321,7 @@ static void menu_redo(){
         return;
     }
 
+    GtkTextIter mapstart;
     GtkTextIter redoend;
     GtkTextIter redostart;
     tabcontents tab;
@@ -1433,6 +1434,13 @@ static void menu_redo(){
       tab.text_buffer,
       &selectstart
     );
+
+    gtk_text_buffer_get_iter_at_offset(
+      tab.map_buffer,
+      &mapstart,
+      gtk_text_iter_get_offset(&selectstart)
+    );
+
     if(inserted){
         gtk_text_buffer_insert(
           tab.text_buffer,
@@ -1440,8 +1448,15 @@ static void menu_redo(){
           value,
           -1
         );
+        gtk_text_buffer_insert(
+          tab.map_buffer,
+          &mapstart,
+          value,
+          -1
+        );
 
     }else{
+        GtkTextIter mapend;
         GtkTextIter selectend;
 
         selectend = selectstart;
@@ -1449,6 +1464,12 @@ static void menu_redo(){
            &selectend,
            length_value
         );
+        gtk_text_buffer_get_iter_at_offset(
+          tab.map_buffer,
+          &mapend,
+          gtk_text_iter_get_offset(&selectend)
+        );
+
         gtk_text_buffer_select_range(
           tab.text_buffer,
           &selectstart,
@@ -1459,11 +1480,20 @@ static void menu_redo(){
           FALSE,
           TRUE
         );
+        gtk_text_buffer_select_range(
+          tab.map_buffer,
+          &mapstart,
+          &mapend
+        );
+        gtk_text_buffer_delete_selection(
+          tab.map_buffer,
+          FALSE,
+          TRUE
+        );
     }
     unblock_insertdelete_signals(tab.text_buffer);
 
     menu_refind();
-    update_map();
 }
 
 static void menu_refind(){
@@ -1554,6 +1584,7 @@ static void menu_undo(){
         return;
     }
 
+    GtkTextIter mapstart;
     GtkTextIter undoend;
     GtkTextIter undostart;
     tabcontents tab;
@@ -1666,14 +1697,28 @@ static void menu_undo(){
       tab.text_buffer,
       &selectstart
     );
+
+    gtk_text_buffer_get_iter_at_offset(
+      tab.map_buffer,
+      &mapstart,
+      gtk_text_iter_get_offset(&selectstart)
+    );
+
     if(inserted){
-        static GtkTextIter selectend;
+        GtkTextIter mapend;
+        GtkTextIter selectend;
 
         selectend = selectstart;
         gtk_text_iter_forward_chars(
            &selectend,
            length_value
         );
+        gtk_text_buffer_get_iter_at_offset(
+          tab.map_buffer,
+          &mapend,
+          gtk_text_iter_get_offset(&selectend)
+        );
+
         gtk_text_buffer_select_range(
           tab.text_buffer,
           &selectstart,
@@ -1681,6 +1726,16 @@ static void menu_undo(){
         );
         gtk_text_buffer_delete_selection(
           tab.text_buffer,
+          FALSE,
+          TRUE
+        );
+        gtk_text_buffer_select_range(
+          tab.map_buffer,
+          &mapstart,
+          &mapend
+        );
+        gtk_text_buffer_delete_selection(
+          tab.map_buffer,
           FALSE,
           TRUE
         );
@@ -1692,11 +1747,16 @@ static void menu_undo(){
           value,
           -1
         );
+        gtk_text_buffer_insert(
+          tab.map_buffer,
+          &mapstart,
+          value,
+          -1
+        );
     }
     unblock_insertdelete_signals(tab.text_buffer);
 
     menu_refind();
-    update_map();
 }
 
 static GtkWidget* new_scrolled_window(){
@@ -1908,7 +1968,11 @@ static void open_file(char *filename){
           &start
         );
 
-        update_map();
+        gtk_text_buffer_set_text(
+          tab.map_buffer,
+          content,
+          -1
+        );
     }
 
     g_free(content);
@@ -2056,6 +2120,8 @@ static void save_tab(const char *filename){
 
 static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
     GtkTextIter first;
+    GtkTextIter mapend;
+    GtkTextIter mapstart;
     tabcontents tab;
 
     tab = get_tab_contents(-1);
@@ -2083,8 +2149,28 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
     );
     g_free(entry);
 
+    gtk_text_buffer_get_iter_at_offset(
+      tab.map_buffer,
+      &mapstart,
+      gtk_text_iter_get_offset(start)
+    );
+    gtk_text_buffer_get_iter_at_offset(
+      tab.map_buffer,
+      &mapend,
+      gtk_text_iter_get_offset(end)
+    );
+    gtk_text_buffer_select_range(
+      tab.map_buffer,
+      &mapstart,
+      &mapend
+    );
+    gtk_text_buffer_delete_selection(
+      tab.map_buffer,
+      FALSE,
+      TRUE
+    );
+
     menu_refind();
-    update_map();
 
     gtk_text_buffer_set_text(
       tab.redo_buffer,
@@ -2095,6 +2181,7 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
 
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
     GtkTextIter first;
+    GtkTextIter mapiter;
     tabcontents tab;
 
     tab = get_tab_contents(-1);
@@ -2117,8 +2204,19 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value
     );
     g_free(entry);
 
+    gtk_text_buffer_get_iter_at_offset(
+      tab.map_buffer,
+      &mapiter,
+      gtk_text_iter_get_offset(iter)
+    );
+    gtk_text_buffer_insert(
+      tab.map_buffer,
+      &mapiter,
+      value,
+      -1
+    );
+
     menu_refind();
-    update_map();
 
     gtk_text_buffer_set_text(
       tab.redo_buffer,
@@ -2224,30 +2322,6 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     );
 
     return entry;
-}
-
-static void update_map(){
-    GtkTextIter end;
-    GtkTextIter start;
-    tabcontents tab;
-
-    tab = get_tab_contents(-1);
-    gtk_text_buffer_get_bounds(
-      tab.text_buffer,
-      &start,
-      &end
-    );
-
-    gtk_text_buffer_set_text(
-      tab.map_buffer,
-      gtk_text_buffer_get_text(
-        tab.text_buffer,
-        &start,
-        &end,
-        FALSE
-      ),
-      -1
-    );
 }
 
 static void update_opened_files(){
