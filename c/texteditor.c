@@ -550,7 +550,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     g_signal_connect_swapped(
       find_window,
       "hide",
-      G_CALLBACK(find_close),
+      G_CALLBACK(find_clear_tags),
       NULL
     );
 
@@ -804,11 +804,6 @@ static void find_clear_tags(){
         );
         page--;
     }
-}
-
-static void find_close(){
-    finding = NULL;
-    find_clear_tags();
 }
 
 static const gchar* get_current_tab_label_text(){
@@ -1498,7 +1493,8 @@ static void menu_redo(){
 
 static void menu_refind(){
     finding = get_find_find();
-    if(get_notebook_no_pages()){
+    if(get_notebook_no_pages()
+      || !gtk_widget_is_visible(find_window)){
         return;
     }
     if(finding
