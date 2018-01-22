@@ -2037,7 +2037,7 @@ static void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTe
       0,
       TRUE,
       0,
-      0
+      0.5
     );
 }
 
