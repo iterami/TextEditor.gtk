@@ -9,6 +9,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *box;
     GtkWidget *findreplaceall;
     GtkWidget *menubar;
+    GtkWidget *menuitem_edit_clearundoredo;
     GtkWidget *menuitem_edit_copy;
     GtkWidget *menuitem_edit_cut;
     GtkWidget *menuitem_edit_delete;
@@ -174,6 +175,15 @@ static void activate(GtkApplication* app, gpointer user_data){
     // Edit menu.
     menumenu_edit = gtk_menu_new();
     menuitem_edit = gtk_menu_item_new_with_mnemonic("_Edit");
+    menuitem_edit_clearundoredo = gtk_menu_item_new_with_mnemonic("Cl_ear Undo/Redo");
+    gtk_widget_add_accelerator(
+      menuitem_edit_clearundoredo,
+      "activate",
+      accelgroup,
+      GDK_KEY_y,
+      GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
     menuitem_edit_copy = gtk_menu_item_new_with_mnemonic("_Copy");
     gtk_widget_add_accelerator(
       menuitem_edit_copy,
@@ -284,6 +294,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_edit),
       menuitem_edit_redo
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_edit),
+      menuitem_edit_clearundoredo
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_edit),
@@ -601,6 +615,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_edit_undo,
       "activate",
       G_CALLBACK(menu_undo),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_clearundoredo,
+      "activate",
+      G_CALLBACK(menu_clearundoredo),
       NULL
     );
     g_signal_connect_swapped(
@@ -942,6 +962,36 @@ int main(int argc, char **argv){
     g_object_unref(app);
 
     return status;
+}
+
+static void menu_clearundoredo(){
+    GtkTextIter end;
+    GtkTextIter start;
+    tabcontents tab;
+
+    tab = get_tab_contents(-1);
+
+    gtk_text_buffer_get_bounds(
+      tab.undo_buffer,
+      &start,
+      &end
+    );
+    gtk_text_buffer_delete(
+      tab.undo_buffer,
+      &start,
+      &end
+    );
+
+    gtk_text_buffer_get_bounds(
+      tab.redo_buffer,
+      &start,
+      &end
+    );
+    gtk_text_buffer_delete(
+      tab.redo_buffer,
+      &start,
+      &end
+    );
 }
 
 static void menu_deleteline(){
