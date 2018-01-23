@@ -782,14 +782,14 @@ static void block_insertdelete_signals(GtkTextBuffer *text_buffer){
     );
 }
 
-static gboolean check_equals_unsaved(){
+static gboolean check_equals_unsaved(void){
     return g_strcmp0(
       get_current_tab_label_text(),
       "UNSAVED"
     ) == 0;
 }
 
-static void close_tab(){
+static void close_tab(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -802,7 +802,7 @@ static void close_tab(){
     update_opened_files();
 }
 
-static void find_clear_tags(){
+static void find_clear_tags(void){
     gint page;
     GtkTextIter end;
     GtkTextIter start;
@@ -826,7 +826,7 @@ static void find_clear_tags(){
     }
 }
 
-static const gchar* get_current_tab_label_text(){
+static const gchar* get_current_tab_label_text(void){
     return gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(
       notebook,
       gtk_notebook_get_nth_page(
@@ -836,7 +836,7 @@ static const gchar* get_current_tab_label_text(){
     )));
 }
 
-static gchar* get_find_find(){
+static gchar* get_find_find(void){
     GtkTextBuffer *buffer;
     GtkTextIter findend;
     GtkTextIter findstart;
@@ -888,7 +888,7 @@ static int get_int_length(gint integer){
     return 1;
 }
 
-static gboolean get_notebook_no_pages(){
+static gboolean get_notebook_no_pages(void){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
@@ -964,7 +964,7 @@ int main(int argc, char **argv){
     return status;
 }
 
-static void menu_clearundoredo(){
+static void menu_clearundoredo(void){
     GtkTextIter end;
     GtkTextIter start;
     tabcontents tab;
@@ -994,7 +994,7 @@ static void menu_clearundoredo(){
     );
 }
 
-static void menu_deleteline(){
+static void menu_deleteline(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1074,7 +1074,7 @@ static void menu_deleteline(){
     );
 }
 
-static void menu_find(){
+static void menu_find(void){
     gtk_widget_show_all(find_window);
     gtk_window_present(GTK_WINDOW(find_window));
 
@@ -1124,7 +1124,7 @@ static void menu_find(){
     menu_refind();
 }
 
-static void menu_findbottom(){
+static void menu_findbottom(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1145,7 +1145,7 @@ static void menu_findbottom(){
     );
 }
 
-static void menu_findnext(){
+static void menu_findnext(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1209,7 +1209,7 @@ static void menu_findnext(){
     }
 }
 
-static void menu_findprevious(){
+static void menu_findprevious(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1298,10 +1298,10 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
     }
 }
 
-static void menu_findreplaceall(){
+static void menu_findreplaceall(void){
 }
 
-static void menu_findtop(){
+static void menu_findtop(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1322,7 +1322,7 @@ static void menu_findtop(){
     );
 }
 
-static void menu_open(){
+static void menu_open(void){
     GtkFileChooser *chooser;
     GtkWidget *dialog_open;
 
@@ -1361,7 +1361,7 @@ static void menu_open(){
     gtk_widget_destroy(dialog_open);
 }
 
-static void menu_redo(){
+static void menu_redo(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1541,7 +1541,7 @@ static void menu_redo(){
     menu_refind();
 }
 
-static void menu_refind(){
+static void menu_refind(void){
     finding = get_find_find();
     if(get_notebook_no_pages()
       || !gtk_widget_is_visible(find_window)){
@@ -1568,7 +1568,7 @@ static void menu_refind(){
     );
 }
 
-static void menu_save(){
+static void menu_save(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1581,7 +1581,7 @@ static void menu_save(){
     }
 }
 
-static void menu_saveas(){
+static void menu_saveas(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1625,7 +1625,7 @@ static void menu_saveas(){
     update_opened_files();
 }
 
-static void menu_undo(){
+static void menu_undo(void){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1805,7 +1805,7 @@ static void menu_undo(){
     menu_refind();
 }
 
-static GtkWidget* new_scrolled_window(){
+static GtkWidget* new_scrolled_window(void){
     GtkWidget *scrolled_window;
 
     scrolled_window = gtk_scrolled_window_new(
@@ -1821,7 +1821,7 @@ static GtkWidget* new_scrolled_window(){
     return scrolled_window;
 }
 
-static void new_tab(){
+static void new_tab(void){
     GtkNotebook *tabnotebook;
     GtkWidget *scrolled_window_map;
     GtkWidget *scrolled_window_redo;
@@ -2370,7 +2370,7 @@ static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint li
     return entry;
 }
 
-static void update_opened_files(){
+static void update_opened_files(void){
     gint page = 0;
     gint pages;
     gchar *content;
