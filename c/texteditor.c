@@ -971,26 +971,15 @@ static void menu_clearundoredo(void){
 
     tab = get_tab_contents(-1);
 
-    gtk_text_buffer_get_bounds(
+    gtk_text_buffer_set_text(
       tab.undo_buffer,
-      &start,
-      &end
+      "",
+      0
     );
-    gtk_text_buffer_delete(
-      tab.undo_buffer,
-      &start,
-      &end
-    );
-
-    gtk_text_buffer_get_bounds(
+    gtk_text_buffer_set_text(
       tab.redo_buffer,
-      &start,
-      &end
-    );
-    gtk_text_buffer_delete(
-      tab.redo_buffer,
-      &start,
-      &end
+      "",
+      0
     );
 }
 
