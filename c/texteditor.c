@@ -3,7 +3,7 @@
 #include "../../common/gtk/gtk.c"
 
 static void activate(GtkApplication* app, gpointer user_data){
-    init_gtk();
+    common_init_gtk();
 
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
@@ -709,7 +709,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
 
     // Open previously opened files.
-    gchar *temp_path = construct_common_path("cfg/texteditor.cfg");
+    gchar *temp_path = common_iterami_path("cfg/texteditor.cfg");
     gchar *temp_content;
     gssize temp_length;
 
@@ -2423,7 +2423,7 @@ static void update_opened_files(void){
       &end,
       FALSE
     );
-    gchar *path = construct_common_path("cfg/texteditor.cfg");
+    gchar *path = common_iterami_path("cfg/texteditor.cfg");
     g_file_set_contents(
       path,
       content,
