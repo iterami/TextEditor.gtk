@@ -1292,6 +1292,11 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
 }
 
 static void menu_findreplaceall(void){
+    if(get_notebook_no_pages()
+      || !gtk_widget_is_visible(find_window)){
+        return;
+    }
+
     gchar *replace_content;
     GtkTextBuffer *replace_buffer;
     GtkTextIter end;
