@@ -1095,6 +1095,8 @@ static void menu_find(void){
         );
     }
 
+    gtk_widget_grab_focus(find_window_find);
+
     GtkTextIter findend;
     GtkTextIter findstart;
 
