@@ -1585,25 +1585,15 @@ static void menu_redo(void){
           gtk_text_iter_get_offset(&selectend)
         );
 
-        gtk_text_buffer_select_range(
+        gtk_text_buffer_delete(
           tab.text_buffer,
           &selectstart,
           &selectend
         );
-        gtk_text_buffer_delete_selection(
-          tab.text_buffer,
-          FALSE,
-          TRUE
-        );
-        gtk_text_buffer_select_range(
+        gtk_text_buffer_delete(
           tab.map_buffer,
           &mapstart,
           &mapend
-        );
-        gtk_text_buffer_delete_selection(
-          tab.map_buffer,
-          FALSE,
-          TRUE
         );
     }
     unblock_insertdelete_signals(tab.text_buffer);
@@ -1835,25 +1825,15 @@ static void menu_undo(void){
           gtk_text_iter_get_offset(&selectend)
         );
 
-        gtk_text_buffer_select_range(
+        gtk_text_buffer_delete(
           tab.text_buffer,
           &selectstart,
           &selectend
         );
-        gtk_text_buffer_delete_selection(
-          tab.text_buffer,
-          FALSE,
-          TRUE
-        );
-        gtk_text_buffer_select_range(
+        gtk_text_buffer_delete(
           tab.map_buffer,
           &mapstart,
           &mapend
-        );
-        gtk_text_buffer_delete_selection(
-          tab.map_buffer,
-          FALSE,
-          TRUE
         );
 
     }else{
@@ -2275,15 +2255,10 @@ static void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter 
       &mapend,
       gtk_text_iter_get_offset(end)
     );
-    gtk_text_buffer_select_range(
+    gtk_text_buffer_delete(
       tab.map_buffer,
       &mapstart,
       &mapend
-    );
-    gtk_text_buffer_delete_selection(
-      tab.map_buffer,
-      FALSE,
-      TRUE
     );
 
     menu_refind();
