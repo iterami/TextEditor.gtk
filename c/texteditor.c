@@ -654,6 +654,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_find_replace,
+      "activate",
+      G_CALLBACK(menu_findreplaceall),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_find_gotobottom,
       "activate",
       G_CALLBACK(menu_findbottom),
@@ -697,10 +703,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_sort,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_find_replace,
       FALSE
     );
     gtk_widget_set_sensitive(
@@ -1290,6 +1292,78 @@ static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
 }
 
 static void menu_findreplaceall(void){
+    gchar *replace_content;
+    GtkTextBuffer *replace_buffer;
+    GtkTextIter end;
+    GtkTextIter replace_end;
+    GtkTextIter replace_start;
+    GtkTextIter start;
+    GtkTextTag *tag_found;
+    tabcontents tab;
+
+    tab = get_tab_contents(-1);
+
+    replace_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_replace));
+    gtk_text_buffer_get_bounds(
+      replace_buffer,
+      &replace_start,
+      &replace_end
+    );
+    replace_content = gtk_text_buffer_get_text(
+      replace_buffer,
+      &replace_start,
+      &replace_end,
+      FALSE
+    );
+
+
+    tag_found = gtk_text_tag_table_lookup(
+      gtk_text_buffer_get_tag_table(tab.text_buffer),
+      "found"
+    );
+    while(!gtk_text_iter_is_end(&end)){
+        menu_refind();
+
+        gtk_text_buffer_get_start_iter(
+          tab.text_buffer,
+          &end
+        );
+        gtk_text_iter_forward_to_tag_toggle(
+          &end,
+          tag_found
+        );
+
+        if(gtk_text_iter_begins_tag(
+          &end,
+          tag_found
+        )){
+            start = end;
+            int offset = gtk_text_iter_get_offset(&start);
+
+            gtk_text_iter_forward_to_tag_toggle(
+              &end,
+              tag_found
+            );
+
+            gtk_text_buffer_delete(
+              tab.text_buffer,
+              &start,
+              &end
+            );
+
+            gtk_text_buffer_get_iter_at_offset(
+              tab.text_buffer,
+              &start,
+              offset
+            );
+            gtk_text_buffer_insert(
+              tab.text_buffer,
+              &start,
+              replace_content,
+              -1
+            );
+        }
+    }
 }
 
 static void menu_findtop(void){
