@@ -24,6 +24,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_undo;
     GtkWidget *menuitem_file;
     GtkWidget *menuitem_file_closetab;
+    GtkWidget *menuitem_file_hide;
     GtkWidget *menuitem_file_newtab;
     GtkWidget *menuitem_file_open;
     GtkWidget *menuitem_file_quit;
@@ -36,7 +37,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_find_gotobottom;
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
-    GtkWidget *menuitem_find_hide;
     GtkWidget *menuitem_find_replace;
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
@@ -81,6 +81,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       accelgroup,
       GDK_KEY_w,
       GDK_CONTROL_MASK,
+      GTK_ACCEL_VISIBLE
+    );
+    menuitem_file_hide = gtk_menu_item_new_with_mnemonic("_Hide Windows");
+    gtk_widget_add_accelerator(
+      menuitem_file_hide,
+      "activate",
+      accelgroup,
+      GDK_KEY_Escape,
+      0,
       GTK_ACCEL_VISIBLE
     );
     menuitem_file_newtab = gtk_menu_item_new_with_mnemonic("_New Tab");
@@ -163,6 +172,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_file),
       gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_file),
+      menuitem_file_hide
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_file),
@@ -385,15 +398,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_find_hide = gtk_menu_item_new_with_mnemonic("_Hide Windows");
-    gtk_widget_add_accelerator(
-      menuitem_find_hide,
-      "activate",
-      accelgroup,
-      GDK_KEY_Escape,
-      0,
-      GTK_ACCEL_VISIBLE
-    );
     menuitem_find_replace = gtk_menu_item_new_with_mnemonic("_Replace All");
     gtk_widget_add_accelerator(
       menuitem_find_replace,
@@ -453,14 +457,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
       menuitem_find_replace
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_find),
-      gtk_separator_menu_item_new()
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_find),
-      menuitem_find_hide
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
@@ -639,6 +635,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_file_hide,
+      "activate",
+      G_CALLBACK(menu_hide),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_file_open,
       "activate",
       G_CALLBACK(menu_open),
@@ -690,12 +692,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_find_find,
       "activate",
       G_CALLBACK(menu_find),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_find_hide,
-      "activate",
-      G_CALLBACK(menu_hide),
       NULL
     );
     g_signal_connect_swapped(
