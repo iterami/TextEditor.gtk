@@ -28,6 +28,7 @@ static int get_int_length(gint integer);
 static gboolean get_notebook_no_pages(void);
 static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page);
 static struct tabcontents get_tab_contents(gint page);
+static void go_to_line(void);
 int main(int argc, char **argv);
 static void menu_clearundoredo(void);
 static void menu_deleteline(void);

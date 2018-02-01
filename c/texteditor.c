@@ -613,6 +613,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       line_window_line
     );
     g_signal_connect_swapped(
+      line_window_line,
+      "activate",
+      G_CALLBACK(go_to_line),
+      NULL
+    );
+    g_signal_connect_swapped(
       line_window,
       "delete-event",
       G_CALLBACK(gtk_widget_hide_on_delete),
@@ -994,6 +1000,48 @@ static struct tabcontents get_tab_contents(gint page){
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(tabmappane))))
     };
     return result;
+}
+
+static void go_to_line(void){
+    if(get_notebook_no_pages()
+      || gtk_entry_get_text_length(GTK_ENTRY(line_window_line)) <= 0){
+        return;
+    }
+
+    const gchar *entry;
+    gint linenumber = 0;
+    GtkTextIter line;
+    tabcontents tab;
+
+    entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
+
+    int loopi = 0;
+    int length_line = 0;
+    while(entry[loopi] != '\0'){
+        length_line++;
+        loopi++;
+    }
+    loopi = 0;
+    while(loopi < length_line){
+        linenumber *= 10;
+        linenumber += entry[loopi] - '0';
+        loopi++;
+    }
+
+    tab = get_tab_contents(-1);
+
+    gtk_text_buffer_get_iter_at_line(
+      tab.text_buffer,
+      &line,
+      linenumber
+    );
+
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &line
+    );
+    gtk_window_present(GTK_WINDOW(window));
 }
 
 int main(int argc, char **argv){
