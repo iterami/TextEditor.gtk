@@ -9,6 +9,7 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *box;
     GtkWidget *findreplaceall;
     GtkWidget *menubar;
+    GtkWidget *menuitem_edit;
     GtkWidget *menuitem_edit_clearundoredo;
     GtkWidget *menuitem_edit_copy;
     GtkWidget *menuitem_edit_cut;
@@ -21,23 +22,22 @@ static void activate(GtkApplication* app, gpointer user_data){
     GtkWidget *menuitem_edit_selectall;
     GtkWidget *menuitem_edit_sort;
     GtkWidget *menuitem_edit_undo;
-    GtkWidget *menuitem_edit;
+    GtkWidget *menuitem_file;
     GtkWidget *menuitem_file_closetab;
     GtkWidget *menuitem_file_newtab;
     GtkWidget *menuitem_file_open;
     GtkWidget *menuitem_file_quit;
     GtkWidget *menuitem_file_save;
     GtkWidget *menuitem_file_saveas;
-    GtkWidget *menuitem_file;
+    GtkWidget *menuitem_find;
     GtkWidget *menuitem_find_find;
-    GtkWidget *menuitem_find_findhide;
     GtkWidget *menuitem_find_findnext;
     GtkWidget *menuitem_find_findprevious;
     GtkWidget *menuitem_find_gotobottom;
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
+    GtkWidget *menuitem_find_hide;
     GtkWidget *menuitem_find_replace;
-    GtkWidget *menuitem_find;
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
     GtkWidget *menumenu_find;
@@ -367,15 +367,6 @@ static void activate(GtkApplication* app, gpointer user_data){
       GDK_CONTROL_MASK,
       GTK_ACCEL_VISIBLE
     );
-    menuitem_find_findhide = gtk_menu_item_new_with_mnemonic("_Hide Find/Replace");
-    gtk_widget_add_accelerator(
-      menuitem_find_findhide,
-      "activate",
-      accelgroup,
-      GDK_KEY_Escape,
-      0,
-      GTK_ACCEL_VISIBLE
-    );
     menuitem_find_findnext = gtk_menu_item_new_with_mnemonic("Find _Next");
     gtk_widget_add_accelerator(
       menuitem_find_findnext,
@@ -392,6 +383,15 @@ static void activate(GtkApplication* app, gpointer user_data){
       accelgroup,
       GDK_KEY_g,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      GTK_ACCEL_VISIBLE
+    );
+    menuitem_find_hide = gtk_menu_item_new_with_mnemonic("_Hide Windows");
+    gtk_widget_add_accelerator(
+      menuitem_find_hide,
+      "activate",
+      accelgroup,
+      GDK_KEY_Escape,
+      0,
       GTK_ACCEL_VISIBLE
     );
     menuitem_find_replace = gtk_menu_item_new_with_mnemonic("_Replace All");
@@ -436,14 +436,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
-      menuitem_find_find
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_find),
-      menuitem_find_findhide
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_find),
       menuitem_find_findnext
     );
     gtk_menu_shell_append(
@@ -452,7 +444,23 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
+      menuitem_find_find
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_find),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_find),
       menuitem_find_replace
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_find),
+      gtk_separator_menu_item_new()
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_find),
+      menuitem_find_hide
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
@@ -568,6 +576,49 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
 
+    // Setup line window.
+    line_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_add_accel_group(
+      GTK_WINDOW(line_window),
+      accelgroup
+    );
+    gtk_window_set_default_size(
+      GTK_WINDOW(line_window),
+      300,
+      0
+    );
+    gtk_window_set_title(
+      GTK_WINDOW(line_window),
+      "Go to Line..."
+    );
+    gtk_window_set_attached_to(
+      GTK_WINDOW(line_window),
+      window
+    );
+    gtk_window_set_transient_for(
+      GTK_WINDOW(line_window),
+      GTK_WINDOW(window)
+    );
+    gtk_window_set_type_hint(
+      GTK_WINDOW(line_window),
+      GDK_WINDOW_TYPE_HINT_DIALOG
+    );
+    outerbox = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      0
+    );
+    line_window_line = gtk_entry_new();
+    gtk_container_add(
+      GTK_CONTAINER(line_window),
+      line_window_line
+    );
+    g_signal_connect_swapped(
+      line_window,
+      "delete-event",
+      G_CALLBACK(gtk_widget_hide_on_delete),
+      line_window
+    );
+
     // Setup menu item callbacks.
     g_signal_connect_swapped(
       menuitem_file_newtab,
@@ -636,10 +687,10 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_find_findhide,
+      menuitem_find_hide,
       "activate",
-      G_CALLBACK(gtk_widget_hide),
-      find_window
+      G_CALLBACK(menu_hide),
+      NULL
     );
     g_signal_connect_swapped(
       menuitem_find_findnext,
@@ -669,6 +720,12 @@ static void activate(GtkApplication* app, gpointer user_data){
       menuitem_find_gototop,
       "activate",
       G_CALLBACK(menu_findtop),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_find_gotoline,
+      "activate",
+      G_CALLBACK(menu_findline),
       NULL
     );
 
@@ -703,10 +760,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_sort,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_find_gotoline,
       FALSE
     );
 
@@ -1138,6 +1191,13 @@ static void menu_findbottom(void){
     );
 }
 
+static void menu_findline(void){
+    gtk_widget_show_all(line_window);
+    gtk_window_present(GTK_WINDOW(line_window));
+
+    gtk_widget_grab_focus(line_window_line);
+}
+
 static void menu_findnext(void){
     if(get_notebook_no_pages()){
         return;
@@ -1389,6 +1449,11 @@ static void menu_findtop(void){
       tab.text_buffer,
       &start
     );
+}
+
+static void menu_hide(void){
+    gtk_widget_hide(find_window);
+    gtk_widget_hide(line_window);
 }
 
 static void menu_open(void){

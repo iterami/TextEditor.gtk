@@ -1,8 +1,10 @@
 static gchar *finding = NULL;
 static GtkNotebook *notebook;
+static GtkWidget *find_window;
 static GtkWidget *find_window_find;
 static GtkWidget *find_window_replace;
-static GtkWidget *find_window;
+static GtkWidget *line_window;
+static GtkWidget *line_window_line;
 static GtkWidget *window;
 
 typedef struct tabcontents{
@@ -31,11 +33,13 @@ static void menu_clearundoredo(void);
 static void menu_deleteline(void);
 static void menu_find(void);
 static void menu_findbottom(void);
+static void menu_findline(void);
 static void menu_findnext(void);
 static void menu_findprevious(void);
 static void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start);
 static void menu_findreplaceall(void);
 static void menu_findtop(void);
+static void menu_hide(void);
 static void menu_open(void);
 static void menu_redo(void);
 static void menu_refind(void);
