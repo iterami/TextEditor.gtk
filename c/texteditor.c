@@ -464,10 +464,6 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_find),
-      gtk_separator_menu_item_new()
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_find),
       menuitem_find_gototop
     );
     gtk_menu_shell_append(
