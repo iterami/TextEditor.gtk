@@ -1321,7 +1321,6 @@ static void menu_findreplaceall(void){
       FALSE
     );
 
-
     tag_found = gtk_text_tag_table_lookup(
       gtk_text_buffer_get_tag_table(tab.text_buffer),
       "found"
