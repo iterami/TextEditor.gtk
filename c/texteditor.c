@@ -679,33 +679,9 @@ static void activate(GtkApplication* app, gpointer user_data){
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_edit_copy,
-      "activate",
-      G_CALLBACK(menu_copy),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_cut,
-      "activate",
-      G_CALLBACK(menu_cut),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_paste,
-      "activate",
-      G_CALLBACK(menu_paste),
-      NULL
-    );
-    g_signal_connect_swapped(
       menuitem_edit_deleteline,
       "activate",
       G_CALLBACK(menu_deleteline),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_selectall,
-      "activate",
-      G_CALLBACK(menu_selectall),
       NULL
     );
     g_signal_connect_swapped(
@@ -753,6 +729,18 @@ static void activate(GtkApplication* app, gpointer user_data){
 
     // Disable nonfunctional menu items.
     gtk_widget_set_sensitive(
+      menuitem_edit_cut,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_copy,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_paste,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
       menuitem_edit_delete,
       FALSE
     );
@@ -762,6 +750,10 @@ static void activate(GtkApplication* app, gpointer user_data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_deletepreviousword,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_selectall,
       FALSE
     );
     gtk_widget_set_sensitive(
@@ -1083,36 +1075,6 @@ static void menu_clearundoredo(void){
       tab.redo_buffer,
       "",
       0
-    );
-}
-
-static void menu_copy(void){
-    if(get_notebook_no_pages()){
-        return;
-    }
-
-    tabcontents tab;
-
-    tab = get_tab_contents(-1);
-
-    g_signal_emit_by_name(
-      tab.text_view,
-      "copy-clipboard"
-    );
-}
-
-static void menu_cut(void){
-    if(get_notebook_no_pages()){
-        return;
-    }
-
-    tabcontents tab;
-
-    tab = get_tab_contents(-1);
-
-    g_signal_emit_by_name(
-      tab.text_view,
-      "cut-clipboard"
     );
 }
 
@@ -1573,21 +1535,6 @@ static void menu_open(void){
     gtk_widget_destroy(dialog_open);
 }
 
-static void menu_paste(void){
-    if(get_notebook_no_pages()){
-        return;
-    }
-
-    tabcontents tab;
-
-    tab = get_tab_contents(-1);
-
-    g_signal_emit_by_name(
-      tab.text_view,
-      "paste-clipboard"
-    );
-}
-
 static void menu_redo(void){
     if(get_notebook_no_pages()){
         return;
@@ -1840,21 +1787,6 @@ static void menu_saveas(void){
     gtk_widget_destroy(dialog_saveas);
 
     update_opened_files();
-}
-
-static void menu_selectall(void){
-    if(get_notebook_no_pages()){
-        return;
-    }
-
-    tabcontents tab;
-
-    tab = get_tab_contents(-1);
-
-    g_signal_emit_by_name(
-      tab.text_view,
-      "select-all"
-    );
 }
 
 static void menu_undo(void){
