@@ -909,38 +909,6 @@ static gchar* get_find_find(void){
     );
 }
 
-static int get_int_length(gint integer){
-    if(integer > 999999999){
-        return 10;
-
-    }else if(integer > 99999999){
-        return 9;
-
-    }else if(integer > 9999999){
-        return 8;
-
-    }else if(integer > 999999){
-        return 7;
-
-    }else if(integer > 99999){
-        return 6;
-
-    }else if(integer > 9999){
-        return 5;
-
-    }else if(integer > 999){
-        return 4;
-
-    }else if(integer > 99){
-        return 3;
-
-    }else if(integer > 9){
-        return 2;
-    }
-
-    return 1;
-}
-
 static gboolean get_notebook_no_pages(void){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
@@ -2434,8 +2402,8 @@ static void unblock_insertdelete_signals(GtkTextBuffer *text_buffer){
 }
 
 static gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
-    gint length_line = get_int_length(line);
-    gint length_lineoffset = get_int_length(lineoffset);
+    gint length_line = common_get_int_length(line);
+    gint length_lineoffset = common_get_int_length(lineoffset);
     gint length_value = 0;
 
     char lineoffsetstring[length_lineoffset];

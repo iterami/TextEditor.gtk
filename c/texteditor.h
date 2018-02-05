@@ -24,7 +24,6 @@ static void find_clear_tags(void);
 static void find_close(void);
 static const gchar* get_current_tab_label_text(void);
 static gchar* get_find_find(void);
-static int get_int_length(gint integer);
 static gboolean get_notebook_no_pages(void);
 static GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page);
 static struct tabcontents get_tab_contents(gint page);
