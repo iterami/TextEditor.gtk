@@ -2,7 +2,7 @@
 #include "texteditor.h"
 #include "../../common/gtk/gtk.c"
 
-static void activate(GtkApplication* app, gpointer user_data){
+static void activate(GtkApplication* app, gpointer data){
     common_init_gtk();
 
     GtkAccelGroup *accelgroup;

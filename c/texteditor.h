@@ -16,7 +16,7 @@ typedef struct tabcontents{
   GtkTextBuffer *map_buffer;
 } tabcontents;
 
-static void activate(GtkApplication* app, gpointer user_data);
+static void activate(GtkApplication* app, gpointer data);
 static void block_insertdelete_signals(GtkTextBuffer *text_buffer);
 static gboolean check_equals_unsaved(void);
 static void close_tab(void);
