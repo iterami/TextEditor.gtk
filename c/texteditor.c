@@ -136,7 +136,7 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_file,
       "_Quit",
       accelgroup,
-      GDK_KEY_q,
+      KEY_QUIT,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
