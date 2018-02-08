@@ -82,14 +82,14 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_file,
       "_New Tab",
       accelgroup,
-      GDK_KEY_t,
+      KEY_NEWTAB,
       GDK_CONTROL_MASK
     );
     menuitem_file_closetab = common_add_menuitem(
       menumenu_file,
       "_Close Tab",
       accelgroup,
-      GDK_KEY_w,
+      KEY_CLOSETAB,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -100,7 +100,7 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_file,
       "_Open...",
       accelgroup,
-      GDK_KEY_O,
+      KEY_OPEN,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -111,14 +111,14 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_file,
       "_Save",
       accelgroup,
-      GDK_KEY_s,
+      KEY_SAVE,
       GDK_CONTROL_MASK
     );
     menuitem_file_saveas = common_add_menuitem(
       menumenu_file,
       "Save _As...",
       accelgroup,
-      GDK_KEY_s,
+      KEY_SAVE,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     gtk_menu_shell_append(
@@ -129,7 +129,7 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_file,
       "_Hide Windows",
       accelgroup,
-      GDK_KEY_Escape,
+      KEY_HIDEWINDOWS,
       0
     );
     menuitem_file_quit = common_add_menuitem(
@@ -154,21 +154,21 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_edit,
       "_Undo",
       accelgroup,
-      GDK_KEY_z,
+      KEY_UNDO,
       GDK_CONTROL_MASK
     );
     menuitem_edit_redo = common_add_menuitem(
       menumenu_edit,
       "_Redo",
       accelgroup,
-      GDK_KEY_z,
+      KEY_UNDO,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     menuitem_edit_clearundoredo = common_add_menuitem(
       menumenu_edit,
       "Cl_ear Undo/Redo",
       accelgroup,
-      GDK_KEY_y,
+      KEY_UNDOCLEAR,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -179,21 +179,21 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_edit,
       "_Copy",
       accelgroup,
-      GDK_KEY_c,
+      KEY_COPY,
       GDK_CONTROL_MASK
     );
     menuitem_edit_cut = common_add_menuitem(
       menumenu_edit,
       "Cu_t",
       accelgroup,
-      GDK_KEY_x,
+      KEY_CUT,
       GDK_CONTROL_MASK
     );
     menuitem_edit_paste = common_add_menuitem(
       menumenu_edit,
       "_Paste",
       accelgroup,
-      GDK_KEY_v,
+      KEY_PASTE,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -204,28 +204,28 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_edit,
       "_Delete",
       accelgroup,
-      GDK_KEY_Delete,
+      KEY_DELETE,
       0
     );
     menuitem_edit_deleteline = common_add_menuitem(
       menumenu_edit,
       "Delete _Line",
       accelgroup,
-      GDK_KEY_d,
+      KEY_DELETELINE,
       GDK_CONTROL_MASK
     );
     menuitem_edit_deletenextword = common_add_menuitem(
       menumenu_edit,
       "Delete Ne_xt Word",
       accelgroup,
-      GDK_KEY_Delete,
+      KEY_DELETE,
       GDK_CONTROL_MASK
     );
     menuitem_edit_deletepreviousword = common_add_menuitem(
       menumenu_edit,
       "Delete Pre_vious Word",
       accelgroup,
-      GDK_KEY_BackSpace,
+      KEY_DELETEPREVIOUSWORD,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -236,7 +236,7 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_edit,
       "Select _All",
       accelgroup,
-      GDK_KEY_a,
+      KEY_SELECTALL,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -247,7 +247,7 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_edit,
       "_Sort Lines",
       accelgroup,
-      GDK_KEY_r,
+      KEY_SORT,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -265,21 +265,21 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_find,
       "Find _Next",
       accelgroup,
-      GDK_KEY_g,
+      KEY_FINDMORE,
       GDK_CONTROL_MASK
     );
     menuitem_find_findprevious = common_add_menuitem(
       menumenu_find,
       "Find _Previous",
       accelgroup,
-      GDK_KEY_g,
+      KEY_FINDMORE,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     menuitem_find_find = common_add_menuitem(
       menumenu_find,
       "_Find/Replace...",
       accelgroup,
-      GDK_KEY_f,
+      KEY_FIND,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -290,7 +290,7 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_find,
       "_Replace All",
       accelgroup,
-      GDK_KEY_h,
+      KEY_REPLACE,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
@@ -301,21 +301,21 @@ static void activate(GtkApplication* app, gpointer data){
       menumenu_find,
       "Go to _Top",
       accelgroup,
-      GDK_KEY_Home,
+      KEY_TOP,
       0
     );
     menuitem_find_gotobottom = common_add_menuitem(
       menumenu_find,
       "Go to _Bottom",
       accelgroup,
-      GDK_KEY_End,
+      KEY_BOTTOM,
       0
     );
     menuitem_find_gotoline = common_add_menuitem(
       menumenu_find,
       "Go to _Line",
       accelgroup,
-      GDK_KEY_l,
+      KEY_LINE,
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(

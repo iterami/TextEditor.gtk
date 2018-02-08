@@ -1,3 +1,25 @@
+#define KEY_BOTTOM GDK_KEY_End
+#define KEY_CLOSETAB GDK_KEY_w
+#define KEY_COPY GDK_KEY_c
+#define KEY_CUT GDK_KEY_x
+#define KEY_DELETE GDK_KEY_Delete
+#define KEY_DELETELINE GDK_KEY_d
+#define KEY_DELETEPREVIOUSWORD GDK_KEY_BackSpace
+#define KEY_FIND GDK_KEY_f
+#define KEY_FINDMORE GDK_KEY_g
+#define KEY_HIDEWINDOWS GDK_KEY_Escape
+#define KEY_LINE GDK_KEY_l
+#define KEY_NEWTAB GDK_KEY_t
+#define KEY_OPEN GDK_KEY_o
+#define KEY_PASTE GDK_KEY_v
+#define KEY_REPLACE GDK_KEY_h
+#define KEY_SAVE GDK_KEY_s
+#define KEY_SELECTALL GDK_KEY_a
+#define KEY_SORT GDK_KEY_r
+#define KEY_TOP GDK_KEY_Home
+#define KEY_UNDO GDK_KEY_z
+#define KEY_UNDOCLEAR GDK_KEY_y
+
 static gchar *finding = NULL;
 static GtkNotebook *notebook;
 static GtkWidget *find_window;
