@@ -1,7 +1,5 @@
 #define KEY_BOTTOM GDK_KEY_End
 #define KEY_CLOSETAB GDK_KEY_w
-#define KEY_COPY GDK_KEY_c
-#define KEY_CUT GDK_KEY_x
 #define KEY_DELETE GDK_KEY_Delete
 #define KEY_DELETELINE GDK_KEY_d
 #define KEY_DELETEPREVIOUSWORD GDK_KEY_BackSpace
@@ -11,7 +9,6 @@
 #define KEY_LINE GDK_KEY_l
 #define KEY_NEWTAB GDK_KEY_t
 #define KEY_OPEN GDK_KEY_o
-#define KEY_PASTE GDK_KEY_v
 #define KEY_REPLACE GDK_KEY_h
 #define KEY_SAVE GDK_KEY_s
 #define KEY_SELECTALL GDK_KEY_a
