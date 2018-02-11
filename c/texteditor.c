@@ -1604,6 +1604,16 @@ static void menu_saveas(void){
 }
 
 static void menu_sort(void){
+    if(get_notebook_no_pages()){
+        return;
+    }
+
+    tabcontents tab;
+    tab = get_tab_contents(-1);
+
+    if(!gtk_text_buffer_get_has_selection(tab.text_buffer)){
+        return;
+    }
 }
 
 static void menu_undo(void){
