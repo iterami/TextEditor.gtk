@@ -529,6 +529,12 @@ static void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_edit_sort,
+      "activate",
+      G_CALLBACK(menu_sort),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_find_find,
       "activate",
       G_CALLBACK(menu_find),
@@ -598,10 +604,6 @@ static void activate(GtkApplication* app, gpointer data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_selectall,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
-      menuitem_edit_sort,
       FALSE
     );
 
@@ -1599,6 +1601,9 @@ static void menu_saveas(void){
     gtk_widget_destroy(dialog_saveas);
 
     update_opened_files();
+}
+
+static void menu_sort(void){
 }
 
 static void menu_undo(void){

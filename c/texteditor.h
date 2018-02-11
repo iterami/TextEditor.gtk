@@ -67,6 +67,7 @@ static void menu_redo(void);
 static void menu_refind(void);
 static void menu_save(void);
 static void menu_saveas(void);
+static void menu_sort(void);
 static void menu_undo(void);
 static GtkWidget* new_scrolled_window(void);
 static void new_tab(void);
