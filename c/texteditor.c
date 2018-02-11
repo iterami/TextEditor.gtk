@@ -1608,12 +1608,22 @@ static void menu_sort(void){
         return;
     }
 
+    GtkTextIter end;
+    GtkTextIter start;
     tabcontents tab;
+
     tab = get_tab_contents(-1);
 
-    if(!gtk_text_buffer_get_has_selection(tab.text_buffer)){
+    if(!gtk_text_buffer_get_selection_bounds(
+      tab.text_buffer,
+      &start,
+      &end
+    )){
         return;
     }
+
+    gint line_end = gtk_text_iter_get_line(&end);
+    gint line_start = gtk_text_iter_get_line(&start);
 }
 
 static void menu_undo(void){
