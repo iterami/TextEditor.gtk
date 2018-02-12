@@ -833,6 +833,7 @@ static void go_to_line(void){
         linenumber += entry[loopi] - '0';
         loopi++;
     }
+    linenumber -= 1;
 
     tab = get_tab_contents(-1);
 
