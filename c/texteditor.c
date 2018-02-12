@@ -1624,6 +1624,10 @@ static void menu_sort(void){
 
     gint line_end = gtk_text_iter_get_line(&end);
     gint line_start = gtk_text_iter_get_line(&start);
+
+    if(line_start == line_end){
+        return;
+    }
 }
 
 static void menu_undo(void){
