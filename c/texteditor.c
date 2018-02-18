@@ -439,10 +439,6 @@ static void activate(GtkApplication* app, gpointer data){
       GTK_WINDOW(line_window),
       GDK_WINDOW_TYPE_HINT_DIALOG
     );
-    outerbox = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      0
-    );
     line_window_line = gtk_entry_new();
     gtk_container_add(
       GTK_CONTAINER(line_window),
