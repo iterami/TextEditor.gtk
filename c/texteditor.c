@@ -630,8 +630,6 @@ static void activate(GtkApplication* app, gpointer data){
         gint lines = gtk_text_buffer_get_line_count(temp_buffer);
         gint line = 0;
         while(line < lines){
-            char *filename;
-
             gtk_text_buffer_get_iter_at_line(
               temp_buffer,
               &temp_start,
@@ -643,17 +641,19 @@ static void activate(GtkApplication* app, gpointer data){
               line + 1
             );
             if(gtk_text_iter_backward_char(&temp_end)){
+                char *filename;
+
                 filename = gtk_text_buffer_get_text(
                   temp_buffer,
                   &temp_start,
                   &temp_end,
                   FALSE
                 );
-
                 open_file(filename);
+
+                g_free(filename);
             }
 
-            g_free(filename);
             line++;
         }
 
