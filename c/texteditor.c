@@ -85,17 +85,6 @@ static void activate(GtkApplication* app, gpointer data){
       KEY_NEWTAB,
       GDK_CONTROL_MASK
     );
-    menuitem_file_closetab = common_add_menuitem(
-      menumenu_file,
-      "_Close Tab",
-      accelgroup,
-      KEY_CLOSETAB,
-      GDK_CONTROL_MASK
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_file),
-      gtk_separator_menu_item_new()
-    );
     menuitem_file_open = common_add_menuitem(
       menumenu_file,
       "_Open...",
@@ -124,6 +113,13 @@ static void activate(GtkApplication* app, gpointer data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_file),
       gtk_separator_menu_item_new()
+    );
+    menuitem_file_closetab = common_add_menuitem(
+      menumenu_file,
+      "_Close Tab",
+      accelgroup,
+      KEY_CLOSETAB,
+      GDK_CONTROL_MASK
     );
     menuitem_file_hide = common_add_menuitem(
       menumenu_file,
@@ -459,12 +455,6 @@ static void activate(GtkApplication* app, gpointer data){
 
     // Setup menu item callbacks.
     g_signal_connect_swapped(
-      menuitem_file_newtab,
-      "activate",
-      G_CALLBACK(new_tab),
-      NULL
-    );
-    g_signal_connect_swapped(
       menuitem_file_closetab,
       "activate",
       G_CALLBACK(close_tab),
@@ -477,10 +467,22 @@ static void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_file_newtab,
+      "activate",
+      G_CALLBACK(new_tab),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_file_open,
       "activate",
       G_CALLBACK(menu_open),
       NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_quit,
+      "activate",
+      G_CALLBACK(gtk_widget_destroy),
+      window
     );
     g_signal_connect_swapped(
       menuitem_file_save,
@@ -492,24 +494,6 @@ static void activate(GtkApplication* app, gpointer data){
       menuitem_file_saveas,
       "activate",
       G_CALLBACK(menu_saveas),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_file_quit,
-      "activate",
-      G_CALLBACK(gtk_widget_destroy),
-      window
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_redo,
-      "activate",
-      G_CALLBACK(menu_redo),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_edit_undo,
-      "activate",
-      G_CALLBACK(menu_undo),
       NULL
     );
     g_signal_connect_swapped(
@@ -525,9 +509,21 @@ static void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_edit_redo,
+      "activate",
+      G_CALLBACK(menu_redo),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_edit_sort,
       "activate",
       G_CALLBACK(menu_sort),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_undo,
+      "activate",
+      G_CALLBACK(menu_undo),
       NULL
     );
     g_signal_connect_swapped(
@@ -549,15 +545,15 @@ static void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_find_replace,
-      "activate",
-      G_CALLBACK(menu_findreplaceall),
-      NULL
-    );
-    g_signal_connect_swapped(
       menuitem_find_gotobottom,
       "activate",
       G_CALLBACK(menu_findbottom),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_find_gotoline,
+      "activate",
+      G_CALLBACK(menu_findline),
       NULL
     );
     g_signal_connect_swapped(
@@ -567,9 +563,9 @@ static void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_find_gotoline,
+      menuitem_find_replace,
       "activate",
-      G_CALLBACK(menu_findline),
+      G_CALLBACK(menu_findreplaceall),
       NULL
     );
 
