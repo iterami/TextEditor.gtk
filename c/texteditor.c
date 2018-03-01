@@ -1588,7 +1588,12 @@ static void menu_saveas(void){
     );
 
     if(gtk_dialog_run(GTK_DIALOG(dialog_saveas)) == GTK_RESPONSE_ACCEPT){
-        save_tab(gtk_file_chooser_get_filename(chooser));
+        char *filename;
+
+        filename = gtk_file_chooser_get_filename(chooser);
+        save_tab(filename);
+
+        g_free(filename);
     }
 
     gtk_widget_destroy(dialog_saveas);
