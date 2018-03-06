@@ -11,4 +11,3 @@ texteditor: c/texteditor.c
 clean:
 	rm ~/.iterami/texteditor
 	rm ~/.iterami/cfg/texteditor.cfg
-	rm ~/.iterami/css/texteditor.css
