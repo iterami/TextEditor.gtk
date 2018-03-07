@@ -24,7 +24,6 @@ GtkWidget *find_window_find;
 GtkWidget *find_window_replace;
 GtkWidget *line_window;
 GtkWidget *line_window_line;
-GtkWidget *window;
 
 typedef struct tabcontents{
   int page;
