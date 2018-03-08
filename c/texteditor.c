@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include "texteditor.h"
-#include "../../common/gtk/gtk.c"
+#include "../../common/c/gtk.c"
 
 void activate(GtkApplication* app, gpointer data){
     common_init_gtk();
