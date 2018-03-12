@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "texteditor.h"
+#include "main.h"
 #include "../../common/c/gtk.c"
 
 void activate(GtkApplication* app, gpointer data){
