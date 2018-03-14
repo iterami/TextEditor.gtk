@@ -3,7 +3,6 @@
 #include "../../common/c/gtk.c"
 
 void activate(GtkApplication* app, gpointer data){
-
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
     GtkWidget *findreplaceall;
