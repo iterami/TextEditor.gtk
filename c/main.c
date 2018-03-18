@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include "main.h"
+#include "../../common/c/core.c"
 #include "../../common/c/gtk.c"
 
 void activate(GtkApplication* app, gpointer data){
@@ -590,7 +591,7 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Open previously opened files.
-    gchar *temp_path = gtk_iterami_path("cfg/texteditor.cfg");
+    gchar *temp_path = core_iterami_path("cfg/texteditor.cfg");
     gchar *temp_content;
     gssize temp_length;
 
@@ -2263,8 +2264,8 @@ void unblock_insertdelete_signals(GtkTextBuffer *text_buffer){
 }
 
 gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
-    gint length_line = gtk_get_int_length(line);
-    gint length_lineoffset = gtk_get_int_length(lineoffset);
+    gint length_line = core_get_int_length(line);
+    gint length_lineoffset = core_get_int_length(lineoffset);
     gint length_value = 0;
 
     char lineoffsetstring[length_lineoffset];
@@ -2401,7 +2402,7 @@ void update_opened_files(void){
       &end,
       FALSE
     );
-    gchar *path = gtk_iterami_path("cfg/texteditor.cfg");
+    gchar *path = core_iterami_path("cfg/texteditor.cfg");
     g_file_set_contents(
       path,
       content,
