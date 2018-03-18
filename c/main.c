@@ -41,7 +41,7 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menumenu_find;
     GtkWidget *outerbox;
 
-    common_init_gtk(
+    gtk_init_gtk(
       app,
       "TextEditor.gtk"
     );
@@ -68,14 +68,14 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_ITEM(menuitem_file),
       menumenu_file
     );
-    menuitem_file_newtab = common_add_menuitem(
+    menuitem_file_newtab = gtk_add_menuitem(
       menumenu_file,
       "_New Tab",
       accelgroup,
       KEY_NEWTAB,
       GDK_CONTROL_MASK
     );
-    menuitem_file_open = common_add_menuitem(
+    menuitem_file_open = gtk_add_menuitem(
       menumenu_file,
       "_Open...",
       accelgroup,
@@ -86,14 +86,14 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_file),
       gtk_separator_menu_item_new()
     );
-    menuitem_file_save = common_add_menuitem(
+    menuitem_file_save = gtk_add_menuitem(
       menumenu_file,
       "_Save",
       accelgroup,
       KEY_SAVE,
       GDK_CONTROL_MASK
     );
-    menuitem_file_saveas = common_add_menuitem(
+    menuitem_file_saveas = gtk_add_menuitem(
       menumenu_file,
       "Save _As...",
       accelgroup,
@@ -104,21 +104,21 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_file),
       gtk_separator_menu_item_new()
     );
-    menuitem_file_closetab = common_add_menuitem(
+    menuitem_file_closetab = gtk_add_menuitem(
       menumenu_file,
       "_Close Tab",
       accelgroup,
       KEY_CLOSETAB,
       GDK_CONTROL_MASK
     );
-    menuitem_file_hide = common_add_menuitem(
+    menuitem_file_hide = gtk_add_menuitem(
       menumenu_file,
       "_Hide Windows",
       accelgroup,
       KEY_HIDEWINDOWS,
       0
     );
-    menuitem_file_quit = common_add_menuitem(
+    menuitem_file_quit = gtk_add_menuitem(
       menumenu_file,
       "_Quit",
       accelgroup,
@@ -136,21 +136,21 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_ITEM(menuitem_edit),
       menumenu_edit
     );
-    menuitem_edit_undo = common_add_menuitem(
+    menuitem_edit_undo = gtk_add_menuitem(
       menumenu_edit,
       "_Undo",
       accelgroup,
       KEY_UNDO,
       GDK_CONTROL_MASK
     );
-    menuitem_edit_redo = common_add_menuitem(
+    menuitem_edit_redo = gtk_add_menuitem(
       menumenu_edit,
       "_Redo",
       accelgroup,
       KEY_UNDO,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
-    menuitem_edit_clearundoredo = common_add_menuitem(
+    menuitem_edit_clearundoredo = gtk_add_menuitem(
       menumenu_edit,
       "Cl_ear Undo/Redo",
       accelgroup,
@@ -161,21 +161,21 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_edit),
       gtk_separator_menu_item_new()
     );
-    menuitem_edit_copy = common_add_menuitem(
+    menuitem_edit_copy = gtk_add_menuitem(
       menumenu_edit,
       "_Copy",
       accelgroup,
       KEY_COPY,
       GDK_CONTROL_MASK
     );
-    menuitem_edit_cut = common_add_menuitem(
+    menuitem_edit_cut = gtk_add_menuitem(
       menumenu_edit,
       "Cu_t",
       accelgroup,
       KEY_CUT,
       GDK_CONTROL_MASK
     );
-    menuitem_edit_paste = common_add_menuitem(
+    menuitem_edit_paste = gtk_add_menuitem(
       menumenu_edit,
       "_Paste",
       accelgroup,
@@ -186,28 +186,28 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_edit),
       gtk_separator_menu_item_new()
     );
-    menuitem_edit_delete = common_add_menuitem(
+    menuitem_edit_delete = gtk_add_menuitem(
       menumenu_edit,
       "_Delete",
       accelgroup,
       KEY_DELETE,
       0
     );
-    menuitem_edit_deleteline = common_add_menuitem(
+    menuitem_edit_deleteline = gtk_add_menuitem(
       menumenu_edit,
       "Delete _Line",
       accelgroup,
       KEY_DELETELINE,
       GDK_CONTROL_MASK
     );
-    menuitem_edit_deletenextword = common_add_menuitem(
+    menuitem_edit_deletenextword = gtk_add_menuitem(
       menumenu_edit,
       "Delete Ne_xt Word",
       accelgroup,
       KEY_DELETE,
       GDK_CONTROL_MASK
     );
-    menuitem_edit_deletepreviousword = common_add_menuitem(
+    menuitem_edit_deletepreviousword = gtk_add_menuitem(
       menumenu_edit,
       "Delete Pre_vious Word",
       accelgroup,
@@ -218,7 +218,7 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_edit),
       gtk_separator_menu_item_new()
     );
-    menuitem_edit_selectall = common_add_menuitem(
+    menuitem_edit_selectall = gtk_add_menuitem(
       menumenu_edit,
       "Select _All",
       accelgroup,
@@ -229,7 +229,7 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_edit),
       gtk_separator_menu_item_new()
     );
-    menuitem_edit_sort = common_add_menuitem(
+    menuitem_edit_sort = gtk_add_menuitem(
       menumenu_edit,
       "_Sort Lines",
       accelgroup,
@@ -247,21 +247,21 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_ITEM(menuitem_find),
       menumenu_find
     );
-    menuitem_find_findnext = common_add_menuitem(
+    menuitem_find_findnext = gtk_add_menuitem(
       menumenu_find,
       "Find _Next",
       accelgroup,
       KEY_FINDMORE,
       GDK_CONTROL_MASK
     );
-    menuitem_find_findprevious = common_add_menuitem(
+    menuitem_find_findprevious = gtk_add_menuitem(
       menumenu_find,
       "Find _Previous",
       accelgroup,
       KEY_FINDMORE,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
-    menuitem_find_find = common_add_menuitem(
+    menuitem_find_find = gtk_add_menuitem(
       menumenu_find,
       "_Find/Replace...",
       accelgroup,
@@ -272,7 +272,7 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_find),
       gtk_separator_menu_item_new()
     );
-    menuitem_find_replace = common_add_menuitem(
+    menuitem_find_replace = gtk_add_menuitem(
       menumenu_find,
       "_Replace All",
       accelgroup,
@@ -283,21 +283,21 @@ void activate(GtkApplication* app, gpointer data){
       GTK_MENU_SHELL(menumenu_find),
       gtk_separator_menu_item_new()
     );
-    menuitem_find_gototop = common_add_menuitem(
+    menuitem_find_gototop = gtk_add_menuitem(
       menumenu_find,
       "Go to _Top",
       accelgroup,
       KEY_TOP,
       0
     );
-    menuitem_find_gotobottom = common_add_menuitem(
+    menuitem_find_gotobottom = gtk_add_menuitem(
       menumenu_find,
       "Go to _Bottom",
       accelgroup,
       KEY_BOTTOM,
       0
     );
-    menuitem_find_gotoline = common_add_menuitem(
+    menuitem_find_gotoline = gtk_add_menuitem(
       menumenu_find,
       "Go to _Line",
       accelgroup,
@@ -590,7 +590,7 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Open previously opened files.
-    gchar *temp_path = common_iterami_path("cfg/texteditor.cfg");
+    gchar *temp_path = gtk_iterami_path("cfg/texteditor.cfg");
     gchar *temp_content;
     gssize temp_length;
 
@@ -2263,8 +2263,8 @@ void unblock_insertdelete_signals(GtkTextBuffer *text_buffer){
 }
 
 gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
-    gint length_line = common_get_int_length(line);
-    gint length_lineoffset = common_get_int_length(lineoffset);
+    gint length_line = gtk_get_int_length(line);
+    gint length_lineoffset = gtk_get_int_length(lineoffset);
     gint length_value = 0;
 
     char lineoffsetstring[length_lineoffset];
@@ -2401,7 +2401,7 @@ void update_opened_files(void){
       &end,
       FALSE
     );
-    gchar *path = common_iterami_path("cfg/texteditor.cfg");
+    gchar *path = gtk_iterami_path("cfg/texteditor.cfg");
     g_file_set_contents(
       path,
       content,
