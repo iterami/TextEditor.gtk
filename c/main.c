@@ -620,12 +620,12 @@ void activate(GtkApplication* app, gpointer data){
             gtk_text_buffer_get_iter_at_line(
               temp_buffer,
               &temp_start,
-              line
+              line++
             );
             gtk_text_buffer_get_iter_at_line(
               temp_buffer,
               &temp_end,
-              line + 1
+              line
             );
             if(gtk_text_iter_backward_char(&temp_end)){
                 char *filename;
@@ -640,8 +640,6 @@ void activate(GtkApplication* app, gpointer data){
 
                 g_free(filename);
             }
-
-            line++;
         }
 
         gtk_widget_destroy(temp_text_view);
@@ -2375,7 +2373,7 @@ void update_opened_files(void){
             notebook,
             gtk_notebook_get_nth_page(
               notebook,
-              page
+              page++
             )
           ))),
           -1
@@ -2386,8 +2384,6 @@ void update_opened_files(void){
           "\n",
           1
         );
-
-        page++;
     }
 
     gtk_text_buffer_get_bounds(
