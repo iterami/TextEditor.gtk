@@ -591,7 +591,7 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Open previously opened files.
-    gchar *temp_path = core_iterami_path(CFG_PATH);
+    gchar *temp_path = core_iterami_path(CONFIG_PATH);
     gchar *temp_content;
     gssize temp_length;
 
@@ -2398,7 +2398,7 @@ void update_opened_files(void){
       &end,
       FALSE
     );
-    gchar *path = core_iterami_path(CFG_PATH);
+    gchar *path = core_iterami_path(CONFIG_PATH);
     g_file_set_contents(
       path,
       content,
