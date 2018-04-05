@@ -740,7 +740,7 @@ gboolean get_notebook_no_pages(void){
     return gtk_notebook_get_n_pages(notebook) <= 0;
 }
 
-GList* get_tabbox_children(GtkNotebook *tabnotebook, gint page){
+GList* get_tabbox_children(GtkNotebook *tabnotebook, const gint page){
     return gtk_container_get_children(GTK_CONTAINER(gtk_notebook_get_nth_page(
       tabnotebook,
       page
@@ -2261,7 +2261,7 @@ void unblock_insertdelete_signals(GtkTextBuffer *text_buffer){
     );
 }
 
-gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffset){
+gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, const gint lineoffset){
     gint length_line = core_get_int_length(line);
     gint length_lineoffset = core_get_int_length(lineoffset);
     gint length_value = 0;
@@ -2303,12 +2303,7 @@ gchar* undoredo_entry(gchar *value, gboolean inserted, gint line, gint lineoffse
 
     gchar *entry = g_malloc(length_value + length_line + length_lineoffset + 6);
 
-    // 1 == Inserted, 0 == Deleted.
-    if(inserted){
-        entry[0] = '1';
-    }else{
-        entry[0] = '0';
-    }
+    entry[0] = inserted ? '1' : '0';
     entry[1] = ',';
 
     // Line Number.
