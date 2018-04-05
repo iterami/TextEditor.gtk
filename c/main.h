@@ -1,3 +1,4 @@
+#define CFG_PATH "cfg/texteditor.cfg"
 #define KEY_BOTTOM GDK_KEY_End
 #define KEY_CLOSETAB GDK_KEY_w
 #define KEY_DELETE GDK_KEY_Delete

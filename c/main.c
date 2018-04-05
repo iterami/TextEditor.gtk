@@ -2398,7 +2398,7 @@ void update_opened_files(void){
       &end,
       FALSE
     );
-    gchar *path = core_iterami_path("cfg/texteditor.cfg");
+    gchar *path = core_iterami_path(CFG_PATH);
     g_file_set_contents(
       path,
       content,
