@@ -591,7 +591,7 @@ void activate(GtkApplication* app, gpointer data){
     );
 
     // Open previously opened files.
-    gchar *temp_path = core_iterami_path("cfg/texteditor.cfg");
+    gchar *temp_path = core_iterami_path(CFG_PATH);
     gchar *temp_content;
     gssize temp_length;
 
