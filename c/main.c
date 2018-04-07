@@ -1217,9 +1217,9 @@ void menu_findreplaceall(void){
       gtk_text_buffer_get_tag_table(tab.text_buffer),
       "found"
     );
-    while(!gtk_text_iter_is_end(&end)){
-        menu_refind();
 
+    refinding = FALSE;
+    while(!gtk_text_iter_is_end(&end)){
         gtk_text_buffer_get_start_iter(
           tab.text_buffer,
           &end
@@ -1260,6 +1260,9 @@ void menu_findreplaceall(void){
             );
         }
     }
+    refinding = TRUE;
+
+    menu_refind();
 }
 
 void menu_findtop(void){
@@ -1498,6 +1501,10 @@ void menu_redo(void){
 }
 
 void menu_refind(void){
+    if(!refinding){
+        return;
+    }
+
     finding = get_find_find();
     if(get_notebook_no_pages()
       || !gtk_widget_is_visible(find_window)){
