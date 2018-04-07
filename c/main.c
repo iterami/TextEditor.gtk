@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <string.h>
 #include "main.h"
 #include "../../common/c/core.c"
 #include "../../common/c/gtk.c"
@@ -803,12 +804,7 @@ void go_to_line(void){
     entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
 
     int loopi = 0;
-    int length_line = 0;
-    while(entry[loopi] != '\0'){
-        length_line++;
-        loopi++;
-    }
-    loopi = 0;
+    int length_line = strlen(entry);
     while(loopi < length_line){
         linenumber *= 10;
         linenumber += entry[loopi] - '0';
@@ -2264,15 +2260,11 @@ void unblock_insertdelete_signals(GtkTextBuffer *text_buffer){
 gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, const gint lineoffset){
     gint length_line = core_get_int_length(line);
     gint length_lineoffset = core_get_int_length(lineoffset);
-    gint length_value = 0;
 
     char lineoffsetstring[length_lineoffset];
     char linestring[length_line];
 
-    while(value[length_value] != '\0'){
-        length_value++;
-    }
-
+    gint length_value = strlen(value);
     value = g_locale_to_utf8(
       value,
       length_value,
