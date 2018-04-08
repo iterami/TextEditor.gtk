@@ -1,3 +1,5 @@
+#pragma once
+
 #define CONFIG_PATH "config/texteditor.cfg"
 #define KEY_BOTTOM GDK_KEY_End
 #define KEY_CLOSETAB GDK_KEY_w
