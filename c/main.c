@@ -1633,14 +1633,9 @@ void menu_sort(void){
       &end,
       FALSE
     );
-    gtk_text_buffer_delete(
-      tab.text_buffer,
-      &start,
-      &end
-    );
 
     gint i = 0;
-    gint line_count = line_end  - line_start + 1;
+    gint line_count = line_end - line_start + 1;
     char *token;
     char *line_array[line_count];
 
@@ -1648,13 +1643,25 @@ void menu_sort(void){
       text,
       "\n"
     );
-    while(token != NULL){
-      line_array[i++] = token;
+    for(i = 0; i < line_count; i++){
+        GtkTextIter temp_start;
 
-      token = strtok(
-        NULL,
-        "\n"
-      );
+        gtk_text_buffer_get_iter_at_line(
+          tab.text_buffer,
+          &temp_start,
+          line_start + i
+        );
+
+        if(gtk_text_iter_ends_line(&temp_start)){
+            line_array[i] = "";
+
+        }else{
+            line_array[i] = token;
+            token = strtok(
+              NULL,
+              "\n"
+            );
+        }
     }
 
     qsort(
@@ -1664,35 +1671,33 @@ void menu_sort(void){
       menu_sort_compare
     );
 
+    gtk_text_buffer_delete(
+      tab.text_buffer,
+      &start,
+      &end
+    );
     gtk_text_iter_set_line(
       &start,
       line_start
     );
 
-    i = line_count - 1;
     for(i = 0; i < line_count; i++){
         int length = strlen(line_array[i]);
 
-        if(g_utf8_validate(
+        gtk_text_buffer_insert(
+          tab.text_buffer,
+          &start,
           line_array[i],
-          length,
-          NULL
-        )){
+          length
+        );
+
+        if(i != line_count - 1){
             gtk_text_buffer_insert(
               tab.text_buffer,
               &start,
-              line_array[i],
-              length
+              "\n",
+              1
             );
-
-            if(i != line_count - 1){
-                gtk_text_buffer_insert(
-                  tab.text_buffer,
-                  &start,
-                  "\n",
-                  1
-                );
-            }
         }
     }
 }
