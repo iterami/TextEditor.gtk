@@ -3,6 +3,7 @@
 #include "main.h"
 #include "../../common/c/core.c"
 #include "../../common/c/gtk.c"
+#include "../../common/c/sort.c"
 
 void activate(GtkApplication* app, gpointer data){
     GtkAccelGroup *accelgroup;
@@ -1668,7 +1669,7 @@ void menu_sort(void){
       line_array,
       line_count,
       sizeof(char *),
-      menu_sort_compare
+      sort_compare_strings
     );
 
     gtk_text_buffer_delete(
@@ -1700,12 +1701,6 @@ void menu_sort(void){
             );
         }
     }
-}
-
-int menu_sort_compare(const void* a, const void* b){
-    const char **a2 = (const char **)a;
-    const char **b2 = (const char **)b;
-    return strcmp(*a2, *b2);
 }
 
 void menu_undo(void){
