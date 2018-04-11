@@ -1624,6 +1624,78 @@ void menu_sort(void){
       0
     );
     gtk_text_iter_forward_to_line_end(&end);
+
+    gchar *text = gtk_text_buffer_get_text(
+      tab.text_buffer,
+      &start,
+      &end,
+      FALSE
+    );
+    gtk_text_buffer_delete(
+      tab.text_buffer,
+      &start,
+      &end
+    );
+
+    gint i = 0;
+    gint line_count = line_end  - line_start + 1;
+    char *token;
+    char *line_array[line_count];
+
+    token = strtok(
+      text,
+      "\n"
+    );
+    while(token != NULL){
+      line_array[i++] = token;
+
+      token = strtok(
+        NULL,
+        "\n"
+      );
+    }
+
+    qsort(
+      line_array,
+      line_count,
+      sizeof(char *),
+      menu_sort_compare
+    );
+
+    gtk_text_iter_set_line(
+      &start,
+      line_start
+    );
+
+    i = line_count - 1;
+    for(i = 0; i < line_count; i++){
+        int length = strlen(line_array[i]);
+
+        if(g_utf8_validate(
+          line_array[i],
+          length,
+          NULL
+        )){
+            gtk_text_buffer_insert(
+              tab.text_buffer,
+              &start,
+              line_array[i],
+              length
+            );
+            gtk_text_buffer_insert(
+              tab.text_buffer,
+              &start,
+              "\n",
+              1
+            );
+        }
+    }
+}
+
+int menu_sort_compare(const void* a, const void* b){
+    const char **a2 = (const char **)a;
+    const char **b2 = (const char **)b;
+    return strcmp(*a2, *b2);
 }
 
 void menu_undo(void){

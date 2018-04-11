@@ -68,6 +68,7 @@ void menu_refind(void);
 void menu_save(void);
 void menu_saveas(void);
 void menu_sort(void);
+int menu_sort_compare(const void* a, const void* b);
 void menu_undo(void);
 GtkWidget* new_scrolled_window(void);
 void new_tab(void);
