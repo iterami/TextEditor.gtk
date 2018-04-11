@@ -1623,7 +1623,9 @@ void menu_sort(void){
       &start,
       0
     );
-    gtk_text_iter_forward_to_line_end(&end);
+    if(!gtk_text_iter_ends_line(&end)){
+        gtk_text_iter_forward_to_line_end(&end);
+    }
 
     gchar *text = gtk_text_buffer_get_text(
       tab.text_buffer,
@@ -1682,12 +1684,15 @@ void menu_sort(void){
               line_array[i],
               length
             );
-            gtk_text_buffer_insert(
-              tab.text_buffer,
-              &start,
-              "\n",
-              1
-            );
+
+            if(i != line_count - 1){
+                gtk_text_buffer_insert(
+                  tab.text_buffer,
+                  &start,
+                  "\n",
+                  1
+                );
+            }
         }
     }
 }
