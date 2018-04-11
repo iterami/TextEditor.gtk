@@ -1618,6 +1618,12 @@ void menu_sort(void){
     if(line_start == line_end){
         return;
     }
+
+    gtk_text_iter_set_line_offset(
+      &start,
+      0
+    );
+    gtk_text_iter_forward_to_line_end(&end);
 }
 
 void menu_undo(void){
