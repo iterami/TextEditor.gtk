@@ -21,7 +21,6 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_edit_paste;
     GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
-    GtkWidget *menuitem_edit_sort;
     GtkWidget *menuitem_edit_undo;
     GtkWidget *menuitem_file;
     GtkWidget *menuitem_file_closetab;
@@ -39,9 +38,13 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
     GtkWidget *menuitem_find_replace;
+    GtkWidget *menuitem_sort;
+    GtkWidget *menuitem_sort_asc;
+    GtkWidget *menuitem_sort_desc;
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
     GtkWidget *menumenu_find;
+    GtkWidget *menumenu_sort;
     GtkWidget *outerbox;
 
     gtk_init_gtk(
@@ -229,17 +232,6 @@ void activate(GtkApplication* app, gpointer data){
       GDK_CONTROL_MASK
     );
     gtk_menu_shell_append(
-      GTK_MENU_SHELL(menumenu_edit),
-      gtk_separator_menu_item_new()
-    );
-    menuitem_edit_sort = gtk_add_menuitem(
-      menumenu_edit,
-      "_Sort Lines",
-      accelgroup,
-      KEY_SORT,
-      GDK_CONTROL_MASK
-    );
-    gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
       menuitem_edit
     );
@@ -310,6 +302,31 @@ void activate(GtkApplication* app, gpointer data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
       menuitem_find
+    );
+    // Sort menu.
+    menumenu_sort = gtk_menu_new();
+    menuitem_sort = gtk_menu_item_new_with_mnemonic("_Sort");
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(menuitem_sort),
+      menumenu_sort
+    );
+    menuitem_sort_asc = gtk_add_menuitem(
+      menumenu_sort,
+      "_Ascending",
+      accelgroup,
+      KEY_SORT,
+      GDK_CONTROL_MASK
+    );
+    menuitem_sort_desc = gtk_add_menuitem(
+      menumenu_sort,
+      "_Descending",
+      accelgroup,
+      KEY_SORT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      menuitem_sort
     );
 
     // Add everything to a box and show.
@@ -508,12 +525,6 @@ void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
-      menuitem_edit_sort,
-      "activate",
-      G_CALLBACK(menu_sort),
-      NULL
-    );
-    g_signal_connect_swapped(
       menuitem_edit_undo,
       "activate",
       G_CALLBACK(menu_undo),
@@ -559,6 +570,18 @@ void activate(GtkApplication* app, gpointer data){
       menuitem_find_replace,
       "activate",
       G_CALLBACK(menu_findreplaceall),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_sort_asc,
+      "activate",
+      G_CALLBACK(menu_sort_asc),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_sort_desc,
+      "activate",
+      G_CALLBACK(menu_sort_desc),
       NULL
     );
 
@@ -1594,7 +1617,7 @@ void menu_saveas(void){
     update_opened_files();
 }
 
-void menu_sort(void){
+void menu_sort(gboolean asc){
     if(get_notebook_no_pages()){
         return;
     }
@@ -1669,7 +1692,9 @@ void menu_sort(void){
       line_array,
       line_count,
       sizeof(char *),
-      sort_compare_strings_asc
+      asc
+        ? sort_compare_strings_asc
+        : sort_compare_strings_desc
     );
 
     gtk_text_buffer_delete(
@@ -1701,6 +1726,14 @@ void menu_sort(void){
             );
         }
     }
+}
+
+void menu_sort_asc(void){
+    menu_sort(TRUE);
+}
+
+void menu_sort_desc(void){
+    menu_sort(FALSE);
 }
 
 void menu_undo(void){
