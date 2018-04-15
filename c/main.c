@@ -1669,7 +1669,7 @@ void menu_sort(void){
       line_array,
       line_count,
       sizeof(char *),
-      sort_compare_strings
+      sort_compare_strings_asc
     );
 
     gtk_text_buffer_delete(
