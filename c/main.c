@@ -285,19 +285,19 @@ void activate(GtkApplication* app, gpointer data){
       KEY_TOP,
       0
     );
-    menuitem_find_gotobottom = gtk_add_menuitem(
-      menumenu_find,
-      "Go to _Bottom",
-      accelgroup,
-      KEY_BOTTOM,
-      0
-    );
     menuitem_find_gotoline = gtk_add_menuitem(
       menumenu_find,
       "Go to _Line...",
       accelgroup,
       KEY_LINE,
       GDK_CONTROL_MASK
+    );
+    menuitem_find_gotobottom = gtk_add_menuitem(
+      menumenu_find,
+      "Go to _Bottom",
+      accelgroup,
+      KEY_BOTTOM,
+      0
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
