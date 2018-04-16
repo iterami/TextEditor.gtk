@@ -294,7 +294,7 @@ void activate(GtkApplication* app, gpointer data){
     );
     menuitem_find_gotoline = gtk_add_menuitem(
       menumenu_find,
-      "Go to _Line",
+      "Go to _Line...",
       accelgroup,
       KEY_LINE,
       GDK_CONTROL_MASK
