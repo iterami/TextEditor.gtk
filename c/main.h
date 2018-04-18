@@ -9,6 +9,7 @@
 #define KEY_FIND GDK_KEY_f
 #define KEY_FINDMORE GDK_KEY_g
 #define KEY_HIDEWINDOWS GDK_KEY_Escape
+#define KEY_INSERT GDK_KEY_Insert
 #define KEY_LINE GDK_KEY_l
 #define KEY_NEWTAB GDK_KEY_t
 #define KEY_OPEN GDK_KEY_o

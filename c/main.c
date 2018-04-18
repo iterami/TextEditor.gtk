@@ -18,6 +18,7 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_edit_deleteline;
     GtkWidget *menuitem_edit_deletenextword;
     GtkWidget *menuitem_edit_deletepreviousword;
+    GtkWidget *menuitem_edit_insert;
     GtkWidget *menuitem_edit_paste;
     GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
@@ -219,6 +220,17 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_DELETEPREVIOUSWORD,
       GDK_CONTROL_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_edit),
+      gtk_separator_menu_item_new()
+    );
+    menuitem_edit_insert = gtk_add_menuitem(
+      menumenu_edit,
+      "Toggle _Overwrite",
+      accelgroup,
+      KEY_INSERT,
+      0
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_edit),
@@ -608,6 +620,10 @@ void activate(GtkApplication* app, gpointer data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_deletepreviousword,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_insert,
       FALSE
     );
     gtk_widget_set_sensitive(
