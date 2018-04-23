@@ -1674,7 +1674,6 @@ void menu_sort(gboolean asc){
       FALSE
     );
 
-    gint i = 0;
     gint line_count = line_end - line_start + 1;
     char *token;
     char *line_array[line_count];
@@ -1683,6 +1682,7 @@ void menu_sort(gboolean asc){
       text,
       "\n"
     );
+    gint i;
     for(i = 0; i < line_count; i++){
         GtkTextIter temp_start;
 
