@@ -843,12 +843,12 @@ void go_to_line(void){
 
     entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
 
-    int loopi = 0;
+    int i = 0;
     int length_line = strlen(entry);
-    while(loopi < length_line){
+    while(i < length_line){
         linenumber *= 10;
-        linenumber += entry[loopi] - '0';
-        loopi++;
+        linenumber += entry[i] - '0';
+        i++;
     }
     linenumber -= 1;
 
@@ -1430,48 +1430,48 @@ void menu_redo(void){
     if(entry[0] == '0'){
         inserted = FALSE;
     }
-    int loopi = 2;
+    int i = 2;
     int length_line = 0;
-    while(entry[loopi] != ','){
+    while(entry[i] != ','){
         length_line++;
-        loopi++;
+        i++;
     }
     gint line = 0;
-    loopi = 0;
-    while(loopi < length_line){
+    i = 0;
+    while(i < length_line){
         line *= 10;
-        line += entry[loopi + 2] - '0';
-        loopi++;
+        line += entry[i + 2] - '0';
+        i++;
     }
 
-    loopi = length_line + 3;
+    i = length_line + 3;
     int length_lineoffset = 0;
-    while(entry[loopi] != ','){
+    while(entry[i] != ','){
         length_lineoffset++;
-        loopi++;
+        i++;
     }
     gint lineoffset = 0;
-    loopi = 0;
-    while(loopi < length_lineoffset){
+    i = 0;
+    while(i < length_lineoffset){
         lineoffset *= 10;
-        lineoffset += entry[loopi + length_line + 3] - '0';
-        loopi++;
+        lineoffset += entry[i + length_line + 3] - '0';
+        i++;
     }
 
-    loopi = length_line + length_lineoffset + 4;
+    i = length_line + length_lineoffset + 4;
     int length_value = 0;
-    while(entry[loopi] != '\n'){
+    while(entry[i] != '\n'){
         length_value++;
-        loopi++;
+        i++;
     }
     gchar value[length_value + 1];
-    loopi = 0;
-    while(loopi < length_value){
-        value[loopi] = entry[loopi + length_line + length_lineoffset + 4];
-        if(value[loopi] == 30){
-            value[loopi] = '\n';
+    i = 0;
+    while(i < length_value){
+        value[i] = entry[i + length_line + length_lineoffset + 4];
+        if(value[i] == 30){
+            value[i] = '\n';
         }
-        loopi++;
+        i++;
     }
     value[length_value] = '\0';
 
@@ -1812,48 +1812,48 @@ void menu_undo(void){
     if(entry[0] == '0'){
         inserted = FALSE;
     }
-    int loopi = 2;
+    int i = 2;
     int length_line = 0;
-    while(entry[loopi] != ','){
+    while(entry[i] != ','){
         length_line++;
-        loopi++;
+        i++;
     }
     gint line = 0;
-    loopi = 0;
-    while(loopi < length_line){
+    i = 0;
+    while(i < length_line){
         line *= 10;
-        line += entry[loopi + 2] - '0';
-        loopi++;
+        line += entry[i + 2] - '0';
+        i++;
     }
 
-    loopi = length_line + 3;
+    i = length_line + 3;
     int length_lineoffset = 0;
-    while(entry[loopi] != ','){
+    while(entry[i] != ','){
         length_lineoffset++;
-        loopi++;
+        i++;
     }
     gint lineoffset = 0;
-    loopi = 0;
-    while(loopi < length_lineoffset){
+    i = 0;
+    while(i < length_lineoffset){
         lineoffset *= 10;
-        lineoffset += entry[loopi + length_line + 3] - '0';
-        loopi++;
+        lineoffset += entry[i + length_line + 3] - '0';
+        i++;
     }
 
-    loopi = length_line + length_lineoffset + 4;
+    i = length_line + length_lineoffset + 4;
     int length_value = 0;
-    while(entry[loopi] != '\n'){
+    while(entry[i] != '\n'){
         length_value++;
-        loopi++;
+        i++;
     }
     gchar value[length_value + 1];
-    loopi = 0;
-    while(loopi < length_value){
-        value[loopi] = entry[loopi + length_line + length_lineoffset + 4];
-        if(value[loopi] == 30){
-            value[loopi] = '\n';
+    i = 0;
+    while(i < length_value){
+        value[i] = entry[i + length_line + length_lineoffset + 4];
+        if(value[i] == 30){
+            value[i] = '\n';
         }
-        loopi++;
+        i++;
     }
     value[length_value] = '\0';
 
@@ -2412,13 +2412,13 @@ gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, co
       NULL
     );
     gchar newvalue[length_value];
-    gint loopi = 0;
-    while(loopi < length_value){
-        newvalue[loopi] = value[loopi];
-        if(newvalue[loopi] == '\n'){
-            newvalue[loopi] = 30;
+    gint i = 0;
+    while(i < length_value){
+        newvalue[i] = value[i];
+        if(newvalue[i] == '\n'){
+            newvalue[i] = 30;
         }
-        loopi++;
+        i++;
     }
 
     sprintf(
@@ -2438,26 +2438,26 @@ gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, co
     entry[1] = ',';
 
     // Line Number.
-    loopi = 0;
-    while(loopi < length_line){
-        entry[loopi + 2] = linestring[loopi];
-        loopi++;
+    i = 0;
+    while(i < length_line){
+        entry[i + 2] = linestring[i];
+        i++;
     }
     entry[length_line + 2] = ',';
 
     // Position Number.
-    loopi = 0;
-    while(loopi < length_lineoffset){
-        entry[length_line + loopi + 3] = lineoffsetstring[loopi];
-        loopi++;
+    i = 0;
+    while(i < length_lineoffset){
+        entry[length_line + i + 3] = lineoffsetstring[i];
+        i++;
     }
     entry[length_line + length_lineoffset + 3] = ',';
 
     // String.
-    loopi = 0;
-    while(loopi < length_value){
-        entry[length_line + length_lineoffset + loopi + 4] = newvalue[loopi];
-        loopi++;
+    i = 0;
+    while(i < length_value){
+        entry[length_line + length_lineoffset + i + 4] = newvalue[i];
+        i++;
     }
     entry[length_value + length_line + length_lineoffset + 4] = '\n';
     entry[length_value + length_line + length_lineoffset + 5] = '\0';
