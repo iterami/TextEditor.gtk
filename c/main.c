@@ -655,8 +655,8 @@ void activate(GtkApplication* app, gpointer data){
           temp_length
         );
 
-        gint lines = gtk_text_buffer_get_line_count(temp_buffer);
-        gint line = 0;
+        int lines = gtk_text_buffer_get_line_count(temp_buffer);
+        int line = 0;
         while(line < lines){
             gtk_text_buffer_get_iter_at_line(
               temp_buffer,
@@ -724,11 +724,10 @@ void close_tab(void){
 }
 
 void find_clear_tags(void){
-    gint page;
     GtkTextIter end;
     GtkTextIter start;
 
-    page = gtk_notebook_get_n_pages(notebook) - 1;
+    int page = gtk_notebook_get_n_pages(notebook) - 1;
     while(page >= 0){
         tabcontents tab;
         tab = get_tab_contents(page);
@@ -788,7 +787,7 @@ GList* get_tabbox_children(GtkNotebook *tabnotebook, const gint page){
     )));
 }
 
-struct tabcontents get_tab_contents(gint page){
+struct tabcontents get_tab_contents(int page){
     if(page < 0){
         page = gtk_notebook_get_current_page(notebook);
     }
@@ -837,14 +836,14 @@ void go_to_line(void){
     }
 
     const gchar *entry;
-    gint linenumber = 0;
+    int linenumber = 0;
     GtkTextIter line;
     tabcontents tab;
 
     entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
 
     int i = 0;
-    int length_line = strlen(entry);
+    size_t length_line = strlen(entry);
     while(i < length_line){
         linenumber *= 10;
         linenumber += entry[i] - '0';
@@ -915,8 +914,8 @@ void menu_deleteline(void){
         return;
     }
 
-    gint endlinenumber;
-    gint linenumber;
+    int endlinenumber;
+    int linenumber;
     GtkTextIter end;
     GtkTextIter line;
     GtkTextIter start;
@@ -1431,12 +1430,12 @@ void menu_redo(void){
         inserted = FALSE;
     }
     int i = 2;
-    int length_line = 0;
+    size_t length_line = 0;
     while(entry[i] != ','){
         length_line++;
         i++;
     }
-    gint line = 0;
+    int line = 0;
     i = 0;
     while(i < length_line){
         line *= 10;
@@ -1450,7 +1449,7 @@ void menu_redo(void){
         length_lineoffset++;
         i++;
     }
-    gint lineoffset = 0;
+    int lineoffset = 0;
     i = 0;
     while(i < length_lineoffset){
         lineoffset *= 10;
@@ -1459,7 +1458,7 @@ void menu_redo(void){
     }
 
     i = length_line + length_lineoffset + 4;
-    int length_value = 0;
+    size_t length_value = 0;
     while(entry[i] != '\n'){
         length_value++;
         i++;
@@ -1652,8 +1651,8 @@ void menu_sort(gboolean asc){
         return;
     }
 
-    gint line_end = gtk_text_iter_get_line(&end);
-    gint line_start = gtk_text_iter_get_line(&start);
+    int line_end = gtk_text_iter_get_line(&end);
+    int line_start = gtk_text_iter_get_line(&start);
 
     if(line_start == line_end){
         return;
@@ -1674,7 +1673,7 @@ void menu_sort(gboolean asc){
       FALSE
     );
 
-    gint line_count = line_end - line_start + 1;
+    int line_count = line_end - line_start + 1;
     char *token;
     char *line_array[line_count];
 
@@ -1682,7 +1681,7 @@ void menu_sort(gboolean asc){
       text,
       "\n"
     );
-    gint i;
+    int i;
     for(i = 0; i < line_count; i++){
         GtkTextIter temp_start;
 
@@ -1724,7 +1723,7 @@ void menu_sort(gboolean asc){
     );
 
     for(i = 0; i < line_count; i++){
-        int length = strlen(line_array[i]);
+        size_t length = strlen(line_array[i]);
 
         gtk_text_buffer_insert(
           tab.text_buffer,
@@ -1813,12 +1812,12 @@ void menu_undo(void){
         inserted = FALSE;
     }
     int i = 2;
-    int length_line = 0;
+    size_t length_line = 0;
     while(entry[i] != ','){
         length_line++;
         i++;
     }
-    gint line = 0;
+    int line = 0;
     i = 0;
     while(i < length_line){
         line *= 10;
@@ -1832,7 +1831,7 @@ void menu_undo(void){
         length_lineoffset++;
         i++;
     }
-    gint lineoffset = 0;
+    int lineoffset = 0;
     i = 0;
     while(i < length_lineoffset){
         lineoffset *= 10;
@@ -1841,7 +1840,7 @@ void menu_undo(void){
     }
 
     i = length_line + length_lineoffset + 4;
-    int length_value = 0;
+    size_t length_value = 0;
     while(entry[i] != '\n'){
         length_value++;
         i++;
@@ -2172,7 +2171,7 @@ void save_tab(const char *filename){
     tab = get_tab_contents(-1);
 
     // Trim line endings.
-    gint linei = gtk_text_buffer_get_line_count(tab.text_buffer);
+    int linei = gtk_text_buffer_get_line_count(tab.text_buffer);
     while(linei >= 0){
         linei--;
         gtk_text_buffer_get_iter_at_line(
@@ -2396,14 +2395,14 @@ void unblock_insertdelete_signals(GtkTextBuffer *text_buffer){
     );
 }
 
-gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, const gint lineoffset){
-    gint length_line = core_get_int_length(line);
-    gint length_lineoffset = core_get_int_length(lineoffset);
+gchar* undoredo_entry(gchar *value, const gboolean inserted, const int line, const int lineoffset){
+    size_t length_line = core_get_int_length(line);
+    size_t length_lineoffset = core_get_int_length(lineoffset);
 
     char lineoffsetstring[length_lineoffset];
     char linestring[length_line];
 
-    gint length_value = strlen(value);
+    size_t length_value = strlen(value);
     value = g_locale_to_utf8(
       value,
       length_value,
@@ -2412,7 +2411,7 @@ gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, co
       NULL
     );
     gchar newvalue[length_value];
-    gint i = 0;
+    int i = 0;
     while(i < length_value){
         newvalue[i] = value[i];
         if(newvalue[i] == '\n'){
@@ -2474,8 +2473,7 @@ gchar* undoredo_entry(gchar *value, const gboolean inserted, const gint line, co
 }
 
 void update_opened_files(void){
-    gint page = 0;
-    gint pages;
+    int page = 0;
     gchar *content;
     GtkTextBuffer *buffer;
     GtkTextIter end;
@@ -2485,7 +2483,7 @@ void update_opened_files(void){
     buffer = gtk_text_buffer_new(NULL);
     temp_text_view = gtk_text_view_new_with_buffer(buffer);
 
-    pages = gtk_notebook_get_n_pages(notebook) - 1;
+    int pages = gtk_notebook_get_n_pages(notebook) - 1;
     while(page <= pages){
         gtk_text_buffer_get_end_iter(
           buffer,
