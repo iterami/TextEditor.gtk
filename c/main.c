@@ -1066,6 +1066,25 @@ void menu_findline(void){
     gtk_widget_show_all(line_window);
     gtk_window_present(GTK_WINDOW(line_window));
 
+    GtkTextIter cursor;
+    tabcontents tab;
+    tab = get_tab_contents(-1);
+
+    gtk_text_buffer_get_iter_at_mark(
+      tab.text_buffer,
+      &cursor,
+      gtk_text_buffer_get_insert(tab.text_buffer)
+    );
+    gchar *line = g_strdup_printf(
+      "%i",
+      gtk_text_iter_get_line(&cursor)
+    );
+    gtk_entry_set_text(
+      GTK_ENTRY(line_window_line),
+      line
+    );
+    g_free(line);
+
     gtk_widget_grab_focus(line_window_line);
 }
 
