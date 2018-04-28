@@ -1077,7 +1077,7 @@ void menu_findline(void){
     );
     gchar *line = g_strdup_printf(
       "%i",
-      gtk_text_iter_get_line(&cursor)
+      gtk_text_iter_get_line(&cursor) + 1
     );
     gtk_entry_set_text(
       GTK_ENTRY(line_window_line),
