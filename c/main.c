@@ -1247,6 +1247,8 @@ void menu_findreplaceall(void){
         return;
     }
 
+    menu_refind();
+
     gchar *replace_content;
     GtkTextBuffer *replace_buffer;
     GtkTextIter end;
