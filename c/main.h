@@ -12,7 +12,9 @@
 #define KEY_INSERT GDK_KEY_Insert
 #define KEY_LINE GDK_KEY_l
 #define KEY_NEWTAB GDK_KEY_t
+#define KEY_NEXTTAB GDK_KEY_equal
 #define KEY_OPEN GDK_KEY_o
+#define KEY_PREVIOUSTAB GDK_KEY_minus
 #define KEY_REPLACE GDK_KEY_h
 #define KEY_SAVE GDK_KEY_s
 #define KEY_SELECTALL GDK_KEY_a
@@ -56,14 +58,16 @@ void menu_clearundoredo(void);
 void menu_deleteline(void);
 void menu_find(void);
 void menu_findbottom(void);
+void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start);
 void menu_findline(void);
 void menu_findnext(void);
 void menu_findprevious(void);
-void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start);
 void menu_findreplaceall(void);
 void menu_findtop(void);
 void menu_hide(void);
+void menu_nexttab(void);
 void menu_open(void);
+void menu_previoustab(void);
 void menu_redo(void);
 void menu_refind(void);
 void menu_save(void);
