@@ -55,13 +55,12 @@ void activate(GtkApplication* app, gpointer data){
       "TextEditor.gtk"
     );
 
-    // Setup notebook and tab with scrollable text view.
+    // Setup notebook with scrollable text view.
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_set_scrollable(
       notebook,
       TRUE
     );
-    new_tab();
 
     // Setup menu items.
     menubar = gtk_menu_bar_new();
