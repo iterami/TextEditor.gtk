@@ -516,8 +516,8 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect_swapped(
       menuitem_file_nexttab,
       "activate",
-      G_CALLBACK(menu_nexttab),
-      NULL
+      G_CALLBACK(gtk_notebook_next_page),
+      notebook
     );
     g_signal_connect_swapped(
       menuitem_file_open,
@@ -528,8 +528,8 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect_swapped(
       menuitem_file_previoustab,
       "activate",
-      G_CALLBACK(menu_previoustab),
-      NULL
+      G_CALLBACK(gtk_notebook_prev_page),
+      notebook
     );
     g_signal_connect_swapped(
       menuitem_file_quit,
@@ -1382,10 +1382,6 @@ void menu_hide(void){
     gtk_widget_hide(line_window);
 }
 
-void menu_nexttab(void){
-    gtk_notebook_next_page(notebook);
-}
-
 void menu_open(void){
     GtkFileChooser *chooser;
     GtkWidget *dialog_open;
@@ -1423,10 +1419,6 @@ void menu_open(void){
     }
 
     gtk_widget_destroy(dialog_open);
-}
-
-void menu_previoustab(void){
-    gtk_notebook_prev_page(notebook);
 }
 
 void menu_redo(void){
