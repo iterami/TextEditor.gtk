@@ -28,6 +28,8 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_file;
     GtkWidget *menuitem_file_closetab;
     GtkWidget *menuitem_file_hide;
+    GtkWidget *menuitem_file_movetableft;
+    GtkWidget *menuitem_file_movetabright;
     GtkWidget *menuitem_file_newtab;
     GtkWidget *menuitem_file_nexttab;
     GtkWidget *menuitem_file_open;
@@ -123,6 +125,20 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_PREVIOUSTAB,
       GDK_CONTROL_MASK
+    );
+    menuitem_file_movetableft = gtk_add_menuitem(
+      menumenu_file,
+      "Move Tab _Left",
+      accelgroup,
+      KEY_PREVIOUSTAB,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
+    );
+    menuitem_file_movetabright = gtk_add_menuitem(
+      menumenu_file,
+      "Move Tab _Right",
+      accelgroup,
+      KEY_NEXTTAB,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menumenu_file),
@@ -496,6 +512,18 @@ void activate(GtkApplication* app, gpointer data){
       menuitem_file_hide,
       "activate",
       G_CALLBACK(menu_hide),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_movetableft,
+      "activate",
+      G_CALLBACK(menu_movetableft),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_file_movetabright,
+      "activate",
+      G_CALLBACK(menu_movetabright),
       NULL
     );
     g_signal_connect_swapped(
@@ -1371,6 +1399,33 @@ void menu_findtop(void){
 void menu_hide(void){
     gtk_widget_hide(find_window);
     gtk_widget_hide(line_window);
+}
+
+void menu_movetableft(void){
+    gtk_notebook_reorder_child(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      gtk_notebook_get_current_page(notebook) - 1
+    );
+}
+
+void menu_movetabright(void){
+    int position = gtk_notebook_get_current_page(notebook) + 1;
+    if(position >= gtk_notebook_get_n_pages(notebook)){
+        position = 0;
+    }
+
+    gtk_notebook_reorder_child(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      position
+    );
 }
 
 void menu_open(void){

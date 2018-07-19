@@ -64,6 +64,8 @@ void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start);
 void menu_findreplaceall(void);
 void menu_findtop(void);
 void menu_hide(void);
+void menu_movetableft(void);
+void menu_movetabright(void);
 void menu_open(void);
 void menu_redo(void);
 void menu_refind(void);
