@@ -22,6 +22,8 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_edit_paste;
     GtkWidget *menuitem_edit_redo;
     GtkWidget *menuitem_edit_selectall;
+    GtkWidget *menuitem_edit_sortasc;
+    GtkWidget *menuitem_edit_sortdesc;
     GtkWidget *menuitem_edit_undo;
     GtkWidget *menuitem_file;
     GtkWidget *menuitem_file_closetab;
@@ -41,13 +43,9 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menuitem_find_gotoline;
     GtkWidget *menuitem_find_gototop;
     GtkWidget *menuitem_find_replace;
-    GtkWidget *menuitem_sort;
-    GtkWidget *menuitem_sort_asc;
-    GtkWidget *menuitem_sort_desc;
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
     GtkWidget *menumenu_find;
-    GtkWidget *menumenu_sort;
     GtkWidget *outerbox;
 
     gtk_init_gtk(
@@ -257,10 +255,28 @@ void activate(GtkApplication* app, gpointer data){
     );
     menuitem_edit_selectall = gtk_add_menuitem(
       menumenu_edit,
-      "Select _All",
+      "_Select All",
       accelgroup,
       KEY_SELECTALL,
       GDK_CONTROL_MASK
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menumenu_edit),
+      gtk_separator_menu_item_new()
+    );
+    menuitem_edit_sortasc = gtk_add_menuitem(
+      menumenu_edit,
+      "Sort _Ascending",
+      accelgroup,
+      KEY_SORT,
+      GDK_CONTROL_MASK
+    );
+    menuitem_edit_sortdesc = gtk_add_menuitem(
+      menumenu_edit,
+      "Sort Desce_nding",
+      accelgroup,
+      KEY_SORT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
@@ -333,31 +349,6 @@ void activate(GtkApplication* app, gpointer data){
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
       menuitem_find
-    );
-    // Sort menu.
-    menumenu_sort = gtk_menu_new();
-    menuitem_sort = gtk_menu_item_new_with_mnemonic("_Sort");
-    gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(menuitem_sort),
-      menumenu_sort
-    );
-    menuitem_sort_asc = gtk_add_menuitem(
-      menumenu_sort,
-      "_Ascending",
-      accelgroup,
-      KEY_SORT,
-      GDK_CONTROL_MASK
-    );
-    menuitem_sort_desc = gtk_add_menuitem(
-      menumenu_sort,
-      "_Descending",
-      accelgroup,
-      KEY_SORT,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menubar),
-      menuitem_sort
     );
 
     // Add everything to a box and show.
@@ -568,6 +559,18 @@ void activate(GtkApplication* app, gpointer data){
       NULL
     );
     g_signal_connect_swapped(
+      menuitem_edit_sortasc,
+      "activate",
+      G_CALLBACK(menu_sort_asc),
+      NULL
+    );
+    g_signal_connect_swapped(
+      menuitem_edit_sortdesc,
+      "activate",
+      G_CALLBACK(menu_sort_desc),
+      NULL
+    );
+    g_signal_connect_swapped(
       menuitem_edit_undo,
       "activate",
       G_CALLBACK(menu_undo),
@@ -613,18 +616,6 @@ void activate(GtkApplication* app, gpointer data){
       menuitem_find_replace,
       "activate",
       G_CALLBACK(menu_findreplaceall),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_sort_asc,
-      "activate",
-      G_CALLBACK(menu_sort_asc),
-      NULL
-    );
-    g_signal_connect_swapped(
-      menuitem_sort_desc,
-      "activate",
-      G_CALLBACK(menu_sort_desc),
       NULL
     );
 
