@@ -843,7 +843,6 @@ struct tabcontents get_tab_contents(int page){
     }
 
     GtkNotebook *tabnotebook;
-    GtkWidget *tabmappane;
     GtkWidget *tabundopane;
     GtkWidget *text_view;
 
@@ -859,10 +858,6 @@ struct tabcontents get_tab_contents(int page){
       children,
       1
     );
-    tabmappane = gtk_notebook_get_nth_page(
-      tabnotebook,
-      0
-    );
     tabundopane = gtk_notebook_get_nth_page(
       tabnotebook,
       1
@@ -874,7 +869,7 @@ struct tabcontents get_tab_contents(int page){
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view)),
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane)))))),
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane)))))),
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(tabmappane))))
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(tabnotebook, 0)))))
     };
     return result;
 }
