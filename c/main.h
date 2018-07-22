@@ -13,6 +13,8 @@
 #define KEY_LINE GDK_KEY_l
 #define KEY_NEWTAB GDK_KEY_t
 #define KEY_NEXTTAB GDK_KEY_equal
+#define KEY_MOVETABLEFT GDK_KEY_underscore
+#define KEY_MOVETABRIGHT GDK_KEY_plus
 #define KEY_OPEN GDK_KEY_o
 #define KEY_PREVIOUSTAB GDK_KEY_minus
 #define KEY_REPLACE GDK_KEY_h

@@ -130,14 +130,14 @@ void activate(GtkApplication* app, gpointer data){
       menumenu_file,
       "Move Tab _Left",
       accelgroup,
-      KEY_PREVIOUSTAB,
+      KEY_MOVETABLEFT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     menuitem_file_movetabright = gtk_add_menuitem(
       menumenu_file,
       "Move Tab _Right",
       accelgroup,
-      KEY_NEXTTAB,
+      KEY_MOVETABRIGHT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK
     );
     gtk_menu_shell_append(
