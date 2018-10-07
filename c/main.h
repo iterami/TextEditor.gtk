@@ -26,7 +26,6 @@
 #define KEY_UNDOCLEAR GDK_KEY_y
 
 gchar *finding = NULL;
-gint window_offset = 0;
 GtkWidget *find_window;
 GtkWidget *find_window_find;
 GtkWidget *find_window_replace;
@@ -34,6 +33,7 @@ GtkWidget *line_window;
 GtkWidget *line_window_line;
 GtkNotebook *notebook;
 gboolean refinding = TRUE;
+gint width_tabnotebook = 0;
 
 typedef struct tabcontents{
   int page;

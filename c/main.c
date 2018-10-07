@@ -1037,10 +1037,26 @@ void menu_deleteline(void){
 void menu_find(void){
     if(!gtk_widget_is_visible(GTK_WIDGET(find_window))){
         gtk_widget_show_all(find_window);
+
+        gint height = 0;
+        gint width = 0;
+        gint x = 0;
+        gint y = 0;
+        gtk_window_get_position(
+          GTK_WINDOW(window),
+          &x,
+          &y
+        );
+        gtk_window_get_size(
+          GTK_WINDOW(window),
+          &width,
+          &height
+        );
+
         gtk_window_move(
           GTK_WINDOW(find_window),
-          gdk_screen_width() - 300 - window_offset,
-          gdk_screen_height() - 200
+          x + width - 320 - width_tabnotebook,
+          y + height - 200
         );
     }
     gtk_window_present(GTK_WINDOW(find_window));
@@ -1117,10 +1133,26 @@ void menu_findbottom(void){
 void menu_findline(void){
     if(!gtk_widget_is_visible(GTK_WIDGET(line_window))){
         gtk_widget_show_all(line_window);
+
+        gint height = 0;
+        gint width = 0;
+        gint x = 0;
+        gint y = 0;
+        gtk_window_get_position(
+          GTK_WINDOW(window),
+          &x,
+          &y
+        );
+        gtk_window_get_size(
+          GTK_WINDOW(window),
+          &width,
+          &height
+        );
+
         gtk_window_move(
           GTK_WINDOW(line_window),
-          gdk_screen_width() - 300 - window_offset,
-          gdk_screen_height() - 309
+          x + width - 320 - width_tabnotebook,
+          y + height - 260
         );
     }
     gtk_window_present(GTK_WINDOW(line_window));
@@ -2123,11 +2155,11 @@ void new_tab(void){
       gtk_label_new("UNSAVED")
     );
     gtk_widget_show_all(window);
-    if(window_offset == 0){
+    if(width_tabnotebook == 0){
         gtk_widget_get_preferred_width(
           GTK_WIDGET(tabnotebook),
           NULL,
-          &window_offset
+          &width_tabnotebook
         );
     }
 
