@@ -2123,11 +2123,13 @@ void new_tab(void){
       gtk_label_new("UNSAVED")
     );
     gtk_widget_show_all(window);
-    gtk_widget_get_preferred_width(
-      GTK_WIDGET(tabnotebook),
-      NULL,
-      &window_offset
-    );
+    if(window_offset == 0){
+        gtk_widget_get_preferred_width(
+          GTK_WIDGET(tabnotebook),
+          NULL,
+          &window_offset
+        );
+    }
 
     gtk_notebook_set_current_page(
       notebook,
