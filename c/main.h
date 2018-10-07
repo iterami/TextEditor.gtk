@@ -26,6 +26,7 @@
 #define KEY_UNDOCLEAR GDK_KEY_y
 
 gchar *finding = NULL;
+gint window_offset = 0;
 GtkWidget *find_window;
 GtkWidget *find_window_find;
 GtkWidget *find_window_replace;

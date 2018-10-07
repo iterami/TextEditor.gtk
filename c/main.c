@@ -1039,7 +1039,7 @@ void menu_find(void){
     gtk_window_present(GTK_WINDOW(find_window));
     gtk_window_move(
       GTK_WINDOW(find_window),
-      gdk_screen_width() - 442,
+      gdk_screen_width() - 300 - window_offset,
       gdk_screen_height() - 200
     );
 
@@ -1117,7 +1117,7 @@ void menu_findline(void){
     gtk_window_present(GTK_WINDOW(line_window));
     gtk_window_move(
       GTK_WINDOW(line_window),
-      gdk_screen_width() - 442,
+      gdk_screen_width() - 300 - window_offset,
       gdk_screen_height() - 309
     );
 
@@ -2119,6 +2119,11 @@ void new_tab(void){
       gtk_label_new("UNSAVED")
     );
     gtk_widget_show_all(window);
+    gtk_widget_get_preferred_width(
+      GTK_WIDGET(tabnotebook),
+      &window_offset,
+      &window_offset
+    );
 
     gtk_notebook_set_current_page(
       notebook,
