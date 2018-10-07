@@ -1700,7 +1700,7 @@ void menu_saveas(void){
       GTK_FILE_CHOOSER_ACTION_SAVE,
       "_Cancel",
       GTK_RESPONSE_CANCEL,
-      "_Save",
+      "_Save As",
       GTK_RESPONSE_ACCEPT,
       NULL
     );
