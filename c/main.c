@@ -2121,7 +2121,7 @@ void new_tab(void){
     gtk_widget_show_all(window);
     gtk_widget_get_preferred_width(
       GTK_WIDGET(tabnotebook),
-      &window_offset,
+      NULL,
       &window_offset
     );
 
