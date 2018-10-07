@@ -1035,13 +1035,15 @@ void menu_deleteline(void){
 }
 
 void menu_find(void){
-    gtk_widget_show_all(find_window);
+    if(!gtk_widget_is_visible(GTK_WIDGET(find_window))){
+        gtk_widget_show_all(find_window);
+        gtk_window_move(
+          GTK_WINDOW(find_window),
+          gdk_screen_width() - 300 - window_offset,
+          gdk_screen_height() - 200
+        );
+    }
     gtk_window_present(GTK_WINDOW(find_window));
-    gtk_window_move(
-      GTK_WINDOW(find_window),
-      gdk_screen_width() - 300 - window_offset,
-      gdk_screen_height() - 200
-    );
 
     GtkTextBuffer *buffer;
     tabcontents tab;
@@ -1113,13 +1115,15 @@ void menu_findbottom(void){
 }
 
 void menu_findline(void){
-    gtk_widget_show_all(line_window);
+    if(!gtk_widget_is_visible(GTK_WIDGET(line_window))){
+        gtk_widget_show_all(line_window);
+        gtk_window_move(
+          GTK_WINDOW(line_window),
+          gdk_screen_width() - 300 - window_offset,
+          gdk_screen_height() - 309
+        );
+    }
     gtk_window_present(GTK_WINDOW(line_window));
-    gtk_window_move(
-      GTK_WINDOW(line_window),
-      gdk_screen_width() - 300 - window_offset,
-      gdk_screen_height() - 309
-    );
 
     GtkTextIter cursor;
     tabcontents tab;
