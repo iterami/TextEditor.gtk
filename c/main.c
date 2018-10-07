@@ -419,11 +419,6 @@ void activate(GtkApplication* app, gpointer data){
       GTK_WINDOW(find_window),
       GDK_WINDOW_TYPE_HINT_DIALOG
     );
-    gtk_window_move(
-      GTK_WINDOW(find_window),
-      gdk_screen_width() - 442,
-      gdk_screen_height() - 200
-    );
     outerbox = gtk_box_new(
       GTK_ORIENTATION_VERTICAL,
       0
@@ -487,11 +482,6 @@ void activate(GtkApplication* app, gpointer data){
     gtk_window_set_type_hint(
       GTK_WINDOW(line_window),
       GDK_WINDOW_TYPE_HINT_DIALOG
-    );
-    gtk_window_move(
-      GTK_WINDOW(line_window),
-      gdk_screen_width() - 442,
-      gdk_screen_height() - 309
     );
     line_window_line = gtk_entry_new();
     gtk_container_add(
@@ -1047,6 +1037,11 @@ void menu_deleteline(void){
 void menu_find(void){
     gtk_widget_show_all(find_window);
     gtk_window_present(GTK_WINDOW(find_window));
+    gtk_window_move(
+      GTK_WINDOW(find_window),
+      gdk_screen_width() - 442,
+      gdk_screen_height() - 200
+    );
 
     GtkTextBuffer *buffer;
     tabcontents tab;
@@ -1120,6 +1115,11 @@ void menu_findbottom(void){
 void menu_findline(void){
     gtk_widget_show_all(line_window);
     gtk_window_present(GTK_WINDOW(line_window));
+    gtk_window_move(
+      GTK_WINDOW(line_window),
+      gdk_screen_width() - 442,
+      gdk_screen_height() - 309
+    );
 
     GtkTextIter cursor;
     tabcontents tab;
