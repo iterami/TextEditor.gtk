@@ -734,6 +734,7 @@ void activate(GtkApplication* app, gpointer data){
         }
 
         gtk_widget_destroy(temp_text_view);
+        g_object_unref(temp_text_view);
     }
 
     g_free(temp_path);
@@ -2679,4 +2680,5 @@ void update_opened_files(void){
     g_free(path);
 
     gtk_widget_destroy(temp_text_view);
+    g_object_unref(temp_text_view);
 }
