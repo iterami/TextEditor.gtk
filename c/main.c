@@ -2365,8 +2365,6 @@ void save_tab(const char *filename){
         }
     }
 
-    block_insertdelete_signals(tab.text_buffer);
-
     gtk_text_buffer_get_end_iter(
       tab.text_buffer,
       &end
@@ -2423,8 +2421,6 @@ void save_tab(const char *filename){
       ),
       gtk_label_new(filename)
     );
-
-    unblock_insertdelete_signals(tab.text_buffer);
 }
 
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
