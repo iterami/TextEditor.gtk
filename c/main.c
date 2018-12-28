@@ -57,6 +57,7 @@ void activate(GtkApplication* app, gpointer data){
 
     // Setup scrollable notebook.
     notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_popup_enable(notebook);
     gtk_notebook_set_scrollable(
       notebook,
       TRUE
