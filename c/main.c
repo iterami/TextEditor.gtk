@@ -688,11 +688,11 @@ void activate(GtkApplication* app, gpointer data){
     gssize temp_length;
 
     if(g_file_get_contents(
-      temp_path,
-      &temp_content,
-      &temp_length,
-      NULL
-    )){
+        temp_path,
+        &temp_content,
+        &temp_length,
+        NULL
+      )){
         GtkTextIter temp_end;
         GtkTextIter temp_start;
         GtkTextBuffer *temp_buffer;
@@ -1206,16 +1206,16 @@ void menu_findnext(void){
       "found"
     );
     if(gtk_text_iter_forward_to_tag_toggle(
-      &cursor,
-      tag_found
-    )){
+        &cursor,
+        tag_found
+      )){
         GtkTextIter end;
         GtkTextIter start;
 
         if(gtk_text_iter_begins_tag(
-          &cursor,
-          tag_found
-        )){
+            &cursor,
+            tag_found
+          )){
             start = cursor;
             gtk_text_iter_forward_to_tag_toggle(
               &cursor,
@@ -1270,16 +1270,16 @@ void menu_findprevious(void){
       "found"
     );
     if(gtk_text_iter_backward_to_tag_toggle(
-      &cursor,
-      tag_found
-    )){
+        &cursor,
+        tag_found
+      )){
         GtkTextIter end;
         GtkTextIter start;
 
         if(gtk_text_iter_begins_tag(
-          &cursor,
-          tag_found
-        )){
+            &cursor,
+            tag_found
+          )){
             start = cursor;
             gtk_text_iter_forward_to_tag_toggle(
               &cursor,
@@ -1313,13 +1313,13 @@ void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
     GtkTextIter match_end;
     GtkTextIter match_start;
     if(gtk_text_iter_forward_search(
-      &start,
-      finding,
-      GTK_TEXT_SEARCH_CASE_INSENSITIVE,
-      &match_start,
-      &match_end,
-      NULL
-    )){
+        &start,
+        finding,
+        GTK_TEXT_SEARCH_CASE_INSENSITIVE,
+        &match_start,
+        &match_end,
+        NULL
+      )){
         gtk_text_buffer_apply_tag_by_name(
           buffer,
           "found",
@@ -1383,9 +1383,9 @@ void menu_findreplaceall(void){
         );
 
         if(gtk_text_iter_begins_tag(
-          &end,
-          tag_found
-        )){
+            &end,
+            tag_found
+          )){
             start = end;
             int offset = gtk_text_iter_get_offset(&start);
 
@@ -1531,9 +1531,9 @@ void menu_redo(void){
       1
     );
     if(gtk_text_iter_compare(
-      &redostart,
-      &redoend
-    ) == 0){
+        &redostart,
+        &redoend
+      ) == 0){
         return;
     }
 
@@ -1785,10 +1785,10 @@ void menu_sort(gboolean asc){
     tab = get_tab_contents(-1);
 
     if(!gtk_text_buffer_get_selection_bounds(
-      tab.text_buffer,
-      &start,
-      &end
-    )){
+        tab.text_buffer,
+        &start,
+        &end
+      )){
         return;
     }
 
@@ -1913,9 +1913,9 @@ void menu_undo(void){
       1
     );
     if(gtk_text_iter_compare(
-      &undostart,
-      &undoend
-    ) == 0){
+        &undostart,
+        &undoend
+      ) == 0){
         return;
     }
 
@@ -2224,15 +2224,15 @@ void open_file(char *filename){
     gssize length;
 
     if(g_file_get_contents(
-      filename,
-      &content,
-      &length,
-      NULL
-    ) && g_utf8_validate(
-      content,
-      length,
-      NULL
-    )){
+        filename,
+        &content,
+        &length,
+        NULL
+      ) && g_utf8_validate(
+        content,
+        length,
+        NULL
+      )){
         if(get_notebook_no_pages()
           || !check_equals_unsaved()){
             new_tab();
