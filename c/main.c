@@ -9,6 +9,7 @@ void activate(GtkApplication* app, gpointer data){
     GtkAccelGroup *accelgroup;
     GtkWidget *box;
     GtkWidget *findreplaceall;
+    GtkWidget *findreplacepane;
     GtkWidget *menubar;
     GtkWidget *menuitem_edit;
     GtkWidget *menuitem_edit_clearundoredo;
@@ -48,7 +49,8 @@ void activate(GtkApplication* app, gpointer data){
     GtkWidget *menumenu_edit;
     GtkWidget *menumenu_file;
     GtkWidget *menumenu_find;
-    GtkWidget *outerbox;
+    GtkWidget *scrolled_window_find;
+    GtkWidget *scrolled_window_replace;
 
     gtk_init_gtk(
       app,
@@ -420,29 +422,34 @@ void activate(GtkApplication* app, gpointer data){
       GTK_WINDOW(find_window),
       GDK_WINDOW_TYPE_HINT_DIALOG
     );
-    outerbox = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      0
-    );
+    findreplacepane = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
     find_window_find = new_textview(FALSE);
-    gtk_box_pack_start(
-      GTK_BOX(outerbox),
-      find_window_find,
+    scrolled_window_find = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_find),
+      find_window_find
+    );
+    gtk_paned_pack1(
+      GTK_PANED(findreplacepane),
+      scrolled_window_find,
       TRUE,
-      TRUE,
-      1
+      TRUE
     );
     find_window_replace = new_textview(FALSE);
-    gtk_box_pack_start(
-      GTK_BOX(outerbox),
-      find_window_replace,
+    scrolled_window_replace = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_replace),
+      find_window_replace
+    );
+    gtk_paned_pack2(
+      GTK_PANED(findreplacepane),
+      scrolled_window_replace,
       TRUE,
-      TRUE,
-      0
+      TRUE
     );
     gtk_container_add(
       GTK_CONTAINER(find_window),
-      outerbox
+      findreplacepane
     );
     g_signal_connect_swapped(
       find_window,
