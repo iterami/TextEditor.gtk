@@ -506,7 +506,7 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect_swapped(
       menuitem_file_closetab,
       "activate",
-      G_CALLBACK(close_tab),
+      G_CALLBACK(menu_closetab),
       NULL
     );
     g_signal_connect_swapped(
@@ -530,7 +530,7 @@ void activate(GtkApplication* app, gpointer data){
     g_signal_connect_swapped(
       menuitem_file_newtab,
       "activate",
-      G_CALLBACK(new_tab),
+      G_CALLBACK(menu_newtab),
       NULL
     );
     g_signal_connect_swapped(
@@ -762,19 +762,6 @@ gboolean check_equals_unsaved(void){
     ) == 0;
 }
 
-void close_tab(void){
-    if(get_notebook_no_pages()){
-        return;
-    }
-
-    gtk_notebook_remove_page(
-      notebook,
-      gtk_notebook_get_current_page(notebook)
-    );
-
-    update_opened_files();
-}
-
 void find_clear_tags(void){
     GtkTextIter end;
     GtkTextIter start;
@@ -954,6 +941,19 @@ void menu_clearundoredo(void){
       "",
       0
     );
+}
+
+void menu_closetab(void){
+    if(get_notebook_no_pages()){
+        return;
+    }
+
+    gtk_notebook_remove_page(
+      notebook,
+      gtk_notebook_get_current_page(notebook)
+    );
+
+    update_opened_files();
 }
 
 void menu_deleteline(void){
@@ -1468,6 +1468,115 @@ void menu_movetabright(void){
         gtk_notebook_get_current_page(notebook)
       ),
       position
+    );
+}
+
+void menu_newtab(void){
+    GtkNotebook *tabnotebook;
+    GtkWidget *scrolled_window_map;
+    GtkWidget *scrolled_window_redo;
+    GtkWidget *scrolled_window_undo;
+    GtkWidget *scrolled_window;
+    GtkWidget *tabbox;
+    GtkWidget *text_view;
+    GtkWidget *undopaned;
+
+    tabbox = gtk_box_new(
+      GTK_ORIENTATION_HORIZONTAL,
+      1
+    );
+    text_view = new_textview(FALSE);
+    scrolled_window = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window),
+      text_view
+    );
+    gtk_box_pack_start(
+      GTK_BOX(tabbox),
+      scrolled_window,
+      TRUE,
+      TRUE,
+      0
+    );
+    tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
+    scrolled_window_map = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_map),
+      new_textview(TRUE)
+    );
+    gtk_notebook_append_page(
+      tabnotebook,
+      scrolled_window_map,
+      gtk_label_new("Map")
+    );
+    undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    scrolled_window_undo = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_undo),
+      new_textview(FALSE)
+    );
+    gtk_paned_pack1(
+      GTK_PANED(undopaned),
+      scrolled_window_undo,
+      TRUE,
+      TRUE
+    );
+    scrolled_window_redo = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_redo),
+      new_textview(FALSE)
+    );
+    gtk_paned_pack2(
+      GTK_PANED(undopaned),
+      scrolled_window_redo,
+      TRUE,
+      TRUE
+    );
+    gtk_notebook_append_page(
+      tabnotebook,
+      undopaned,
+      gtk_label_new("Undo/Redo")
+    );
+    gtk_box_pack_start(
+      GTK_BOX(tabbox),
+      GTK_WIDGET(tabnotebook),
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_notebook_append_page(
+      notebook,
+      tabbox,
+      gtk_label_new("UNSAVED")
+    );
+    gtk_widget_show_all(window);
+    if(width_tabnotebook == 0){
+        gtk_widget_get_preferred_width(
+          GTK_WIDGET(tabnotebook),
+          NULL,
+          &width_tabnotebook
+        );
+    }
+
+    gtk_notebook_set_current_page(
+      notebook,
+      gtk_notebook_get_n_pages(notebook) - 1
+    );
+    gtk_widget_grab_focus(text_view);
+
+    GtkTextBuffer *buffer;
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    g_signal_connect_swapped(
+      buffer,
+      "insert-text",
+      G_CALLBACK(text_inserted),
+      NULL
+    );
+    g_signal_connect_swapped(
+      buffer,
+      "delete-range",
+      G_CALLBACK(text_deleted),
+      NULL
     );
 }
 
@@ -2078,115 +2187,6 @@ GtkWidget* new_scrolled_window(void){
     return scrolled_window;
 }
 
-void new_tab(void){
-    GtkNotebook *tabnotebook;
-    GtkWidget *scrolled_window_map;
-    GtkWidget *scrolled_window_redo;
-    GtkWidget *scrolled_window_undo;
-    GtkWidget *scrolled_window;
-    GtkWidget *tabbox;
-    GtkWidget *text_view;
-    GtkWidget *undopaned;
-
-    tabbox = gtk_box_new(
-      GTK_ORIENTATION_HORIZONTAL,
-      1
-    );
-    text_view = new_textview(FALSE);
-    scrolled_window = new_scrolled_window();
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window),
-      text_view
-    );
-    gtk_box_pack_start(
-      GTK_BOX(tabbox),
-      scrolled_window,
-      TRUE,
-      TRUE,
-      0
-    );
-    tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
-    scrolled_window_map = new_scrolled_window();
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window_map),
-      new_textview(TRUE)
-    );
-    gtk_notebook_append_page(
-      tabnotebook,
-      scrolled_window_map,
-      gtk_label_new("Map")
-    );
-    undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
-    scrolled_window_undo = new_scrolled_window();
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window_undo),
-      new_textview(FALSE)
-    );
-    gtk_paned_pack1(
-      GTK_PANED(undopaned),
-      scrolled_window_undo,
-      TRUE,
-      TRUE
-    );
-    scrolled_window_redo = new_scrolled_window();
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window_redo),
-      new_textview(FALSE)
-    );
-    gtk_paned_pack2(
-      GTK_PANED(undopaned),
-      scrolled_window_redo,
-      TRUE,
-      TRUE
-    );
-    gtk_notebook_append_page(
-      tabnotebook,
-      undopaned,
-      gtk_label_new("Undo/Redo")
-    );
-    gtk_box_pack_start(
-      GTK_BOX(tabbox),
-      GTK_WIDGET(tabnotebook),
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_notebook_append_page(
-      notebook,
-      tabbox,
-      gtk_label_new("UNSAVED")
-    );
-    gtk_widget_show_all(window);
-    if(width_tabnotebook == 0){
-        gtk_widget_get_preferred_width(
-          GTK_WIDGET(tabnotebook),
-          NULL,
-          &width_tabnotebook
-        );
-    }
-
-    gtk_notebook_set_current_page(
-      notebook,
-      gtk_notebook_get_n_pages(notebook) - 1
-    );
-    gtk_widget_grab_focus(text_view);
-
-    GtkTextBuffer *buffer;
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
-    g_signal_connect_swapped(
-      buffer,
-      "insert-text",
-      G_CALLBACK(text_inserted),
-      NULL
-    );
-    g_signal_connect_swapped(
-      buffer,
-      "delete-range",
-      G_CALLBACK(text_deleted),
-      NULL
-    );
-}
-
 GtkWidget* new_textview(gboolean map){
     GtkTextBuffer *buffer;
     GtkWidget *text_view;
@@ -2235,7 +2235,7 @@ void open_file(char *filename){
       )){
         if(get_notebook_no_pages()
           || !check_equals_unsaved()){
-            new_tab();
+            menu_newtab();
         }
 
         tabcontents tab;
