@@ -1573,13 +1573,13 @@ void menu_newtab(void){
 
     GtkTextBuffer *buffer;
     buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
-    g_signal_connect_swapped(
+    g_signal_connect_after(
       buffer,
       "insert-text",
       G_CALLBACK(text_inserted),
       NULL
     );
-    g_signal_connect_swapped(
+    g_signal_connect_after(
       buffer,
       "delete-range",
       G_CALLBACK(text_deleted),
