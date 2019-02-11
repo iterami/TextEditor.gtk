@@ -657,15 +657,11 @@ void activate(GtkApplication* app, gpointer data){
 
     // Disable nonfunctional menu items.
     gtk_widget_set_sensitive(
-      menuitem_edit_cut,
-      FALSE
-    );
-    gtk_widget_set_sensitive(
       menuitem_edit_copy,
       FALSE
     );
     gtk_widget_set_sensitive(
-      menuitem_edit_paste,
+      menuitem_edit_cut,
       FALSE
     );
     gtk_widget_set_sensitive(
@@ -682,6 +678,10 @@ void activate(GtkApplication* app, gpointer data){
     );
     gtk_widget_set_sensitive(
       menuitem_edit_insert,
+      FALSE
+    );
+    gtk_widget_set_sensitive(
+      menuitem_edit_paste,
       FALSE
     );
     gtk_widget_set_sensitive(
