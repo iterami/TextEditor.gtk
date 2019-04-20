@@ -1591,11 +1591,6 @@ void menu_redo(void){
       line,
       lineoffset
     );
-    place_cursor(
-      tab.text_view,
-      tab.text_buffer,
-      &selectstart
-    );
 
     gtk_text_buffer_get_iter_at_offset(
       tab.map_buffer,
@@ -1644,6 +1639,12 @@ void menu_redo(void){
         );
     }
     unblock_insertdelete_signals(tab.text_buffer);
+
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &selectstart
+    );
 
     menu_refind();
 }
@@ -1973,11 +1974,6 @@ void menu_undo(void){
       line,
       lineoffset
     );
-    place_cursor(
-      tab.text_view,
-      tab.text_buffer,
-      &selectstart
-    );
 
     gtk_text_buffer_get_iter_at_offset(
       tab.map_buffer,
@@ -2026,6 +2022,12 @@ void menu_undo(void){
         );
     }
     unblock_insertdelete_signals(tab.text_buffer);
+
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &selectstart
+    );
 
     menu_refind();
 }
