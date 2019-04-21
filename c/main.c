@@ -2102,6 +2102,15 @@ void open_file(char *filename){
         tabcontents tab;
         tab = get_tab_contents(-1);
 
+        gtk_notebook_set_tab_label_text(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            tab.page
+          ),
+          filename
+        );
+
         block_insertdelete_signals(tab.text_buffer);
         gtk_text_buffer_set_text(
           tab.text_buffer,
@@ -2117,14 +2126,6 @@ void open_file(char *filename){
           tab.redo_buffer,
           "",
           0
-        );
-        gtk_notebook_set_tab_label_text(
-          notebook,
-          gtk_notebook_get_nth_page(
-            notebook,
-            tab.page
-          ),
-          filename
         );
         unblock_insertdelete_signals(tab.text_buffer);
 
