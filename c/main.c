@@ -1734,6 +1734,23 @@ void menu_saveas(void){
         filename = gtk_file_chooser_get_filename(chooser);
         save_tab(filename);
 
+        gtk_notebook_set_tab_label_text(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            gtk_notebook_get_current_page(notebook)
+          ),
+          filename
+        );
+        gtk_notebook_set_menu_label_text(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            gtk_notebook_get_current_page(notebook)
+          ),
+          filename
+        );
+
         g_free(filename);
     }
 
@@ -2283,23 +2300,6 @@ void save_tab(const gchar *filename){
       NULL
     );
     g_free(content);
-
-    gtk_notebook_set_tab_label_text(
-      notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        gtk_notebook_get_current_page(notebook)
-      ),
-      filename
-    );
-    gtk_notebook_set_menu_label_text(
-      notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        gtk_notebook_get_current_page(notebook)
-      ),
-      filename
-    );
 }
 
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
