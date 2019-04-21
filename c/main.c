@@ -2110,6 +2110,14 @@ void open_file(char *filename){
           ),
           filename
         );
+        gtk_notebook_set_menu_label_text(
+          notebook,
+          gtk_notebook_get_nth_page(
+            notebook,
+            tab.page
+          ),
+          filename
+        );
 
         block_insertdelete_signals(tab.text_buffer);
         gtk_text_buffer_set_text(
@@ -2277,6 +2285,14 @@ void save_tab(const char *filename){
     g_free(content);
 
     gtk_notebook_set_tab_label_text(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      ),
+      filename
+    );
+    gtk_notebook_set_menu_label_text(
       notebook,
       gtk_notebook_get_nth_page(
         notebook,
