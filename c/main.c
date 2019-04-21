@@ -579,7 +579,7 @@ void activate(GtkApplication* app, gpointer data){
               line
             );
             if(gtk_text_iter_backward_char(&temp_end)){
-                char *filename;
+                gchar *filename;
 
                 filename = gtk_text_buffer_get_text(
                   temp_buffer,
@@ -1467,7 +1467,7 @@ void menu_open(void){
     );
 
     if(gtk_dialog_run(GTK_DIALOG(dialog_open)) == GTK_RESPONSE_ACCEPT){
-        char *filename;
+        gchar *filename;
 
         filename = gtk_file_chooser_get_filename(chooser);
         open_file(filename);
@@ -1729,7 +1729,7 @@ void menu_saveas(void){
     );
 
     if(gtk_dialog_run(GTK_DIALOG(dialog_saveas)) == GTK_RESPONSE_ACCEPT){
-        char *filename;
+        gchar *filename;
 
         filename = gtk_file_chooser_get_filename(chooser);
         save_tab(filename);
@@ -2080,7 +2080,7 @@ GtkWidget* new_textview(gboolean map){
     return text_view;
 }
 
-void open_file(char *filename){
+void open_file(gchar *filename){
     gchar *content;
     gssize length;
 
@@ -2175,7 +2175,7 @@ void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter 
     );
 }
 
-void save_tab(const char *filename){
+void save_tab(const gchar *filename){
     if(!filename){
         filename = get_current_tab_label_text();
     }
