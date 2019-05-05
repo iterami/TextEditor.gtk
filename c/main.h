@@ -76,8 +76,6 @@ void menu_refind(void);
 void menu_save(void);
 void menu_saveas(void);
 void menu_sort(gboolean asc);
-void menu_sort_asc(void);
-void menu_sort_desc(void);
 void menu_undo(void);
 GtkWidget* new_scrolled_window(void);
 GtkWidget* new_textview(gboolean map);

@@ -303,8 +303,8 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_SORT,
       GDK_CONTROL_MASK,
-      G_CALLBACK(menu_sort_asc),
-      NULL
+      G_CALLBACK(menu_sort),
+      (gpointer)TRUE
     );
     gtk_add_menuitem(
       menu_edit,
@@ -312,8 +312,8 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_SORT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_sort_desc),
-      NULL
+      G_CALLBACK(menu_sort),
+      (gpointer)FALSE
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
@@ -1868,14 +1868,6 @@ void menu_sort(gboolean asc){
             );
         }
     }
-}
-
-void menu_sort_asc(void){
-    menu_sort(TRUE);
-}
-
-void menu_sort_desc(void){
-    menu_sort(FALSE);
 }
 
 void menu_undo(void){
