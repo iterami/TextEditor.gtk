@@ -1358,6 +1358,7 @@ void menu_newtab(void){
       0
     );
     tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_popup_enable(tabnotebook);
     scrolled_window_map = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_map),
