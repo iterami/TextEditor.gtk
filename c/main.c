@@ -893,6 +893,11 @@ void menu_deleteline(void){
       &start,
       &end
     );
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &start
+    );
 }
 
 void menu_findbottom(void){
