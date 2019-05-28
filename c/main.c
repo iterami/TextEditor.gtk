@@ -1874,6 +1874,12 @@ void menu_sort(gboolean asc){
             );
         }
     }
+
+    place_cursor(
+      tab.text_view,
+      tab.text_buffer,
+      &start
+    );
 }
 
 void menu_undo(void){
