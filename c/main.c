@@ -115,8 +115,8 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_MOVETABLEFT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_movetableft),
-      NULL
+      G_CALLBACK(menu_movetab),
+      (gpointer)-1
     );
     gtk_add_menuitem(
       menu_file,
@@ -124,8 +124,8 @@ void activate(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_MOVETABRIGHT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_movetabright),
-      NULL
+      G_CALLBACK(menu_movetab),
+      (gpointer)1
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menu_file),
@@ -1308,21 +1308,18 @@ void menu_hide(void){
     gtk_widget_hide(line_window);
 }
 
-void menu_movetableft(void){
-    gtk_notebook_reorder_child(
-      notebook,
-      gtk_notebook_get_nth_page(
-        notebook,
-        gtk_notebook_get_current_page(notebook)
-      ),
-      gtk_notebook_get_current_page(notebook) - 1
-    );
-}
+void menu_movetab(gint movement){
+    int position = gtk_notebook_get_current_page(notebook) + movement;
 
-void menu_movetabright(void){
-    int position = gtk_notebook_get_current_page(notebook) + 1;
-    if(position >= gtk_notebook_get_n_pages(notebook)){
+    if(position <= 0){
         position = 0;
+
+    }else{
+        int pages = gtk_notebook_get_n_pages(notebook);
+
+        if(position >= pages){
+            position = pages - 1;
+        }
     }
 
     gtk_notebook_reorder_child(
