@@ -1792,9 +1792,7 @@ void menu_sort(gboolean asc){
       &start,
       0
     );
-    if(!gtk_text_iter_ends_line(&end)){
-        gtk_text_iter_forward_to_line_end(&end);
-    }
+    gtk_text_iter_forward_to_line_end(&end);
 
     gchar *text = gtk_text_buffer_get_text(
       tab.text_buffer,
