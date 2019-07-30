@@ -2143,16 +2143,6 @@ void open_file(gchar *filename){
           content,
           length
         );
-        gtk_text_buffer_set_text(
-          tab.undo_buffer,
-          "",
-          0
-        );
-        gtk_text_buffer_set_text(
-          tab.redo_buffer,
-          "",
-          0
-        );
         unblock_insertdelete_signals(tab.text_buffer);
 
         GtkTextIter start;
