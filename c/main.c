@@ -2178,7 +2178,7 @@ void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter 
       gtk_text_buffer_get_insert(text_buffer),
       0,
       TRUE,
-      0,
+      0.5,
       0.5
     );
 }
