@@ -1001,7 +1001,7 @@ void menu_findnext(void){
         GtkTextIter end;
         GtkTextIter start;
 
-        if(gtk_text_iter_begins_tag(
+        if(gtk_text_iter_starts_tag(
             &cursor,
             tag_found
           )){
@@ -1065,7 +1065,7 @@ void menu_findprevious(void){
         GtkTextIter end;
         GtkTextIter start;
 
-        if(gtk_text_iter_begins_tag(
+        if(gtk_text_iter_starts_tag(
             &cursor,
             tag_found
           )){
@@ -1246,7 +1246,7 @@ void menu_findreplaceall(void){
           tag_found
         );
 
-        if(gtk_text_iter_begins_tag(
+        if(gtk_text_iter_starts_tag(
             &end,
             tag_found
           )){
