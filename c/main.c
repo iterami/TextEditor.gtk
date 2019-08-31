@@ -32,6 +32,10 @@ void activate(GtkApplication* app, gpointer data){
       notebook,
       TRUE
     );
+    gtk_notebook_set_show_border(
+      notebook,
+      FALSE
+    );
 
     // Setup menu items.
     menubar = gtk_menu_bar_new();
@@ -1361,6 +1365,10 @@ void menu_newtab(void){
     );
     tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_notebook_popup_enable(tabnotebook);
+    gtk_notebook_set_show_border(
+      tabnotebook,
+      FALSE
+    );
     scrolled_window_map = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_map),
