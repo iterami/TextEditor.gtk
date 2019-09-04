@@ -459,7 +459,10 @@ void activate(GtkApplication* app, gpointer data){
       GDK_WINDOW_TYPE_HINT_DIALOG
     );
     findreplacepane = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
-    find_window_find = new_textview(FALSE);
+    find_window_find = new_textview(
+      TRUE,
+      NULL
+    );
     scrolled_window_find = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_find),
@@ -471,7 +474,10 @@ void activate(GtkApplication* app, gpointer data){
       TRUE,
       TRUE
     );
-    find_window_replace = new_textview(FALSE);
+    find_window_replace = new_textview(
+      TRUE,
+      NULL
+    );
     scrolled_window_replace = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_replace),
@@ -1350,7 +1356,10 @@ void menu_newtab(void){
       GTK_ORIENTATION_HORIZONTAL,
       1
     );
-    text_view = new_textview(FALSE);
+    text_view = new_textview(
+      TRUE,
+      NULL
+    );
     scrolled_window = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window),
@@ -1372,7 +1381,10 @@ void menu_newtab(void){
     scrolled_window_map = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_map),
-      new_textview(TRUE)
+      new_textview(
+        FALSE,
+        "map"
+      )
     );
     gtk_notebook_append_page(
       tabnotebook,
@@ -1383,7 +1395,10 @@ void menu_newtab(void){
     scrolled_window_undo = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_undo),
-      new_textview(FALSE)
+      new_textview(
+        FALSE,
+        NULL
+      )
     );
     gtk_paned_pack1(
       GTK_PANED(undopaned),
@@ -1394,7 +1409,10 @@ void menu_newtab(void){
     scrolled_window_redo = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_redo),
-      new_textview(FALSE)
+      new_textview(
+        FALSE,
+        NULL
+      )
     );
     gtk_paned_pack2(
       GTK_PANED(undopaned),
@@ -2074,7 +2092,7 @@ GtkWidget* new_scrolled_window(void){
     return scrolled_window;
 }
 
-GtkWidget* new_textview(gboolean map){
+GtkWidget* new_textview(gboolean editable, gchar *name){
     GtkTextBuffer *buffer;
     GtkWidget *text_view;
 
@@ -2092,14 +2110,15 @@ GtkWidget* new_textview(gboolean map){
       NULL
     );
 
-    if(map){
-        gtk_text_view_set_editable(
-          GTK_TEXT_VIEW(text_view),
-          FALSE
-        );
+    gtk_text_view_set_editable(
+      GTK_TEXT_VIEW(text_view),
+      editable
+    );
+
+    if(name != NULL){
         gtk_widget_set_name(
           text_view,
-          "map"
+          name
         );
     }
 

@@ -77,7 +77,7 @@ void menu_saveas(void);
 void menu_sort(gboolean asc);
 void menu_undo(void);
 GtkWidget* new_scrolled_window(void);
-GtkWidget* new_textview(gboolean map);
+GtkWidget* new_textview(gboolean editable, gchar *name);
 void open_file(gchar *filename);
 void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter);
 void save_tab(const gchar *filename);
