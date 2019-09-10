@@ -2110,6 +2110,10 @@ GtkWidget* new_textview(gboolean editable, gchar *name){
       NULL
     );
 
+    gtk_text_view_set_cursor_visible(
+      GTK_TEXT_VIEW(text_view),
+      editable
+    );
     gtk_text_view_set_editable(
       GTK_TEXT_VIEW(text_view),
       editable
