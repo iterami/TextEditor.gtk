@@ -81,6 +81,7 @@ GtkWidget* new_textview(gboolean editable, gchar *name);
 void open_file(gchar *filename);
 void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter);
 void save_tab(const gchar *filename);
+void startup(GtkApplication* app, gpointer data);
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end);
 void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value);
 void unblock_insertdelete_signals(GtkTextBuffer *text_buffer);

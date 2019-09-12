@@ -6,609 +6,7 @@
 #include "../../common/c/sort.c"
 
 void activate(GtkApplication* app, gpointer data){
-    GtkAccelGroup *accelgroup;
-    GtkWidget *box;
-    GtkWidget *findreplaceall;
-    GtkWidget *findreplacepane;
-    GtkWidget *menu_edit;
-    GtkWidget *menu_file;
-    GtkWidget *menu_find;
-    GtkWidget *menubar;
-    GtkWidget *menuitem_edit;
-    GtkWidget *menuitem_file;
-    GtkWidget *menuitem_find;
-    GtkWidget *scrolled_window_find;
-    GtkWidget *scrolled_window_replace;
-
-    gtk_init_gtk(
-      app,
-      "TextEditor.gtk"
-    );
-
-    // Setup scrollable notebook.
-    notebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_popup_enable(notebook);
-    gtk_notebook_set_scrollable(
-      notebook,
-      TRUE
-    );
-    gtk_notebook_set_show_border(
-      notebook,
-      FALSE
-    );
-
-    // Setup menu items.
-    menubar = gtk_menu_bar_new();
-    accelgroup = gtk_accel_group_new();
-    gtk_window_add_accel_group(
-      GTK_WINDOW(window),
-      accelgroup
-    );
-    // File menu.
-    menu_file = gtk_menu_new();
-    menuitem_file = gtk_menu_item_new_with_mnemonic("_File");
-    gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(menuitem_file),
-      menu_file
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_New Tab",
-      accelgroup,
-      KEY_NEWTAB,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_newtab),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Open...",
-      accelgroup,
-      KEY_OPEN,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_open),
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_file),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Save",
-      accelgroup,
-      KEY_SAVE,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_save),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "Save _As...",
-      accelgroup,
-      KEY_SAVE,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_saveas),
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_file),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Next Tab",
-      accelgroup,
-      KEY_NEXTTAB,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(gtk_notebook_next_page),
-      GTK_WIDGET(notebook)
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Previous Tab",
-      accelgroup,
-      KEY_PREVIOUSTAB,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(gtk_notebook_prev_page),
-      GTK_WIDGET(notebook)
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "Move Tab _Left",
-      accelgroup,
-      KEY_MOVETABLEFT,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_movetab),
-      (gpointer)-1
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "Move Tab _Right",
-      accelgroup,
-      KEY_MOVETABRIGHT,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_movetab),
-      (gpointer)1
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_file),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Close Tab",
-      accelgroup,
-      KEY_CLOSETAB,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_closetab),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Hide Windows",
-      accelgroup,
-      KEY_HIDEWINDOWS,
-      0,
-      G_CALLBACK(menu_hide),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_file,
-      "_Quit",
-      accelgroup,
-      KEY_QUIT,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(gtk_widget_destroy),
-      window
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menubar),
-      menuitem_file
-    );
-    // Edit menu.
-    menu_edit = gtk_menu_new();
-    menuitem_edit = gtk_menu_item_new_with_mnemonic("_Edit");
-    gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(menuitem_edit),
-      menu_edit
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "_Undo",
-      accelgroup,
-      KEY_UNDO,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_undo),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "_Redo",
-      accelgroup,
-      KEY_UNDO,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_redo),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Cl_ear Undo/Redo",
-      accelgroup,
-      KEY_UNDOCLEAR,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_clearundoredo),
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_edit),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "_Copy",
-      accelgroup,
-      KEY_COPY,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Cu_t",
-      accelgroup,
-      KEY_CUT,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "_Paste",
-      accelgroup,
-      KEY_PASTE,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_edit),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "_Delete",
-      accelgroup,
-      KEY_DELETE,
-      0,
-      NULL,
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Delete _Line",
-      accelgroup,
-      KEY_DELETELINE,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_deleteline),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Delete Ne_xt Word",
-      accelgroup,
-      KEY_DELETE,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Delete Pre_vious Word",
-      accelgroup,
-      KEY_DELETEPREVIOUSWORD,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_edit),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Toggle _Overwrite",
-      accelgroup,
-      KEY_INSERT,
-      0,
-      NULL,
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_edit),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "_Select All",
-      accelgroup,
-      KEY_SELECTALL,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_edit),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Sort _Ascending",
-      accelgroup,
-      KEY_SORT,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_sort),
-      (gpointer)TRUE
-    );
-    gtk_add_menuitem(
-      menu_edit,
-      "Sort Desce_nding",
-      accelgroup,
-      KEY_SORT,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_sort),
-      (gpointer)FALSE
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menubar),
-      menuitem_edit
-    );
-    // Find menu.
-    menu_find = gtk_menu_new();
-    menuitem_find = gtk_menu_item_new_with_mnemonic("F_ind");
-    gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(menuitem_find),
-      menu_find
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "Find _Next",
-      accelgroup,
-      KEY_FINDMORE,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_findnext),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "Find _Previous",
-      accelgroup,
-      KEY_FINDMORE,
-      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
-      G_CALLBACK(menu_findprevious),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "_Find/Replace...",
-      accelgroup,
-      KEY_FIND,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_findreplace),
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_find),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "_Replace All",
-      accelgroup,
-      KEY_REPLACE,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_findreplaceall),
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_find),
-      gtk_separator_menu_item_new()
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "Go to _Top",
-      accelgroup,
-      KEY_TOP,
-      0,
-      G_CALLBACK(menu_findtop),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "Go to _Line...",
-      accelgroup,
-      KEY_LINE,
-      GDK_CONTROL_MASK,
-      G_CALLBACK(menu_findline),
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_find,
-      "Go to _Bottom",
-      accelgroup,
-      KEY_BOTTOM,
-      0,
-      G_CALLBACK(menu_findbottom),
-      NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menubar),
-      menuitem_find
-    );
-
-    // Add everything to a box and show.
-    box = gtk_box_new(
-      GTK_ORIENTATION_VERTICAL,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(box),
-      menubar,
-      FALSE,
-      FALSE,
-      0
-    );
-    gtk_box_pack_start(
-      GTK_BOX(box),
-      GTK_WIDGET(notebook),
-      TRUE,
-      TRUE,
-      0
-    );
-    gtk_container_add(
-      GTK_CONTAINER(window),
-      box
-    );
-    gtk_widget_show_all(window);
-
-    // Setup find window.
-    find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_add_accel_group(
-      GTK_WINDOW(find_window),
-      accelgroup
-    );
-    gtk_window_set_default_size(
-      GTK_WINDOW(find_window),
-      300,
-      200
-    );
-    gtk_window_set_title(
-      GTK_WINDOW(find_window),
-      "Find/Replace..."
-    );
-    gtk_window_set_attached_to(
-      GTK_WINDOW(find_window),
-      window
-    );
-    gtk_window_set_transient_for(
-      GTK_WINDOW(find_window),
-      GTK_WINDOW(window)
-    );
-    gtk_window_set_type_hint(
-      GTK_WINDOW(find_window),
-      GDK_WINDOW_TYPE_HINT_DIALOG
-    );
-    findreplacepane = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
-    find_window_find = new_textview(
-      TRUE,
-      NULL
-    );
-    scrolled_window_find = new_scrolled_window();
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window_find),
-      find_window_find
-    );
-    gtk_paned_pack1(
-      GTK_PANED(findreplacepane),
-      scrolled_window_find,
-      TRUE,
-      TRUE
-    );
-    find_window_replace = new_textview(
-      TRUE,
-      NULL
-    );
-    scrolled_window_replace = new_scrolled_window();
-    gtk_container_add(
-      GTK_CONTAINER(scrolled_window_replace),
-      find_window_replace
-    );
-    gtk_paned_pack2(
-      GTK_PANED(findreplacepane),
-      scrolled_window_replace,
-      TRUE,
-      TRUE
-    );
-    gtk_container_add(
-      GTK_CONTAINER(find_window),
-      findreplacepane
-    );
-    g_signal_connect_swapped(
-      find_window,
-      "delete-event",
-      G_CALLBACK(gtk_widget_hide_on_delete),
-      find_window
-    );
-    g_signal_connect_swapped(
-      find_window,
-      "hide",
-      G_CALLBACK(find_clear_tags),
-      NULL
-    );
-
-    // Setup line window.
-    line_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_add_accel_group(
-      GTK_WINDOW(line_window),
-      accelgroup
-    );
-    gtk_window_set_default_size(
-      GTK_WINDOW(line_window),
-      300,
-      0
-    );
-    gtk_window_set_title(
-      GTK_WINDOW(line_window),
-      "Go to Line..."
-    );
-    gtk_window_set_attached_to(
-      GTK_WINDOW(line_window),
-      window
-    );
-    gtk_window_set_transient_for(
-      GTK_WINDOW(line_window),
-      GTK_WINDOW(window)
-    );
-    gtk_window_set_type_hint(
-      GTK_WINDOW(line_window),
-      GDK_WINDOW_TYPE_HINT_DIALOG
-    );
-    line_window_line = gtk_entry_new();
-    gtk_container_add(
-      GTK_CONTAINER(line_window),
-      line_window_line
-    );
-    g_signal_connect_swapped(
-      line_window_line,
-      "activate",
-      G_CALLBACK(go_to_line),
-      NULL
-    );
-    g_signal_connect_swapped(
-      line_window,
-      "delete-event",
-      G_CALLBACK(gtk_widget_hide_on_delete),
-      line_window
-    );
-
-    // Open previously opened files.
-    gchar *temp_path = core_iterami_path(CONFIG_PATH);
-    gchar *temp_content;
-    gssize temp_length;
-
-    if(g_file_get_contents(
-        temp_path,
-        &temp_content,
-        &temp_length,
-        NULL
-      )){
-        GtkTextIter temp_end;
-        GtkTextIter temp_start;
-        GtkTextBuffer *temp_buffer;
-        GtkWidget *temp_text_view;
-
-        temp_buffer = gtk_text_buffer_new(NULL);
-        temp_text_view = gtk_text_view_new_with_buffer(temp_buffer);
-        gtk_text_buffer_set_text(
-          temp_buffer,
-          temp_content,
-          temp_length
-        );
-
-        int lines = gtk_text_buffer_get_line_count(temp_buffer);
-        int line = 0;
-        while(line < lines){
-            gtk_text_buffer_get_iter_at_line(
-              temp_buffer,
-              &temp_start,
-              line++
-            );
-            gtk_text_buffer_get_iter_at_line(
-              temp_buffer,
-              &temp_end,
-              line
-            );
-            if(gtk_text_iter_backward_char(&temp_end)){
-                gchar *filename;
-
-                filename = gtk_text_buffer_get_text(
-                  temp_buffer,
-                  &temp_start,
-                  &temp_end,
-                  FALSE
-                );
-                open_file(filename);
-
-                g_free(filename);
-            }
-        }
-
-        gtk_widget_destroy(temp_text_view);
-        g_object_ref_sink(temp_text_view);
-    }
-
-    g_free(temp_path);
-    g_free(temp_content);
+    gtk_window_present(GTK_WINDOW(window));
 }
 
 void block_insertdelete_signals(GtkTextBuffer *text_buffer){
@@ -781,6 +179,12 @@ int main(int argc, char **argv){
       app,
       "activate",
       G_CALLBACK(activate),
+      NULL
+    );
+    g_signal_connect(
+      app,
+      "startup",
+      G_CALLBACK(startup),
       NULL
     );
     int status = g_application_run(
@@ -2322,6 +1726,612 @@ void save_tab(const gchar *filename){
       NULL
     );
     g_free(content);
+}
+
+void startup(GtkApplication* app, gpointer data){
+    GtkAccelGroup *accelgroup;
+    GtkWidget *box;
+    GtkWidget *findreplaceall;
+    GtkWidget *findreplacepane;
+    GtkWidget *menu_edit;
+    GtkWidget *menu_file;
+    GtkWidget *menu_find;
+    GtkWidget *menubar;
+    GtkWidget *menuitem_edit;
+    GtkWidget *menuitem_file;
+    GtkWidget *menuitem_find;
+    GtkWidget *scrolled_window_find;
+    GtkWidget *scrolled_window_replace;
+
+    gtk_init_gtk(
+      app,
+      "TextEditor.gtk"
+    );
+
+    // Setup scrollable notebook.
+    notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_notebook_popup_enable(notebook);
+    gtk_notebook_set_scrollable(
+      notebook,
+      TRUE
+    );
+    gtk_notebook_set_show_border(
+      notebook,
+      FALSE
+    );
+
+    // Setup menu items.
+    menubar = gtk_menu_bar_new();
+    accelgroup = gtk_accel_group_new();
+    gtk_window_add_accel_group(
+      GTK_WINDOW(window),
+      accelgroup
+    );
+    // File menu.
+    menu_file = gtk_menu_new();
+    menuitem_file = gtk_menu_item_new_with_mnemonic("_File");
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(menuitem_file),
+      menu_file
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_New Tab",
+      accelgroup,
+      KEY_NEWTAB,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_newtab),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Open...",
+      accelgroup,
+      KEY_OPEN,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_open),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_file),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Save",
+      accelgroup,
+      KEY_SAVE,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_save),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "Save _As...",
+      accelgroup,
+      KEY_SAVE,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_saveas),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_file),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Next Tab",
+      accelgroup,
+      KEY_NEXTTAB,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(gtk_notebook_next_page),
+      GTK_WIDGET(notebook)
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Previous Tab",
+      accelgroup,
+      KEY_PREVIOUSTAB,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(gtk_notebook_prev_page),
+      GTK_WIDGET(notebook)
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "Move Tab _Left",
+      accelgroup,
+      KEY_MOVETABLEFT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_movetab),
+      (gpointer)-1
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "Move Tab _Right",
+      accelgroup,
+      KEY_MOVETABRIGHT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_movetab),
+      (gpointer)1
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_file),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Close Tab",
+      accelgroup,
+      KEY_CLOSETAB,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_closetab),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Hide Windows",
+      accelgroup,
+      KEY_HIDEWINDOWS,
+      0,
+      G_CALLBACK(menu_hide),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_file,
+      "_Quit",
+      accelgroup,
+      KEY_QUIT,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(gtk_widget_destroy),
+      window
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      menuitem_file
+    );
+    // Edit menu.
+    menu_edit = gtk_menu_new();
+    menuitem_edit = gtk_menu_item_new_with_mnemonic("_Edit");
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(menuitem_edit),
+      menu_edit
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "_Undo",
+      accelgroup,
+      KEY_UNDO,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_undo),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "_Redo",
+      accelgroup,
+      KEY_UNDO,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_redo),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Cl_ear Undo/Redo",
+      accelgroup,
+      KEY_UNDOCLEAR,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_clearundoredo),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "_Copy",
+      accelgroup,
+      KEY_COPY,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Cu_t",
+      accelgroup,
+      KEY_CUT,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "_Paste",
+      accelgroup,
+      KEY_PASTE,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "_Delete",
+      accelgroup,
+      KEY_DELETE,
+      0,
+      NULL,
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Delete _Line",
+      accelgroup,
+      KEY_DELETELINE,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_deleteline),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Delete Ne_xt Word",
+      accelgroup,
+      KEY_DELETE,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Delete Pre_vious Word",
+      accelgroup,
+      KEY_DELETEPREVIOUSWORD,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Toggle _Overwrite",
+      accelgroup,
+      KEY_INSERT,
+      0,
+      NULL,
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "_Select All",
+      accelgroup,
+      KEY_SELECTALL,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_edit),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Sort _Ascending",
+      accelgroup,
+      KEY_SORT,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_sort),
+      (gpointer)TRUE
+    );
+    gtk_add_menuitem(
+      menu_edit,
+      "Sort Desce_nding",
+      accelgroup,
+      KEY_SORT,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_sort),
+      (gpointer)FALSE
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      menuitem_edit
+    );
+    // Find menu.
+    menu_find = gtk_menu_new();
+    menuitem_find = gtk_menu_item_new_with_mnemonic("F_ind");
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(menuitem_find),
+      menu_find
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "Find _Next",
+      accelgroup,
+      KEY_FINDMORE,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_findnext),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "Find _Previous",
+      accelgroup,
+      KEY_FINDMORE,
+      GDK_CONTROL_MASK | GDK_SHIFT_MASK,
+      G_CALLBACK(menu_findprevious),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "_Find/Replace...",
+      accelgroup,
+      KEY_FIND,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_findreplace),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "_Replace All",
+      accelgroup,
+      KEY_REPLACE,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_findreplaceall),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menu_find),
+      gtk_separator_menu_item_new()
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "Go to _Top",
+      accelgroup,
+      KEY_TOP,
+      0,
+      G_CALLBACK(menu_findtop),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "Go to _Line...",
+      accelgroup,
+      KEY_LINE,
+      GDK_CONTROL_MASK,
+      G_CALLBACK(menu_findline),
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_find,
+      "Go to _Bottom",
+      accelgroup,
+      KEY_BOTTOM,
+      0,
+      G_CALLBACK(menu_findbottom),
+      NULL
+    );
+    gtk_menu_shell_append(
+      GTK_MENU_SHELL(menubar),
+      menuitem_find
+    );
+
+    // Add everything to a box and show.
+    box = gtk_box_new(
+      GTK_ORIENTATION_VERTICAL,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      menubar,
+      FALSE,
+      FALSE,
+      0
+    );
+    gtk_box_pack_start(
+      GTK_BOX(box),
+      GTK_WIDGET(notebook),
+      TRUE,
+      TRUE,
+      0
+    );
+    gtk_container_add(
+      GTK_CONTAINER(window),
+      box
+    );
+    gtk_widget_show_all(window);
+
+    // Setup find window.
+    find_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_add_accel_group(
+      GTK_WINDOW(find_window),
+      accelgroup
+    );
+    gtk_window_set_default_size(
+      GTK_WINDOW(find_window),
+      300,
+      200
+    );
+    gtk_window_set_title(
+      GTK_WINDOW(find_window),
+      "Find/Replace..."
+    );
+    gtk_window_set_attached_to(
+      GTK_WINDOW(find_window),
+      window
+    );
+    gtk_window_set_transient_for(
+      GTK_WINDOW(find_window),
+      GTK_WINDOW(window)
+    );
+    gtk_window_set_type_hint(
+      GTK_WINDOW(find_window),
+      GDK_WINDOW_TYPE_HINT_DIALOG
+    );
+    findreplacepane = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    find_window_find = new_textview(
+      TRUE,
+      NULL
+    );
+    scrolled_window_find = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_find),
+      find_window_find
+    );
+    gtk_paned_pack1(
+      GTK_PANED(findreplacepane),
+      scrolled_window_find,
+      TRUE,
+      TRUE
+    );
+    find_window_replace = new_textview(
+      TRUE,
+      NULL
+    );
+    scrolled_window_replace = new_scrolled_window();
+    gtk_container_add(
+      GTK_CONTAINER(scrolled_window_replace),
+      find_window_replace
+    );
+    gtk_paned_pack2(
+      GTK_PANED(findreplacepane),
+      scrolled_window_replace,
+      TRUE,
+      TRUE
+    );
+    gtk_container_add(
+      GTK_CONTAINER(find_window),
+      findreplacepane
+    );
+    g_signal_connect_swapped(
+      find_window,
+      "delete-event",
+      G_CALLBACK(gtk_widget_hide_on_delete),
+      find_window
+    );
+    g_signal_connect_swapped(
+      find_window,
+      "hide",
+      G_CALLBACK(find_clear_tags),
+      NULL
+    );
+
+    // Setup line window.
+    line_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_add_accel_group(
+      GTK_WINDOW(line_window),
+      accelgroup
+    );
+    gtk_window_set_default_size(
+      GTK_WINDOW(line_window),
+      300,
+      0
+    );
+    gtk_window_set_title(
+      GTK_WINDOW(line_window),
+      "Go to Line..."
+    );
+    gtk_window_set_attached_to(
+      GTK_WINDOW(line_window),
+      window
+    );
+    gtk_window_set_transient_for(
+      GTK_WINDOW(line_window),
+      GTK_WINDOW(window)
+    );
+    gtk_window_set_type_hint(
+      GTK_WINDOW(line_window),
+      GDK_WINDOW_TYPE_HINT_DIALOG
+    );
+    line_window_line = gtk_entry_new();
+    gtk_container_add(
+      GTK_CONTAINER(line_window),
+      line_window_line
+    );
+    g_signal_connect_swapped(
+      line_window_line,
+      "activate",
+      G_CALLBACK(go_to_line),
+      NULL
+    );
+    g_signal_connect_swapped(
+      line_window,
+      "delete-event",
+      G_CALLBACK(gtk_widget_hide_on_delete),
+      line_window
+    );
+
+    // Open previously opened files.
+    gchar *temp_path = core_iterami_path(CONFIG_PATH);
+    gchar *temp_content;
+    gssize temp_length;
+
+    if(g_file_get_contents(
+        temp_path,
+        &temp_content,
+        &temp_length,
+        NULL
+      )){
+        GtkTextIter temp_end;
+        GtkTextIter temp_start;
+        GtkTextBuffer *temp_buffer;
+        GtkWidget *temp_text_view;
+
+        temp_buffer = gtk_text_buffer_new(NULL);
+        temp_text_view = gtk_text_view_new_with_buffer(temp_buffer);
+        gtk_text_buffer_set_text(
+          temp_buffer,
+          temp_content,
+          temp_length
+        );
+
+        int lines = gtk_text_buffer_get_line_count(temp_buffer);
+        int line = 0;
+        while(line < lines){
+            gtk_text_buffer_get_iter_at_line(
+              temp_buffer,
+              &temp_start,
+              line++
+            );
+            gtk_text_buffer_get_iter_at_line(
+              temp_buffer,
+              &temp_end,
+              line
+            );
+            if(gtk_text_iter_backward_char(&temp_end)){
+                gchar *filename;
+
+                filename = gtk_text_buffer_get_text(
+                  temp_buffer,
+                  &temp_start,
+                  &temp_end,
+                  FALSE
+                );
+                open_file(filename);
+
+                g_free(filename);
+            }
+        }
+
+        gtk_widget_destroy(temp_text_view);
+        g_object_ref_sink(temp_text_view);
+    }
+
+    g_free(temp_path);
+    g_free(temp_content);
 }
 
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
