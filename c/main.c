@@ -870,6 +870,19 @@ void menu_newtab(void){
       G_CALLBACK(text_deleted),
       NULL
     );
+
+    g_signal_connect(
+      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window_map)),
+      "value-changed",
+      G_CALLBACK(scroll_changed_map),
+      NULL
+    );
+    g_signal_connect(
+      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window)),
+      "value-changed",
+      G_CALLBACK(scroll_changed_textview),
+      NULL
+    );
 }
 
 void menu_open(void){
@@ -1726,6 +1739,12 @@ void save_tab(const gchar *filename){
       NULL
     );
     g_free(content);
+}
+
+void scroll_changed_map(void){
+}
+
+void scroll_changed_textview(void){
 }
 
 void startup(GtkApplication* app, gpointer data){
