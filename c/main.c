@@ -1755,7 +1755,7 @@ void scroll_changed_map(void){
     );
     gtk_adjustment_set_value(
       tab.text_adjustment,
-      gtk_adjustment_get_value(tab.map_adjustment)
+      gtk_adjustment_get_value(tab.map_adjustment) * 7.5
     );
     g_signal_handlers_unblock_by_func(
       tab.text_adjustment,
@@ -1776,7 +1776,7 @@ void scroll_changed_textview(void){
     );
     gtk_adjustment_set_value(
       tab.map_adjustment,
-      gtk_adjustment_get_value(tab.text_adjustment)
+      gtk_adjustment_get_value(tab.text_adjustment) / 7.5
     );
     g_signal_handlers_unblock_by_func(
       tab.map_adjustment,
