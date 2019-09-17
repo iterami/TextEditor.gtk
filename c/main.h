@@ -42,6 +42,8 @@ typedef struct tabcontents{
   GtkTextBuffer *undo_buffer;
   GtkTextBuffer *redo_buffer;
   GtkTextBuffer *map_buffer;
+  GtkAdjustment *text_adjustment;
+  GtkAdjustment *map_adjustment;
 } tabcontents;
 
 void activate(GtkApplication* app, gpointer data);

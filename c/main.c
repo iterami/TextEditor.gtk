@@ -125,7 +125,9 @@ struct tabcontents get_tab_contents(int page){
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view)),
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane)))))),
       gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane)))))),
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(tabnotebook, 0)))))
+      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(tabnotebook, 0))))),
+      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(g_list_nth_data(children, 0))),
+      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(gtk_notebook_get_nth_page(tabnotebook, 0))),
     };
     return result;
 }
@@ -1742,9 +1744,45 @@ void save_tab(const gchar *filename){
 }
 
 void scroll_changed_map(void){
+    tabcontents tab;
+
+    tab = get_tab_contents(-1);
+
+    g_signal_handlers_block_by_func(
+      tab.text_adjustment,
+      G_CALLBACK(scroll_changed_textview),
+      NULL
+    );
+    gtk_adjustment_set_value(
+      tab.text_adjustment,
+      gtk_adjustment_get_value(tab.map_adjustment)
+    );
+    g_signal_handlers_unblock_by_func(
+      tab.text_adjustment,
+      G_CALLBACK(scroll_changed_textview),
+      NULL
+    );
 }
 
 void scroll_changed_textview(void){
+    tabcontents tab;
+
+    tab = get_tab_contents(-1);
+
+    g_signal_handlers_block_by_func(
+      tab.map_adjustment,
+      G_CALLBACK(scroll_changed_map),
+      NULL
+    );
+    gtk_adjustment_set_value(
+      tab.map_adjustment,
+      gtk_adjustment_get_value(tab.text_adjustment)
+    );
+    g_signal_handlers_unblock_by_func(
+      tab.map_adjustment,
+      G_CALLBACK(scroll_changed_map),
+      NULL
+    );
 }
 
 void startup(GtkApplication* app, gpointer data){
