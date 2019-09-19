@@ -1525,7 +1525,7 @@ GtkWidget* new_textview(gboolean editable, gchar *name){
     text_view = gtk_text_view_new_with_buffer(buffer);
     gtk_text_view_set_monospace(
       GTK_TEXT_VIEW(text_view),
-      GTK_WRAP_WORD
+      TRUE
     );
     gtk_text_view_set_wrap_mode(
       GTK_TEXT_VIEW(text_view),
