@@ -2080,6 +2080,15 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
+      "Insert Emo_ji",
+      accelgroup,
+      KEY_INSERT_EMOJI,
+      GDK_CONTROL_MASK,
+      NULL,
+      NULL
+    );
+    gtk_add_menuitem(
+      menu_edit,
       "Toggle _Overwrite",
       accelgroup,
       KEY_INSERT,
