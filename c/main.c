@@ -2393,6 +2393,137 @@ void startup(GtkApplication* app, gpointer data){
     g_free(temp_content);
 }
 
+GtkAdjustment* tab_get_mapadjustment(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GtkNotebook *tabnotebook;
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+    tabnotebook = g_list_nth_data(
+      children,
+      1
+    );
+
+    return gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(gtk_notebook_get_nth_page(tabnotebook, 0)));
+}
+
+GtkTextBuffer* tab_get_mapbuffer(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GtkNotebook *tabnotebook;
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+    tabnotebook = g_list_nth_data(
+      children,
+      1
+    );
+
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(tabnotebook, 0)))));
+}
+
+GtkTextBuffer* tab_get_redobuffer(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GtkNotebook *tabnotebook;
+    GtkWidget *tabundopane;
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+    tabnotebook = g_list_nth_data(
+      children,
+      1
+    );
+    tabundopane = gtk_notebook_get_nth_page(
+      tabnotebook,
+      1
+    );
+
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane))))));
+}
+
+GtkAdjustment* tab_get_textadjustment(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+
+    return gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(g_list_nth_data(children, 0)));
+}
+
+GtkTextBuffer* tab_get_textbuffer(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GtkWidget *text_view;
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+    text_view = gtk_bin_get_child(GTK_BIN(g_list_nth_data(
+      children,
+      0
+    )));
+
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+}
+
+GtkTextView* tab_get_textview(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+
+    return GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(g_list_nth_data(children, 0))));
+}
+
+GtkTextBuffer* tab_get_undobuffer(int page){
+    if(page < 0){
+        page = gtk_notebook_get_current_page(notebook);
+    }
+
+    GtkNotebook *tabnotebook;
+    GtkWidget *tabundopane;
+
+    GList *children = get_tabbox_children(
+      notebook,
+      page
+    );
+    tabnotebook = g_list_nth_data(
+      children,
+      1
+    );
+    tabundopane = gtk_notebook_get_nth_page(
+      tabnotebook,
+      1
+    );
+
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane))))));
+}
+
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
     GtkTextIter first;
     GtkTextIter mapend;
