@@ -35,16 +35,18 @@ void find_clear_tags(void){
 
     int page = gtk_notebook_get_n_pages(notebook) - 1;
     while(page >= 0){
-        tabcontents tab;
-        tab = get_tab_contents(page);
+        GtkTextBuffer *textbuffer;
+
+        textbuffer = tab_get_textbuffer(page);
+
         gtk_text_buffer_get_bounds(
-          tab.text_buffer,
+          textbuffer,
           &start,
           &end
         );
 
         gtk_text_buffer_remove_all_tags(
-          tab.text_buffer,
+          textbuffer,
           &start,
           &end
         );
@@ -93,45 +95,6 @@ GList* get_tabbox_children(GtkNotebook *tabnotebook, const gint page){
     )));
 }
 
-struct tabcontents get_tab_contents(int page){
-    if(page < 0){
-        page = gtk_notebook_get_current_page(notebook);
-    }
-
-    GtkNotebook *tabnotebook;
-    GtkWidget *tabundopane;
-    GtkWidget *text_view;
-
-    GList *children = get_tabbox_children(
-      notebook,
-      page
-    );
-    text_view = gtk_bin_get_child(GTK_BIN(g_list_nth_data(
-      children,
-      0
-    )));
-    tabnotebook = g_list_nth_data(
-      children,
-      1
-    );
-    tabundopane = gtk_notebook_get_nth_page(
-      tabnotebook,
-      1
-    );
-
-    tabcontents result = {
-      page,
-      text_view,
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view)),
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane)))))),
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane)))))),
-      gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(tabnotebook, 0))))),
-      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(g_list_nth_data(children, 0))),
-      gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(gtk_notebook_get_nth_page(tabnotebook, 0))),
-    };
-    return result;
-}
-
 void go_to_line(void){
     if(get_notebook_no_pages()
       || gtk_entry_get_text_length(GTK_ENTRY(line_window_line)) <= 0){
@@ -141,7 +104,6 @@ void go_to_line(void){
     const gchar *entry;
     int linenumber = 0;
     GtkTextIter line;
-    tabcontents tab;
 
     entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
 
@@ -154,17 +116,21 @@ void go_to_line(void){
     }
     linenumber -= 1;
 
-    tab = get_tab_contents(-1);
+    GtkTextBuffer *textbuffer;
+    GtkTextView *textview;
+
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_iter_at_line(
-      tab.text_buffer,
+      textbuffer,
       &line,
       linenumber
     );
 
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &line
     );
     gtk_window_present(GTK_WINDOW(window));
@@ -200,19 +166,21 @@ int main(int argc, char **argv){
 }
 
 void menu_clearundoredo(void){
+    GtkTextBuffer *redobuffer;
+    GtkTextBuffer *undobuffer;
     GtkTextIter end;
     GtkTextIter start;
-    tabcontents tab;
 
-    tab = get_tab_contents(-1);
+    redobuffer = tab_get_redobuffer(-1);
+    undobuffer = tab_get_undobuffer(-1);
 
     gtk_text_buffer_set_text(
-      tab.undo_buffer,
+      undobuffer,
       "",
       0
     );
     gtk_text_buffer_set_text(
-      tab.redo_buffer,
+      redobuffer,
       "",
       0
     );
@@ -238,20 +206,23 @@ void menu_deleteline(void){
 
     int endlinenumber;
     int linenumber;
+    GtkTextBuffer *textbuffer;
     GtkTextIter end;
     GtkTextIter line;
     GtkTextIter start;
-    tabcontents tab;
-    tab = get_tab_contents(-1);
+    GtkTextView *textview;
+
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_iter_at_mark(
-      tab.text_buffer,
+      textbuffer,
       &line,
-      gtk_text_buffer_get_insert(tab.text_buffer)
+      gtk_text_buffer_get_insert(textbuffer)
     );
     linenumber = gtk_text_iter_get_line(&line);
     gtk_text_buffer_get_iter_at_line(
-      tab.text_buffer,
+      textbuffer,
       &end,
       linenumber + 1
     );
@@ -260,18 +231,18 @@ void menu_deleteline(void){
     // Deleting first line.
     if(linenumber == 0){
         gtk_text_buffer_get_start_iter(
-          tab.text_buffer,
+          textbuffer,
           &start
         );
         if(endlinenumber == 0){
             gtk_text_buffer_get_end_iter(
-              tab.text_buffer,
+              textbuffer,
               &end
             );
 
         }else{
             gtk_text_buffer_get_iter_at_line(
-              tab.text_buffer,
+              textbuffer,
               &end,
               1
             );
@@ -280,38 +251,38 @@ void menu_deleteline(void){
     // Deleting last line.
     }else if(linenumber == endlinenumber){
         gtk_text_buffer_get_iter_at_line(
-          tab.text_buffer,
+          textbuffer,
           &start,
           linenumber
         );
         gtk_text_iter_backward_char(&start);
         gtk_text_buffer_get_end_iter(
-          tab.text_buffer,
+          textbuffer,
           &end
         );
 
     // Deleting any other line.
     }else{
         gtk_text_buffer_get_iter_at_line(
-          tab.text_buffer,
+          textbuffer,
           &start,
           linenumber
         );
         gtk_text_buffer_get_iter_at_line(
-          tab.text_buffer,
+          textbuffer,
           &end,
           linenumber + 1
         );
     }
 
     gtk_text_buffer_delete(
-      tab.text_buffer,
+      textbuffer,
       &start,
       &end
     );
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &start
     );
 }
@@ -321,18 +292,21 @@ void menu_findbottom(void){
         return;
     }
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter end;
-    tabcontents tab;
-    tab = get_tab_contents(-1);
+    GtkTextView *textview;
+
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_end_iter(
-      tab.text_buffer,
+      textbuffer,
       &end
     );
 
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &end
     );
 }
@@ -364,14 +338,15 @@ void menu_findline(void){
     }
     gtk_window_present(GTK_WINDOW(line_window));
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter cursor;
-    tabcontents tab;
-    tab = get_tab_contents(-1);
+
+    textbuffer = tab_get_textbuffer(-1);
 
     gtk_text_buffer_get_iter_at_mark(
-      tab.text_buffer,
+      textbuffer,
       &cursor,
-      gtk_text_buffer_get_insert(tab.text_buffer)
+      gtk_text_buffer_get_insert(textbuffer)
     );
     gchar *line = g_strdup_printf(
       "%i",
@@ -396,18 +371,21 @@ void menu_findnext(void){
         menu_refind();
     }
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter cursor;
     GtkTextTag *tag_found;
-    tabcontents tab;
+    GtkTextView *textview;
 
-    tab = get_tab_contents(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
+
     gtk_text_buffer_get_iter_at_mark(
-      tab.text_buffer,
+      textbuffer,
       &cursor,
-      gtk_text_buffer_get_insert(tab.text_buffer)
+      gtk_text_buffer_get_insert(textbuffer)
     );
     tag_found = gtk_text_tag_table_lookup(
-      gtk_text_buffer_get_tag_table(tab.text_buffer),
+      gtk_text_buffer_get_tag_table(textbuffer),
       "found"
     );
     if(gtk_text_iter_forward_to_tag_toggle(
@@ -438,12 +416,12 @@ void menu_findnext(void){
         }
 
         place_cursor(
-          tab.text_view,
-          tab.text_buffer,
+          textview,
+          textbuffer,
           &cursor
         );
         gtk_text_buffer_select_range(
-          tab.text_buffer,
+          textbuffer,
           &end,
           &start
         );
@@ -460,18 +438,21 @@ void menu_findprevious(void){
         menu_refind();
     }
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter cursor;
     GtkTextTag *tag_found;
-    tabcontents tab;
+    GtkTextView *textview;
 
-    tab = get_tab_contents(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
+
     gtk_text_buffer_get_iter_at_mark(
-      tab.text_buffer,
+      textbuffer,
       &cursor,
-      gtk_text_buffer_get_insert(tab.text_buffer)
+      gtk_text_buffer_get_insert(textbuffer)
     );
     tag_found = gtk_text_tag_table_lookup(
-      gtk_text_buffer_get_tag_table(tab.text_buffer),
+      gtk_text_buffer_get_tag_table(textbuffer),
       "found"
     );
     if(gtk_text_iter_backward_to_tag_toggle(
@@ -502,12 +483,12 @@ void menu_findprevious(void){
         }
 
         place_cursor(
-          tab.text_view,
-          tab.text_buffer,
+          textview,
+          textbuffer,
           &cursor
         );
         gtk_text_buffer_select_range(
-          tab.text_buffer,
+          textbuffer,
           &start,
           &end
         );
@@ -566,29 +547,29 @@ void menu_findreplace(void){
     }
     gtk_window_present(GTK_WINDOW(find_window));
 
-    GtkTextBuffer *buffer;
-    tabcontents tab;
+    GtkTextBuffer *findbuffer;
+    GtkTextBuffer *textbuffer;
 
-    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
-    tab = get_tab_contents(-1);
+    findbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_find));
+    textbuffer = tab_get_textbuffer(-1);
 
-    if(gtk_text_buffer_get_has_selection(tab.text_buffer)){
+    if(gtk_text_buffer_get_has_selection(textbuffer)){
         GtkTextIter end;
         GtkTextIter start;
         gtk_text_buffer_get_selection_bounds(
-          tab.text_buffer,
+          textbuffer,
           &start,
           &end
         );
 
         finding = gtk_text_buffer_get_text(
-          tab.text_buffer,
+          textbuffer,
           &start,
           &end,
           FALSE
         );
         gtk_text_buffer_set_text(
-          buffer,
+          findbuffer,
           finding,
           -1
         );
@@ -600,13 +581,13 @@ void menu_findreplace(void){
     GtkTextIter findstart;
 
     gtk_text_buffer_get_bounds(
-      buffer,
+      findbuffer,
       &findstart,
       &findend
     );
 
     gtk_text_buffer_select_range(
-      buffer,
+      findbuffer,
       &findstart,
       &findend
     );
@@ -624,14 +605,14 @@ void menu_findreplaceall(void){
 
     gchar *replace_content;
     GtkTextBuffer *replace_buffer;
+    GtkTextBuffer *textbuffer;
     GtkTextIter end;
     GtkTextIter replace_end;
     GtkTextIter replace_start;
     GtkTextIter start;
     GtkTextTag *tag_found;
-    tabcontents tab;
 
-    tab = get_tab_contents(-1);
+    textbuffer = tab_get_textbuffer(-1);
 
     replace_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(find_window_replace));
     gtk_text_buffer_get_bounds(
@@ -647,14 +628,14 @@ void menu_findreplaceall(void){
     );
 
     tag_found = gtk_text_tag_table_lookup(
-      gtk_text_buffer_get_tag_table(tab.text_buffer),
+      gtk_text_buffer_get_tag_table(textbuffer),
       "found"
     );
 
     refinding = FALSE;
     while(!gtk_text_iter_is_end(&end)){
         gtk_text_buffer_get_start_iter(
-          tab.text_buffer,
+          textbuffer,
           &end
         );
         gtk_text_iter_forward_to_tag_toggle(
@@ -675,18 +656,18 @@ void menu_findreplaceall(void){
             );
 
             gtk_text_buffer_delete(
-              tab.text_buffer,
+              textbuffer,
               &start,
               &end
             );
 
             gtk_text_buffer_get_iter_at_offset(
-              tab.text_buffer,
+              textbuffer,
               &start,
               offset
             );
             gtk_text_buffer_insert(
-              tab.text_buffer,
+              textbuffer,
               &start,
               replace_content,
               -1
@@ -703,18 +684,18 @@ void menu_findtop(void){
         return;
     }
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter start;
-    tabcontents tab;
-    tab = get_tab_contents(-1);
+    GtkTextView *textview;
 
     gtk_text_buffer_get_start_iter(
-      tab.text_buffer,
+      textbuffer,
       &start
     );
 
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &start
     );
 }
@@ -931,18 +912,27 @@ void menu_redo(void){
         return;
     }
 
+    GtkTextBuffer *mapbuffer;
+    GtkTextBuffer *redobuffer;
+    GtkTextBuffer *textbuffer;
+    GtkTextBuffer *undobuffer;
     GtkTextIter mapstart;
     GtkTextIter redoend;
     GtkTextIter redostart;
-    tabcontents tab;
+    GtkTextView *textview;
 
-    tab = get_tab_contents(-1);
+    mapbuffer = tab_get_mapbuffer(-1);
+    redobuffer = tab_get_redobuffer(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    undobuffer = tab_get_undobuffer(-1);
+    textview = tab_get_textview(-1);
+
     gtk_text_buffer_get_start_iter(
-      tab.redo_buffer,
+      redobuffer,
       &redostart
     );
     gtk_text_buffer_get_iter_at_line(
-      tab.redo_buffer,
+      redobuffer,
       &redoend,
       1
     );
@@ -958,25 +948,25 @@ void menu_redo(void){
     GtkTextIter undostart;
 
     gtk_text_buffer_get_start_iter(
-      tab.undo_buffer,
+      undobuffer,
       &undostart
     );
 
     entry = gtk_text_buffer_get_text(
-      tab.redo_buffer,
+      redobuffer,
       &redostart,
       &redoend,
       FALSE
     );
 
     gtk_text_buffer_insert(
-      tab.undo_buffer,
+      undobuffer,
       &undostart,
       entry,
       -1
     );
     gtk_text_buffer_delete(
-      tab.redo_buffer,
+      redobuffer,
       &redostart,
       &redoend
     );
@@ -1032,29 +1022,29 @@ void menu_redo(void){
     value[length_value] = '\0';
 
     // Repeat entry.
-    block_insertdelete_signals(tab.text_buffer);
+    block_insertdelete_signals(textbuffer);
     gtk_text_buffer_get_iter_at_line_offset(
-      tab.text_buffer,
+      textbuffer,
       &selectstart,
       line,
       lineoffset
     );
 
     gtk_text_buffer_get_iter_at_offset(
-      tab.map_buffer,
+      mapbuffer,
       &mapstart,
       gtk_text_iter_get_offset(&selectstart)
     );
 
     if(inserted){
         gtk_text_buffer_insert(
-          tab.text_buffer,
+          textbuffer,
           &selectstart,
           value,
           -1
         );
         gtk_text_buffer_insert(
-          tab.map_buffer,
+          mapbuffer,
           &mapstart,
           value,
           -1
@@ -1070,27 +1060,27 @@ void menu_redo(void){
            length_value
         );
         gtk_text_buffer_get_iter_at_offset(
-          tab.map_buffer,
+          mapbuffer,
           &mapend,
           gtk_text_iter_get_offset(&selectend)
         );
 
         gtk_text_buffer_delete(
-          tab.text_buffer,
+          textbuffer,
           &selectstart,
           &selectend
         );
         gtk_text_buffer_delete(
-          tab.map_buffer,
+          mapbuffer,
           &mapstart,
           &mapend
         );
     }
-    unblock_insertdelete_signals(tab.text_buffer);
+    unblock_insertdelete_signals(textbuffer);
 
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &selectstart
     );
 
@@ -1112,18 +1102,20 @@ void menu_refind(void){
         return;
     }
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter tabstart;
-    tabcontents tab;
 
     find_clear_tags();
-    tab = get_tab_contents(-1);
+
+    textbuffer = tab_get_textbuffer(-1);
+
     gtk_text_buffer_get_start_iter(
-      tab.text_buffer,
+      textbuffer,
       &tabstart
     );
 
     menu_find_recursive(
-      tab.text_buffer,
+      textbuffer,
       tabstart
     );
 }
@@ -1212,14 +1204,16 @@ void menu_sort(gboolean asc){
         return;
     }
 
+    GtkTextBuffer *textbuffer;
     GtkTextIter end;
     GtkTextIter start;
-    tabcontents tab;
+    GtkTextView *textview;
 
-    tab = get_tab_contents(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
 
     if(!gtk_text_buffer_get_selection_bounds(
-        tab.text_buffer,
+        textbuffer,
         &start,
         &end
       )){
@@ -1242,7 +1236,7 @@ void menu_sort(gboolean asc){
     }
 
     gchar *text = gtk_text_buffer_get_text(
-      tab.text_buffer,
+      textbuffer,
       &start,
       &end,
       FALSE
@@ -1261,7 +1255,7 @@ void menu_sort(gboolean asc){
         GtkTextIter temp_start;
 
         gtk_text_buffer_get_iter_at_line(
-          tab.text_buffer,
+          textbuffer,
           &temp_start,
           line_start + i
         );
@@ -1288,7 +1282,7 @@ void menu_sort(gboolean asc){
     );
 
     gtk_text_buffer_delete(
-      tab.text_buffer,
+      textbuffer,
       &start,
       &end
     );
@@ -1301,7 +1295,7 @@ void menu_sort(gboolean asc){
         size_t length = strlen(line_array[i]);
 
         gtk_text_buffer_insert(
-          tab.text_buffer,
+          textbuffer,
           &start,
           line_array[i],
           length
@@ -1309,7 +1303,7 @@ void menu_sort(gboolean asc){
 
         if(i != line_count - 1){
             gtk_text_buffer_insert(
-              tab.text_buffer,
+              textbuffer,
               &start,
               "\n",
               1
@@ -1318,8 +1312,8 @@ void menu_sort(gboolean asc){
     }
 
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &start
     );
 }
@@ -1329,18 +1323,27 @@ void menu_undo(void){
         return;
     }
 
+    GtkTextBuffer *mapbuffer;
+    GtkTextBuffer *redobuffer;
+    GtkTextBuffer *textbuffer;
+    GtkTextBuffer *undobuffer;
     GtkTextIter mapstart;
     GtkTextIter undoend;
     GtkTextIter undostart;
-    tabcontents tab;
+    GtkTextView *textview;
 
-    tab = get_tab_contents(-1);
+    mapbuffer = tab_get_mapbuffer(-1);
+    redobuffer = tab_get_redobuffer(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    undobuffer = tab_get_undobuffer(-1);
+    textview = tab_get_textview(-1);
+
     gtk_text_buffer_get_start_iter(
-      tab.undo_buffer,
+      undobuffer,
       &undostart
     );
     gtk_text_buffer_get_iter_at_line(
-      tab.undo_buffer,
+      undobuffer,
       &undoend,
       1
     );
@@ -1356,25 +1359,25 @@ void menu_undo(void){
     GtkTextIter selectstart;
 
     gtk_text_buffer_get_start_iter(
-      tab.redo_buffer,
+      redobuffer,
       &redostart
     );
 
     entry = gtk_text_buffer_get_text(
-      tab.undo_buffer,
+      undobuffer,
       &undostart,
       &undoend,
       FALSE
     );
 
     gtk_text_buffer_insert(
-      tab.redo_buffer,
+      redobuffer,
       &redostart,
       entry,
       -1
     );
     gtk_text_buffer_delete(
-      tab.undo_buffer,
+      undobuffer,
       &undostart,
       &undoend
     );
@@ -1430,16 +1433,16 @@ void menu_undo(void){
     value[length_value] = '\0';
 
     // Repeat entry.
-    block_insertdelete_signals(tab.text_buffer);
+    block_insertdelete_signals(textbuffer);
     gtk_text_buffer_get_iter_at_line_offset(
-      tab.text_buffer,
+      textbuffer,
       &selectstart,
       line,
       lineoffset
     );
 
     gtk_text_buffer_get_iter_at_offset(
-      tab.map_buffer,
+      mapbuffer,
       &mapstart,
       gtk_text_iter_get_offset(&selectstart)
     );
@@ -1454,41 +1457,41 @@ void menu_undo(void){
            length_value
         );
         gtk_text_buffer_get_iter_at_offset(
-          tab.map_buffer,
+          mapbuffer,
           &mapend,
           gtk_text_iter_get_offset(&selectend)
         );
 
         gtk_text_buffer_delete(
-          tab.text_buffer,
+          textbuffer,
           &selectstart,
           &selectend
         );
         gtk_text_buffer_delete(
-          tab.map_buffer,
+          mapbuffer,
           &mapstart,
           &mapend
         );
 
     }else{
         gtk_text_buffer_insert(
-          tab.text_buffer,
+          textbuffer,
           &selectstart,
           value,
           -1
         );
         gtk_text_buffer_insert(
-          tab.map_buffer,
+          mapbuffer,
           &mapstart,
           value,
           -1
         );
     }
-    unblock_insertdelete_signals(tab.text_buffer);
+    unblock_insertdelete_signals(textbuffer);
 
     place_cursor(
-      tab.text_view,
-      tab.text_buffer,
+      textview,
+      textbuffer,
       &selectstart
     );
 
@@ -1567,14 +1570,20 @@ void open_file(gchar *filename){
             menu_newtab();
         }
 
-        tabcontents tab;
-        tab = get_tab_contents(-1);
+        int page = gtk_notebook_get_current_page(notebook);
+        GtkTextBuffer *mapbuffer;
+        GtkTextBuffer *textbuffer;
+        GtkTextView *textview;
+
+        mapbuffer = tab_get_mapbuffer(page);
+        textbuffer = tab_get_textbuffer(page);
+        textview = tab_get_textview(page);
 
         gtk_notebook_set_tab_label_text(
           notebook,
           gtk_notebook_get_nth_page(
             notebook,
-            tab.page
+            page
           ),
           filename
         );
@@ -1582,32 +1591,32 @@ void open_file(gchar *filename){
           notebook,
           gtk_notebook_get_nth_page(
             notebook,
-            tab.page
+            page
           ),
           filename
         );
 
-        block_insertdelete_signals(tab.text_buffer);
+        block_insertdelete_signals(textbuffer);
         gtk_text_buffer_set_text(
-          tab.text_buffer,
+          textbuffer,
           content,
           length
         );
-        unblock_insertdelete_signals(tab.text_buffer);
+        unblock_insertdelete_signals(textbuffer);
 
         GtkTextIter start;
         gtk_text_buffer_get_start_iter(
-          tab.text_buffer,
+          textbuffer,
           &start
         );
         place_cursor(
-          tab.text_view,
-          tab.text_buffer,
+          textview,
+          textbuffer,
           &start
         );
 
         gtk_text_buffer_set_text(
-          tab.map_buffer,
+          mapbuffer,
           content,
           -1
         );
@@ -1618,13 +1627,13 @@ void open_file(gchar *filename){
     update_opened_files();
 }
 
-void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
+void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
     gtk_text_buffer_place_cursor(
       text_buffer,
       iter
     );
     gtk_text_view_scroll_to_mark(
-      GTK_TEXT_VIEW(text_view),
+      text_view,
       gtk_text_buffer_get_insert(text_buffer),
       0,
       TRUE,
@@ -1639,19 +1648,20 @@ void save_tab(const gchar *filename){
     }
 
     gchar *content;
+    GtkTextBuffer *textbuffer;
     GtkTextIter checkend;
     GtkTextIter checkstart;
     GtkTextIter end;
     GtkTextIter start;
-    tabcontents tab;
-    tab = get_tab_contents(-1);
+
+    textbuffer = tab_get_textbuffer(-1);
 
     // Trim line endings.
-    int linei = gtk_text_buffer_get_line_count(tab.text_buffer);
+    int linei = gtk_text_buffer_get_line_count(textbuffer);
     while(linei >= 0){
         linei--;
         gtk_text_buffer_get_iter_at_line(
-          tab.text_buffer,
+          textbuffer,
           &checkend,
           linei
         );
@@ -1660,7 +1670,7 @@ void save_tab(const gchar *filename){
         if(gtk_text_iter_backward_char(&checkstart)){
             gchar *checked;
             checked = gtk_text_buffer_get_text(
-              tab.text_buffer,
+              textbuffer,
               &checkstart,
               &checkend,
               FALSE
@@ -1670,7 +1680,7 @@ void save_tab(const gchar *filename){
                 while(checked[0] == ' '){
                     if(gtk_text_iter_backward_char(&checkstart)){
                         checked = gtk_text_buffer_get_text(
-                          tab.text_buffer,
+                          textbuffer,
                           &checkstart,
                           &checkend,
                           FALSE
@@ -1685,7 +1695,7 @@ void save_tab(const gchar *filename){
                     gtk_text_iter_forward_char(&checkstart);
                 }
                 gtk_text_buffer_delete(
-                  tab.text_buffer,
+                  textbuffer,
                   &checkstart,
                   &checkend
                 );
@@ -1695,7 +1705,7 @@ void save_tab(const gchar *filename){
     }
 
     gtk_text_buffer_get_end_iter(
-      tab.text_buffer,
+      textbuffer,
       &end
     );
     // Make sure file ends with newline.
@@ -1703,33 +1713,33 @@ void save_tab(const gchar *filename){
     if(gtk_text_iter_backward_char(&checkstart)){
         gchar *lastchar;
         lastchar = gtk_text_buffer_get_text(
-          tab.text_buffer,
+          textbuffer,
           &checkstart,
           &end,
           FALSE
         );
         if(lastchar[0] != '\n'){
             gtk_text_buffer_insert(
-              tab.text_buffer,
+              textbuffer,
               &end,
               "\n",
               1
             );
 
             gtk_text_buffer_get_end_iter(
-              tab.text_buffer,
+              textbuffer,
               &end
             );
         }
         g_free(lastchar);
     }
     gtk_text_buffer_get_start_iter(
-      tab.text_buffer,
+      textbuffer,
       &start
     );
 
     content = gtk_text_buffer_get_text(
-      tab.text_buffer,
+      textbuffer,
       &start,
       &end,
       FALSE
@@ -1744,44 +1754,48 @@ void save_tab(const gchar *filename){
 }
 
 void scroll_changed_map(void){
-    tabcontents tab;
+    GtkAdjustment *mapadjustment;
+    GtkAdjustment *textadjustment;
 
-    tab = get_tab_contents(-1);
+    mapadjustment = tab_get_mapadjustment(-1);
+    textadjustment = tab_get_textadjustment(-1);
 
     g_signal_handlers_block_by_func(
-      tab.text_adjustment,
+      textadjustment,
       G_CALLBACK(scroll_changed_textview),
       NULL
     );
     gtk_adjustment_set_value(
-      tab.text_adjustment,
-      (gtk_adjustment_get_upper(tab.text_adjustment) - gtk_adjustment_get_page_size(tab.text_adjustment))
-        * (gtk_adjustment_get_value(tab.map_adjustment) / (gtk_adjustment_get_upper(tab.map_adjustment) - gtk_adjustment_get_page_size(tab.map_adjustment)))
+      textadjustment,
+      (gtk_adjustment_get_upper(textadjustment) - gtk_adjustment_get_page_size(textadjustment))
+        * (gtk_adjustment_get_value(mapadjustment) / (gtk_adjustment_get_upper(mapadjustment) - gtk_adjustment_get_page_size(mapadjustment)))
     );
     g_signal_handlers_unblock_by_func(
-      tab.text_adjustment,
+      textadjustment,
       G_CALLBACK(scroll_changed_textview),
       NULL
     );
 }
 
 void scroll_changed_textview(void){
-    tabcontents tab;
+    GtkAdjustment *mapadjustment;
+    GtkAdjustment *textadjustment;
 
-    tab = get_tab_contents(-1);
+    mapadjustment = tab_get_mapadjustment(-1);
+    textadjustment = tab_get_textadjustment(-1);
 
     g_signal_handlers_block_by_func(
-      tab.map_adjustment,
+      mapadjustment,
       G_CALLBACK(scroll_changed_map),
       NULL
     );
     gtk_adjustment_set_value(
-      tab.map_adjustment,
-      (gtk_adjustment_get_upper(tab.map_adjustment) - gtk_adjustment_get_page_size(tab.map_adjustment))
-        * (gtk_adjustment_get_value(tab.text_adjustment) / (gtk_adjustment_get_upper(tab.text_adjustment) - gtk_adjustment_get_page_size(tab.text_adjustment)))
+      mapadjustment,
+      (gtk_adjustment_get_upper(mapadjustment) - gtk_adjustment_get_page_size(mapadjustment))
+        * (gtk_adjustment_get_value(textadjustment) / (gtk_adjustment_get_upper(textadjustment) - gtk_adjustment_get_page_size(textadjustment)))
     );
     g_signal_handlers_unblock_by_func(
-      tab.map_adjustment,
+      mapadjustment,
       G_CALLBACK(scroll_changed_map),
       NULL
     );
@@ -2525,20 +2539,27 @@ GtkTextBuffer* tab_get_undobuffer(int page){
 }
 
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
+    GtkTextBuffer *mapbuffer;
+    GtkTextBuffer *redobuffer;
+    GtkTextBuffer *textbuffer;
+    GtkTextBuffer *undobuffer;
     GtkTextIter first;
     GtkTextIter mapend;
     GtkTextIter mapstart;
-    tabcontents tab;
 
-    tab = get_tab_contents(-1);
+    mapbuffer = tab_get_mapbuffer(-1);
+    redobuffer = tab_get_redobuffer(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    undobuffer = tab_get_undobuffer(-1);
+
     gtk_text_buffer_get_start_iter(
-      tab.undo_buffer,
+      undobuffer,
       &first
     );
 
     char *entry = undoredo_entry(
       gtk_text_buffer_get_text(
-        tab.text_buffer,
+        textbuffer,
         start,
         end,
         FALSE
@@ -2548,7 +2569,7 @@ void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
       gtk_text_iter_get_line_offset(start)
     );
     gtk_text_buffer_insert(
-      tab.undo_buffer,
+      undobuffer,
       &first,
       entry,
       -1
@@ -2556,17 +2577,17 @@ void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
     g_free(entry);
 
     gtk_text_buffer_get_iter_at_offset(
-      tab.map_buffer,
+      mapbuffer,
       &mapstart,
       gtk_text_iter_get_offset(start)
     );
     gtk_text_buffer_get_iter_at_offset(
-      tab.map_buffer,
+      mapbuffer,
       &mapend,
       gtk_text_iter_get_offset(end)
     );
     gtk_text_buffer_delete(
-      tab.map_buffer,
+      mapbuffer,
       &mapstart,
       &mapend
     );
@@ -2574,20 +2595,27 @@ void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
     menu_refind();
 
     gtk_text_buffer_set_text(
-      tab.redo_buffer,
+      redobuffer,
       "",
       0
     );
 }
 
 void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
+    GtkTextBuffer *mapbuffer;
+    GtkTextBuffer *redobuffer;
+    GtkTextBuffer *textbuffer;
+    GtkTextBuffer *undobuffer;
     GtkTextIter first;
     GtkTextIter mapiter;
-    tabcontents tab;
 
-    tab = get_tab_contents(-1);
+    mapbuffer = tab_get_mapbuffer(-1);
+    redobuffer = tab_get_redobuffer(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    undobuffer = tab_get_undobuffer(-1);
+
     gtk_text_buffer_get_start_iter(
-      tab.undo_buffer,
+      undobuffer,
       &first
     );
 
@@ -2598,7 +2626,7 @@ void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
       gtk_text_iter_get_line_offset(iter)
     );
     gtk_text_buffer_insert(
-      tab.undo_buffer,
+      undobuffer,
       &first,
       entry,
       -1
@@ -2606,12 +2634,12 @@ void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
     g_free(entry);
 
     gtk_text_buffer_get_iter_at_offset(
-      tab.map_buffer,
+      mapbuffer,
       &mapiter,
       gtk_text_iter_get_offset(iter)
     );
     gtk_text_buffer_insert(
-      tab.map_buffer,
+      mapbuffer,
       &mapiter,
       value,
       -1
@@ -2620,7 +2648,7 @@ void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value){
     menu_refind();
 
     gtk_text_buffer_set_text(
-      tab.redo_buffer,
+      redobuffer,
       "",
       0
     );

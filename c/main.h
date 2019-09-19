@@ -35,17 +35,6 @@ GtkNotebook *notebook;
 gboolean refinding = TRUE;
 gint width_tabnotebook = 0;
 
-typedef struct tabcontents{
-  int page;
-  GtkWidget *text_view;
-  GtkTextBuffer *text_buffer;
-  GtkTextBuffer *undo_buffer;
-  GtkTextBuffer *redo_buffer;
-  GtkTextBuffer *map_buffer;
-  GtkAdjustment *text_adjustment;
-  GtkAdjustment *map_adjustment;
-} tabcontents;
-
 void activate(GtkApplication* app, gpointer data);
 void block_insertdelete_signals(GtkTextBuffer *text_buffer);
 gboolean check_equals_unsaved(void);
@@ -54,7 +43,6 @@ const gchar* get_current_tab_label_text(void);
 gchar* get_find_find(void);
 gboolean get_notebook_no_pages(void);
 GList* get_tabbox_children(GtkNotebook *tabnotebook, const gint page);
-struct tabcontents get_tab_contents(int page);
 void go_to_line(void);
 int main(int argc, char **argv);
 void menu_clearundoredo(void);
@@ -81,7 +69,7 @@ void menu_undo(void);
 GtkWidget* new_scrolled_window(void);
 GtkWidget* new_textview(gboolean editable, gchar *name);
 void open_file(gchar *filename);
-void place_cursor(GtkWidget *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter);
+void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter);
 void save_tab(const gchar *filename);
 void scroll_changed_map(void);
 void scroll_changed_textview(void);
