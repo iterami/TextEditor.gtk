@@ -688,6 +688,9 @@ void menu_findtop(void){
     GtkTextIter start;
     GtkTextView *textview;
 
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
+
     gtk_text_buffer_get_start_iter(
       textbuffer,
       &start
