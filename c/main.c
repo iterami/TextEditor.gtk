@@ -55,13 +55,13 @@ void find_clear_tags(void){
 }
 
 const gchar* get_current_tab_label_text(void){
-    return gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(
+    return gtk_notebook_get_menu_label_text(
       notebook,
       gtk_notebook_get_nth_page(
         notebook,
         gtk_notebook_get_current_page(notebook)
       )
-    )));
+    );
 }
 
 gchar* get_find_find(void){
@@ -2781,7 +2781,7 @@ void update_opened_files(void){
         gtk_text_buffer_insert(
           buffer,
           &end,
-          gtk_label_get_text(GTK_LABEL(gtk_notebook_get_tab_label(
+          gtk_label_get_text(GTK_LABEL(gtk_notebook_get_menu_label(
             notebook,
             gtk_notebook_get_nth_page(
               notebook,
