@@ -1183,7 +1183,7 @@ void menu_saveas(void){
             notebook,
             gtk_notebook_get_current_page(notebook)
           ),
-          filename
+          g_path_get_basename(filename)
         );
         gtk_notebook_set_menu_label_text(
           notebook,
@@ -1592,7 +1592,7 @@ void open_file(gchar *filename){
             notebook,
             page
           ),
-          filename
+          g_path_get_basename(filename)
         );
         gtk_notebook_set_menu_label_text(
           notebook,
