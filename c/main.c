@@ -2781,13 +2781,13 @@ void update_opened_files(void){
         gtk_text_buffer_insert(
           buffer,
           &end,
-          gtk_label_get_text(GTK_LABEL(gtk_notebook_get_menu_label(
+          gtk_notebook_get_menu_label_text(
             notebook,
             gtk_notebook_get_nth_page(
               notebook,
               page++
             )
-          ))),
+          ),
           -1
         );
         gtk_text_buffer_insert(
