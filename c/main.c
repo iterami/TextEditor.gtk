@@ -332,8 +332,8 @@ void menu_findline(void){
 
         gtk_window_move(
           GTK_WINDOW(line_window),
-          x + width - 320 - width_tabnotebook,
-          y + height - 260
+          x + width - 325 - width_tabnotebook,
+          y + height - 275
         );
     }
     gtk_window_present(GTK_WINDOW(line_window));
@@ -541,7 +541,7 @@ void menu_findreplace(void){
 
         gtk_window_move(
           GTK_WINDOW(find_window),
-          x + width - 320 - width_tabnotebook,
+          x + width - 325 - width_tabnotebook,
           y + height - 200
         );
     }
