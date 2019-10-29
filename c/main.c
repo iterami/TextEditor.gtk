@@ -1211,10 +1211,8 @@ void menu_sort(gboolean asc){
     GtkTextBuffer *textbuffer;
     GtkTextIter end;
     GtkTextIter start;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     if(!gtk_text_buffer_get_selection_bounds(
         textbuffer,
@@ -1314,6 +1312,10 @@ void menu_sort(gboolean asc){
             );
         }
     }
+
+    GtkTextView *textview;
+
+    textview = tab_get_textview(-1);
 
     place_cursor(
       textview,
