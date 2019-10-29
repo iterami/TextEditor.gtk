@@ -915,20 +915,11 @@ void menu_redo(void){
         return;
     }
 
-    GtkTextBuffer *mapbuffer;
     GtkTextBuffer *redobuffer;
-    GtkTextBuffer *textbuffer;
-    GtkTextBuffer *undobuffer;
-    GtkTextIter mapstart;
     GtkTextIter redoend;
     GtkTextIter redostart;
-    GtkTextView *textview;
 
-    mapbuffer = tab_get_mapbuffer(-1);
     redobuffer = tab_get_redobuffer(-1);
-    textbuffer = tab_get_textbuffer(-1);
-    undobuffer = tab_get_undobuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_start_iter(
       redobuffer,
@@ -947,8 +938,18 @@ void menu_redo(void){
     }
 
     gchar *entry;
+    GtkTextBuffer *mapbuffer;
+    GtkTextBuffer *textbuffer;
+    GtkTextBuffer *undobuffer;
+    GtkTextIter mapstart;
     GtkTextIter selectstart;
     GtkTextIter undostart;
+    GtkTextView *textview;
+
+    mapbuffer = tab_get_mapbuffer(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
+    undobuffer = tab_get_undobuffer(-1);
 
     gtk_text_buffer_get_start_iter(
       undobuffer,
@@ -1326,20 +1327,11 @@ void menu_undo(void){
         return;
     }
 
-    GtkTextBuffer *mapbuffer;
-    GtkTextBuffer *redobuffer;
-    GtkTextBuffer *textbuffer;
     GtkTextBuffer *undobuffer;
-    GtkTextIter mapstart;
     GtkTextIter undoend;
     GtkTextIter undostart;
-    GtkTextView *textview;
 
-    mapbuffer = tab_get_mapbuffer(-1);
-    redobuffer = tab_get_redobuffer(-1);
-    textbuffer = tab_get_textbuffer(-1);
     undobuffer = tab_get_undobuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_start_iter(
       undobuffer,
@@ -1358,8 +1350,18 @@ void menu_undo(void){
     }
 
     gchar *entry;
+    GtkTextBuffer *mapbuffer;
+    GtkTextBuffer *redobuffer;
+    GtkTextBuffer *textbuffer;
+    GtkTextIter mapstart;
     GtkTextIter redostart;
     GtkTextIter selectstart;
+    GtkTextView *textview;
+
+    mapbuffer = tab_get_mapbuffer(-1);
+    redobuffer = tab_get_redobuffer(-1);
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_start_iter(
       redobuffer,
