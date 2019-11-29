@@ -17,7 +17,7 @@
 #define KEY_NEXTTAB GDK_KEY_equal
 #define KEY_OPEN GDK_KEY_o
 #define KEY_PREVIOUSTAB GDK_KEY_minus
-#define KEY_REPLACE GDK_KEY_h
+#define KEY_REPLACE GDK_KEY_m
 #define KEY_SAVE GDK_KEY_s
 #define KEY_SELECTALL GDK_KEY_a
 #define KEY_SORT GDK_KEY_r
