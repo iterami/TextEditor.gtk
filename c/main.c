@@ -103,7 +103,6 @@ void go_to_line(void){
 
     const gchar *entry;
     int linenumber = 0;
-    GtkTextIter line;
 
     entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
 
@@ -117,6 +116,7 @@ void go_to_line(void){
     linenumber -= 1;
 
     GtkTextBuffer *textbuffer;
+    GtkTextIter line;
     GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
