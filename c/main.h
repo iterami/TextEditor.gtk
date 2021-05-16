@@ -24,6 +24,8 @@
 #define KEY_TOP GDK_KEY_Home
 #define KEY_UNDO GDK_KEY_z
 #define KEY_UNDOCLEAR GDK_KEY_y
+#define TAG_FOUND "found"
+#define UNSAVED "UNSAVED"
 
 gchar *finding = NULL;
 GtkWidget *find_window;

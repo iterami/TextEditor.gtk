@@ -25,7 +25,7 @@ void block_insertdelete_signals(GtkTextBuffer *text_buffer){
 gboolean check_equals_unsaved(void){
     return g_strcmp0(
       get_current_tab_label_text(),
-      "UNSAVED"
+      UNSAVED
     ) == 0;
 }
 
@@ -386,7 +386,7 @@ void menu_findnext(void){
     );
     tag_found = gtk_text_tag_table_lookup(
       gtk_text_buffer_get_tag_table(textbuffer),
-      "found"
+      TAG_FOUND
     );
     if(gtk_text_iter_forward_to_tag_toggle(
         &cursor,
@@ -453,7 +453,7 @@ void menu_findprevious(void){
     );
     tag_found = gtk_text_tag_table_lookup(
       gtk_text_buffer_get_tag_table(textbuffer),
-      "found"
+      TAG_FOUND
     );
     if(gtk_text_iter_backward_to_tag_toggle(
         &cursor,
@@ -508,7 +508,7 @@ void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
       )){
         gtk_text_buffer_apply_tag_by_name(
           buffer,
-          "found",
+          TAG_FOUND,
           &match_start,
           &match_end
         );
@@ -629,7 +629,7 @@ void menu_findreplaceall(void){
 
     tag_found = gtk_text_tag_table_lookup(
       gtk_text_buffer_get_tag_table(textbuffer),
-      "found"
+      TAG_FOUND
     );
 
     refinding = FALSE;
@@ -825,7 +825,7 @@ void menu_newtab(void){
     gtk_notebook_append_page(
       notebook,
       tabbox,
-      gtk_label_new("UNSAVED")
+      gtk_label_new(UNSAVED)
     );
     gtk_widget_show_all(window);
     if(width_tabnotebook == 0){
@@ -1537,7 +1537,7 @@ GtkWidget* new_textview(gboolean editable, gchar *name){
     );
     gtk_text_buffer_create_tag(
       buffer,
-      "found",
+      TAG_FOUND,
       "background",
       "#650",
       NULL
