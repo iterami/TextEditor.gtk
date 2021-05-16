@@ -25,7 +25,7 @@ void block_insertdelete_signals(GtkTextBuffer *text_buffer){
 gboolean check_equals_unsaved(void){
     return g_strcmp0(
       get_current_tab_label_text(),
-      UNSAVED
+      LABEL_UNSAVED
     ) == 0;
 }
 
@@ -779,7 +779,7 @@ void menu_newtab(void){
     gtk_notebook_append_page(
       tabnotebook,
       scrolled_window_map,
-      gtk_label_new("Map")
+      gtk_label_new(LABEL_MAP)
     );
     undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
     scrolled_window_undo = new_scrolled_window();
@@ -813,7 +813,7 @@ void menu_newtab(void){
     gtk_notebook_append_page(
       tabnotebook,
       undopaned,
-      gtk_label_new("Undo/Redo")
+      gtk_label_new(LABEL_UNDOREDO)
     );
     gtk_box_pack_start(
       GTK_BOX(tabbox),
@@ -825,8 +825,8 @@ void menu_newtab(void){
     gtk_notebook_append_page_menu(
       notebook,
       tabbox,
-      gtk_label_new(UNSAVED),
-      gtk_label_new(UNSAVED)
+      gtk_label_new(LABEL_UNSAVED),
+      gtk_label_new(LABEL_UNSAVED)
     );
     gtk_widget_show_all(window);
     if(width_tabnotebook == 0){
@@ -877,12 +877,12 @@ void menu_open(void){
     GtkWidget *dialog_open;
 
     dialog_open = gtk_file_chooser_dialog_new(
-      "Open...",
+      LABEL_OPENDIALOG,
       GTK_WINDOW(window),
       GTK_FILE_CHOOSER_ACTION_OPEN,
-      "_Cancel",
+      LABEL_CANCEL,
       GTK_RESPONSE_CANCEL,
-      "_Open",
+      LABEL_OPENBUTTON,
       GTK_RESPONSE_ACCEPT,
       NULL
     );
@@ -1147,12 +1147,12 @@ void menu_saveas(void){
     GtkWidget *dialog_saveas;
 
     dialog_saveas = gtk_file_chooser_dialog_new(
-      "Save As...",
+      LABEL_SAVEASDIALOG,
       GTK_WINDOW(window),
       GTK_FILE_CHOOSER_ACTION_SAVE,
-      "_Cancel",
+      LABEL_CANCEL,
       GTK_RESPONSE_CANCEL,
-      "_Save As",
+      LABEL_SAVEASBUTTON,
       GTK_RESPONSE_ACCEPT,
       NULL
     );
@@ -1538,8 +1538,8 @@ GtkWidget* new_textview(gboolean editable, gchar *name){
     gtk_text_buffer_create_tag(
       buffer,
       TAG_FOUND,
-      "background",
-      "#650",
+      TAG_FOUND_PROPERTY,
+      TAG_FOUND_COLOR,
       NULL
     );
 
@@ -1825,7 +1825,7 @@ void startup(GtkApplication* app, gpointer data){
 
     gtk_init_gtk(
       app,
-      "TextEditor.gtk"
+      TITLE
     );
 
     // Setup scrollable notebook.
@@ -1849,14 +1849,14 @@ void startup(GtkApplication* app, gpointer data){
     );
     // File menu.
     menu_file = gtk_menu_new();
-    menuitem_file = gtk_menu_item_new_with_mnemonic("_File");
+    menuitem_file = gtk_menu_item_new_with_mnemonic(LABEL_FILE);
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_file),
       menu_file
     );
     gtk_add_menuitem(
       menu_file,
-      "_New Tab",
+      LABEL_NEWTAB,
       accelgroup,
       KEY_NEWTAB,
       GDK_CONTROL_MASK,
@@ -1865,7 +1865,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Open...",
+      LABEL_OPEN,
       accelgroup,
       KEY_OPEN,
       GDK_CONTROL_MASK,
@@ -1878,7 +1878,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Save",
+      LABEL_SAVE,
       accelgroup,
       KEY_SAVE,
       GDK_CONTROL_MASK,
@@ -1887,7 +1887,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "Save _As...",
+      LABEL_SAVEAS,
       accelgroup,
       KEY_SAVE,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
@@ -1900,7 +1900,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Next Tab",
+      LABEL_NEXTTAB,
       accelgroup,
       KEY_NEXTTAB,
       GDK_CONTROL_MASK,
@@ -1909,7 +1909,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Previous Tab",
+      LABEL_PREVIOUSTAB,
       accelgroup,
       KEY_PREVIOUSTAB,
       GDK_CONTROL_MASK,
@@ -1918,7 +1918,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "Move Tab _Left",
+      LABEL_MOVETABLEFT,
       accelgroup,
       KEY_MOVETABLEFT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
@@ -1927,7 +1927,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "Move Tab _Right",
+      LABEL_MOVETABRIGHT,
       accelgroup,
       KEY_MOVETABRIGHT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
@@ -1940,7 +1940,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Close Tab",
+      LABEL_CLOSETAB,
       accelgroup,
       KEY_CLOSETAB,
       GDK_CONTROL_MASK,
@@ -1949,7 +1949,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Hide Windows",
+      LABEL_HIDEWINDOWS,
       accelgroup,
       KEY_HIDEWINDOWS,
       0,
@@ -1958,7 +1958,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_file,
-      "_Quit",
+      LABEL_QUIT,
       accelgroup,
       KEY_QUIT,
       GDK_CONTROL_MASK,
@@ -1971,14 +1971,14 @@ void startup(GtkApplication* app, gpointer data){
     );
     // Edit menu.
     menu_edit = gtk_menu_new();
-    menuitem_edit = gtk_menu_item_new_with_mnemonic("_Edit");
+    menuitem_edit = gtk_menu_item_new_with_mnemonic(LABEL_EDIT);
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_edit),
       menu_edit
     );
     gtk_add_menuitem(
       menu_edit,
-      "_Undo",
+      LABEL_UNDO,
       accelgroup,
       KEY_UNDO,
       GDK_CONTROL_MASK,
@@ -1987,7 +1987,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "_Redo",
+      LABEL_REDO,
       accelgroup,
       KEY_UNDO,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
@@ -1996,7 +1996,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Cl_ear Undo/Redo",
+      LABEL_CLEARUNDOREDO,
       accelgroup,
       KEY_UNDOCLEAR,
       GDK_CONTROL_MASK,
@@ -2009,7 +2009,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "_Copy",
+      LABEL_COPY,
       accelgroup,
       KEY_COPY,
       GDK_CONTROL_MASK,
@@ -2018,7 +2018,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Cu_t",
+      LABEL_CUT,
       accelgroup,
       KEY_CUT,
       GDK_CONTROL_MASK,
@@ -2027,7 +2027,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "_Paste",
+      LABEL_PASTE,
       accelgroup,
       KEY_PASTE,
       GDK_CONTROL_MASK,
@@ -2040,7 +2040,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "_Delete",
+      LABEL_DELETE,
       accelgroup,
       KEY_DELETE,
       0,
@@ -2049,7 +2049,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Delete _Line",
+      LABEL_DELETELINE,
       accelgroup,
       KEY_DELETELINE,
       GDK_CONTROL_MASK,
@@ -2058,7 +2058,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Delete Ne_xt Word",
+      LABEL_DELETENEXTWORD,
       accelgroup,
       KEY_DELETE,
       GDK_CONTROL_MASK,
@@ -2067,7 +2067,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Delete Pre_vious Word",
+      LABEL_DELETEPREVIOUSWORD,
       accelgroup,
       KEY_DELETEPREVIOUSWORD,
       GDK_CONTROL_MASK,
@@ -2080,7 +2080,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Insert Emo_ji",
+      LABEL_EMOJI,
       accelgroup,
       KEY_INSERT_EMOJI,
       GDK_CONTROL_MASK,
@@ -2089,7 +2089,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Toggle _Overwrite",
+      LABEL_TOGGLEOVERWRITE,
       accelgroup,
       KEY_INSERT,
       0,
@@ -2102,7 +2102,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "_Select All",
+      LABEL_SELECTALL,
       accelgroup,
       KEY_SELECTALL,
       GDK_CONTROL_MASK,
@@ -2115,7 +2115,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Sort _Ascending",
+      LABEL_SORTASCENDING,
       accelgroup,
       KEY_SORT,
       GDK_CONTROL_MASK,
@@ -2124,7 +2124,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      "Sort Desce_nding",
+      LABEL_SORTDESCENDING,
       accelgroup,
       KEY_SORT,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
@@ -2137,14 +2137,14 @@ void startup(GtkApplication* app, gpointer data){
     );
     // Find menu.
     menu_find = gtk_menu_new();
-    menuitem_find = gtk_menu_item_new_with_mnemonic("F_ind");
+    menuitem_find = gtk_menu_item_new_with_mnemonic(LABEL_FIND);
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(menuitem_find),
       menu_find
     );
     gtk_add_menuitem(
       menu_find,
-      "Find _Next",
+      LABEL_FINDNEXT,
       accelgroup,
       KEY_FINDMORE,
       GDK_CONTROL_MASK,
@@ -2153,7 +2153,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_find,
-      "Find _Previous",
+      LABEL_FINDPREVIOUS,
       accelgroup,
       KEY_FINDMORE,
       GDK_CONTROL_MASK | GDK_SHIFT_MASK,
@@ -2162,7 +2162,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_find,
-      "_Find/Replace...",
+      LABEL_FINDREPLACE,
       accelgroup,
       KEY_FIND,
       GDK_CONTROL_MASK,
@@ -2175,7 +2175,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_find,
-      "_Replace All",
+      LABEL_REPACEALL,
       accelgroup,
       KEY_REPLACE,
       GDK_CONTROL_MASK,
@@ -2188,7 +2188,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_find,
-      "Go to _Top",
+      LABEL_GOTOTOP,
       accelgroup,
       KEY_TOP,
       0,
@@ -2197,7 +2197,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_find,
-      "Go to _Line...",
+      LABEL_GOTOLINE,
       accelgroup,
       KEY_LINE,
       GDK_CONTROL_MASK,
@@ -2206,7 +2206,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_find,
-      "Go to _Bottom",
+      LABEL_GOTOBOTTOM,
       accelgroup,
       KEY_BOTTOM,
       0,
@@ -2256,7 +2256,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_window_set_title(
       GTK_WINDOW(find_window),
-      "Find/Replace..."
+      LABEL_FINDREPLACEDIALOG
     );
     gtk_window_set_attached_to(
       GTK_WINDOW(find_window),
@@ -2331,7 +2331,7 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_window_set_title(
       GTK_WINDOW(line_window),
-      "Go to Line..."
+      LABEL_GOTOLINEDIALOG
     );
     gtk_window_set_attached_to(
       GTK_WINDOW(line_window),
