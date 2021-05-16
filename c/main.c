@@ -1197,11 +1197,10 @@ void menu_saveas(void){
         );
 
         g_free(filename);
+        update_opened_files();
     }
 
     gtk_widget_destroy(dialog_saveas);
-
-    update_opened_files();
 }
 
 void menu_sort(gboolean asc){
@@ -1632,11 +1631,11 @@ void open_file(gchar *filename){
           content,
           -1
         );
+
+        update_opened_files();
     }
 
     g_free(content);
-
-    update_opened_files();
 }
 
 void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
