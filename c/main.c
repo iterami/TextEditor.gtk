@@ -1133,7 +1133,7 @@ void menu_save(void){
         menu_saveas();
 
     }else{
-        save_tab(NULL);
+        save_tab(get_current_tab_label_text());
     }
 }
 
@@ -1654,10 +1654,6 @@ void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIte
 }
 
 void save_tab(const gchar *filename){
-    if(!filename){
-        filename = get_current_tab_label_text();
-    }
-
     gchar *content;
     GtkTextBuffer *textbuffer;
     GtkTextIter checkend;
