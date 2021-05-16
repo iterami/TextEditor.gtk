@@ -822,9 +822,10 @@ void menu_newtab(void){
       FALSE,
       0
     );
-    gtk_notebook_append_page(
+    gtk_notebook_append_page_menu(
       notebook,
       tabbox,
+      gtk_label_new(UNSAVED),
       gtk_label_new(UNSAVED)
     );
     gtk_widget_show_all(window);
