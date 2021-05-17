@@ -191,8 +191,6 @@ void menu_closetab(void){
       notebook,
       gtk_notebook_get_current_page(notebook)
     );
-
-    update_opened_files();
 }
 
 void menu_deleteline(void){
@@ -907,6 +905,11 @@ void menu_open(void){
     gtk_widget_destroy(dialog_open);
 }
 
+void menu_quit(void){
+    update_opened_files();
+    gtk_widget_destroy(window);
+}
+
 void menu_redo(void){
     if(get_notebook_no_pages()){
         return;
@@ -1193,7 +1196,6 @@ void menu_saveas(void){
         );
 
         g_free(filename);
-        update_opened_files();
     }
 
     gtk_widget_destroy(dialog_saveas);
@@ -1627,8 +1629,6 @@ void open_file(gchar *filename){
           content,
           -1
         );
-
-        update_opened_files();
     }
 
     g_free(content);
@@ -1958,8 +1958,8 @@ void startup(GtkApplication* app, gpointer data){
       accelgroup,
       KEY_QUIT,
       GDK_CONTROL_MASK,
-      G_CALLBACK(gtk_widget_destroy),
-      window
+      G_CALLBACK(menu_quit),
+      NULL
     );
     gtk_menu_shell_append(
       GTK_MENU_SHELL(menubar),
