@@ -85,7 +85,6 @@ GtkNotebook *notebook;
 gboolean refinding = TRUE;
 gint width_tabnotebook = 0;
 
-void activate(GtkApplication* app, gpointer data);
 void block_insertdelete_signals(GtkTextBuffer *text_buffer);
 gboolean check_equals_unsaved(void);
 void find_clear_tags(void);
