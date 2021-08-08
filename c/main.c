@@ -1747,12 +1747,17 @@ void save_tab(const gchar *filename){
       &end,
       FALSE
     );
-    g_file_set_contents(
+    FILE *file;
+    file = fopen(
       filename,
-      content,
-      -1,
-      NULL
+      "w"
     );
+    fprintf(
+      file,
+      "%s",
+      content
+    );
+    fclose(file);
     g_free(content);
 }
 
@@ -2807,12 +2812,17 @@ void update_opened_files(void){
       FALSE
     );
     gchar *path = core_iterami_path(CONFIG_PATH);
-    g_file_set_contents(
+    FILE *file;
+    file = fopen(
       path,
-      content,
-      -1,
-      NULL
+      "w"
     );
+    fprintf(
+      file,
+      "%s",
+      content
+    );
+    fclose(file);
     g_free(content);
     g_free(path);
 
