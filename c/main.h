@@ -109,7 +109,6 @@ void menu_hide(void);
 void menu_movetab(gint movement);
 void menu_newtab(void);
 void menu_open(void);
-void menu_quit(void);
 void menu_redo(void);
 void menu_refind(void);
 void menu_save(void);
