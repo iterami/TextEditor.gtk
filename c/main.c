@@ -726,6 +726,8 @@ void menu_movetab(gint movement){
       ),
       position
     );
+
+    update_opened_files();
 }
 
 void menu_newtab(void){
