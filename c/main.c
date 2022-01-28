@@ -1630,6 +1630,8 @@ void open_file(gchar *filename){
           content,
           -1
         );
+
+        gtk_window_present(GTK_WINDOW(window));
     }
 
     g_free(content);
