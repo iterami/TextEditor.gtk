@@ -868,6 +868,8 @@ void menu_newtab(void){
       G_CALLBACK(scroll_changed_textview),
       NULL
     );
+
+    gtk_window_present(GTK_WINDOW(window));
 }
 
 void menu_open(void){
