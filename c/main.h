@@ -46,7 +46,6 @@
 #define LABEL_GOTOLINEDIALOG "Go to Line..."
 #define LABEL_GOTOTOP "Go to _Top"
 #define LABEL_HIDEWINDOWS "_Hide Windows"
-#define LABEL_MAP "Map"
 #define LABEL_MOVETABLEFT "Move Tab _Left"
 #define LABEL_MOVETABRIGHT "Move Tab _Right"
 #define LABEL_NEWTAB "_New Tab"
@@ -68,7 +67,6 @@
 #define LABEL_SORTDESCENDING "Sort Desce_nding"
 #define LABEL_TOGGLEOVERWRITE "Toggle _Overwrite"
 #define LABEL_UNDO "_Undo"
-#define LABEL_UNDOREDO "Undo/Redo"
 #define LABEL_UNSAVED "UNSAVED"
 #define TAG_FOUND "found"
 #define TAG_FOUND_COLOR "#650"
@@ -83,7 +81,7 @@ GtkWidget *line_window;
 GtkWidget *line_window_line;
 GtkNotebook *notebook;
 gboolean refinding = TRUE;
-gint width_tabnotebook = 0;
+gint width_sidebar = 100;
 
 void block_insertdelete_signals(GtkTextBuffer *text_buffer);
 gboolean check_equals_unsaved(void);

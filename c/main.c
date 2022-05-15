@@ -328,7 +328,7 @@ void menu_findline(void){
 
         gtk_window_move(
           GTK_WINDOW(line_window),
-          x + width - 325 - width_tabnotebook,
+          x + width - 325 - width_sidebar,
           y + height - 275
         );
     }
@@ -537,7 +537,7 @@ void menu_findreplace(void){
 
         gtk_window_move(
           GTK_WINDOW(find_window),
-          x + width - 325 - width_tabnotebook,
+          x + width - 325 - width_sidebar,
           y + height - 200
         );
     }
@@ -731,14 +731,14 @@ void menu_movetab(gint movement){
 }
 
 void menu_newtab(void){
-    GtkNotebook *tabnotebook;
     GtkWidget *scrolled_window_map;
     GtkWidget *scrolled_window_redo;
     GtkWidget *scrolled_window_undo;
     GtkWidget *scrolled_window;
+    GtkWidget *sidebar;
     GtkWidget *tabbox;
     GtkWidget *text_view;
-    GtkWidget *undopaned;
+    GtkWidget *undoredo;
 
     tabbox = gtk_box_new(
       GTK_ORIENTATION_HORIZONTAL,
@@ -760,11 +760,11 @@ void menu_newtab(void){
       TRUE,
       0
     );
-    tabnotebook = GTK_NOTEBOOK(gtk_notebook_new());
-    gtk_notebook_popup_enable(tabnotebook);
-    gtk_notebook_set_show_border(
-      tabnotebook,
-      FALSE
+    sidebar = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    gtk_widget_set_size_request(
+      sidebar,
+      width_sidebar,
+      0
     );
     scrolled_window_map = new_scrolled_window();
     gtk_container_add(
@@ -774,12 +774,13 @@ void menu_newtab(void){
         "map"
       )
     );
-    gtk_notebook_append_page(
-      tabnotebook,
+    gtk_paned_pack1(
+      GTK_PANED(sidebar),
       scrolled_window_map,
-      gtk_label_new(LABEL_MAP)
+      TRUE,
+      TRUE
     );
-    undopaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    undoredo = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
     scrolled_window_undo = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_undo),
@@ -789,7 +790,7 @@ void menu_newtab(void){
       )
     );
     gtk_paned_pack1(
-      GTK_PANED(undopaned),
+      GTK_PANED(undoredo),
       scrolled_window_undo,
       TRUE,
       TRUE
@@ -803,19 +804,20 @@ void menu_newtab(void){
       )
     );
     gtk_paned_pack2(
-      GTK_PANED(undopaned),
+      GTK_PANED(undoredo),
       scrolled_window_redo,
       TRUE,
       TRUE
     );
-    gtk_notebook_append_page(
-      tabnotebook,
-      undopaned,
-      gtk_label_new(LABEL_UNDOREDO)
+    gtk_paned_pack2(
+      GTK_PANED(sidebar),
+      undoredo,
+      TRUE,
+      TRUE
     );
     gtk_box_pack_start(
       GTK_BOX(tabbox),
-      GTK_WIDGET(tabnotebook),
+      GTK_WIDGET(sidebar),
       FALSE,
       FALSE,
       0
@@ -827,13 +829,6 @@ void menu_newtab(void){
       gtk_label_new(LABEL_UNSAVED)
     );
     gtk_widget_show_all(window);
-    if(width_tabnotebook == 0){
-        gtk_widget_get_preferred_width(
-          GTK_WIDGET(tabnotebook),
-          NULL,
-          &width_tabnotebook
-        );
-    }
 
     gtk_notebook_set_current_page(
       notebook,
@@ -2434,18 +2429,18 @@ GtkAdjustment* tab_get_mapadjustment(int page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkNotebook *tabnotebook;
+    GtkNotebook *sidebar;
 
     GList *children = get_tabbox_children(
       notebook,
       page
     );
-    tabnotebook = g_list_nth_data(
+    sidebar = g_list_nth_data(
       children,
       1
     );
 
-    return gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(gtk_notebook_get_nth_page(tabnotebook, 0)));
+    return gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(GTK_BIN(gtk_paned_get_child1(GTK_PANED(sidebar)))));
 }
 
 GtkTextBuffer* tab_get_mapbuffer(int page){
@@ -2453,18 +2448,18 @@ GtkTextBuffer* tab_get_mapbuffer(int page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkNotebook *tabnotebook;
+    GtkNotebook *sidebar;
 
     GList *children = get_tabbox_children(
       notebook,
       page
     );
-    tabnotebook = g_list_nth_data(
+    sidebar = g_list_nth_data(
       children,
       1
     );
 
-    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(tabnotebook, 0)))));
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(sidebar))))));
 }
 
 GtkTextBuffer* tab_get_redobuffer(int page){
@@ -2472,23 +2467,20 @@ GtkTextBuffer* tab_get_redobuffer(int page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkNotebook *tabnotebook;
-    GtkWidget *tabundopane;
+    GtkNotebook *sidebar;
+    GtkWidget *undoredo;
 
     GList *children = get_tabbox_children(
       notebook,
       page
     );
-    tabnotebook = g_list_nth_data(
+    sidebar = g_list_nth_data(
       children,
       1
     );
-    tabundopane = gtk_notebook_get_nth_page(
-      tabnotebook,
-      1
-    );
+    undoredo = gtk_paned_get_child2(GTK_PANED(sidebar));
 
-    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(tabundopane))))));
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(undoredo))))));
 }
 
 GtkAdjustment* tab_get_textadjustment(int page){
@@ -2541,23 +2533,20 @@ GtkTextBuffer* tab_get_undobuffer(int page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkNotebook *tabnotebook;
-    GtkWidget *tabundopane;
+    GtkNotebook *sidebar;
+    GtkWidget *undoredo;
 
     GList *children = get_tabbox_children(
       notebook,
       page
     );
-    tabnotebook = g_list_nth_data(
+    sidebar = g_list_nth_data(
       children,
       1
     );
-    tabundopane = gtk_notebook_get_nth_page(
-      tabnotebook,
-      1
-    );
+    undoredo = gtk_paned_get_child2(GTK_PANED(sidebar));
 
-    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(tabundopane))))));
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(undoredo))))));
 }
 
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
