@@ -51,6 +51,16 @@ void find_clear_tags(void){
 }
 
 const gchar* get_current_tab_label_text(void){
+    return gtk_notebook_get_tab_label_text(
+      notebook,
+      gtk_notebook_get_nth_page(
+        notebook,
+        gtk_notebook_get_current_page(notebook)
+      )
+    );
+}
+
+const gchar* get_current_tab_menu_text(void){
     return gtk_notebook_get_menu_label_text(
       notebook,
       gtk_notebook_get_nth_page(
@@ -885,7 +895,7 @@ void menu_open(void){
     if(!check_equals_unsaved()){
         gtk_file_chooser_set_file(
           chooser,
-          g_file_new_for_path(get_current_tab_label_text()),
+          g_file_new_for_path(get_current_tab_menu_text()),
           NULL
         );
     }
@@ -1130,7 +1140,7 @@ void menu_save(void){
         menu_saveas();
 
     }else{
-        save_tab(get_current_tab_label_text());
+        save_tab(get_current_tab_menu_text());
     }
 }
 
@@ -1156,7 +1166,7 @@ void menu_saveas(void){
     if(!check_equals_unsaved()){
         gtk_file_chooser_set_file(
           chooser,
-          g_file_new_for_path(get_current_tab_label_text()),
+          g_file_new_for_path(get_current_tab_menu_text()),
           NULL
         );
     }
@@ -1190,6 +1200,10 @@ void menu_saveas(void){
             gtk_notebook_get_current_page(notebook)
           ),
           filename
+        );
+        gtk_window_set_title(
+          GTK_WINDOW(window),
+          g_path_get_basename(filename)
         );
 
         g_free(filename);
@@ -1602,6 +1616,10 @@ void open_file(gchar *filename){
           ),
           filename
         );
+        gtk_window_set_title(
+          GTK_WINDOW(window),
+          g_path_get_basename(filename)
+        );
 
         block_insertdelete_signals(textbuffer);
         gtk_text_buffer_set_text(
@@ -1839,6 +1857,12 @@ void startup(GtkApplication* app, gpointer data){
     gtk_notebook_set_show_border(
       notebook,
       FALSE
+    );
+    g_signal_connect_after(
+      notebook,
+      "switch-page",
+      G_CALLBACK(switch_page),
+      NULL
     );
 
     // Setup menu items.
@@ -2422,6 +2446,13 @@ void startup(GtkApplication* app, gpointer data){
 
     g_free(temp_path);
     g_free(temp_content);
+}
+
+void switch_page(void){
+    gtk_window_set_title(
+      GTK_WINDOW(window),
+      get_current_tab_label_text()
+    );
 }
 
 GtkAdjustment* tab_get_mapadjustment(int page){
