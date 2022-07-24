@@ -203,6 +203,13 @@ void menu_closetab(void){
     );
 
     update_opened_files();
+
+    if(get_notebook_no_pages()){
+        gtk_window_set_title(
+          GTK_WINDOW(window),
+          TITLE
+        );
+    }
 }
 
 void menu_deleteline(void){
