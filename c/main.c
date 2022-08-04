@@ -1852,7 +1852,7 @@ void startup(GtkApplication* app, gpointer data){
     gtk_init_gtk(
       app,
       TITLE,
-      ICON_WINDOW_PATH
+      ICON_PATH
     );
 
     // Setup scrollable notebook.

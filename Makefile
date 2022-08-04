@@ -6,8 +6,8 @@ setup: c/main.c
 	touch ~/.iterami/config/texteditor.cfg
 	mkdir -p ~/.iterami/css
 	cp ../common/css/gtk.css ~/.iterami/css
-	mkdir -p ~/.iterami/icons
-	cp icons/default.png ~/.iterami/icons
+	mkdir -p ~/.iterami/images
+	cp images/icon.png ~/.iterami/images
 	gcc -O3 c/main.c `pkg-config --cflags --libs gtk+-3.0` -o ~/.iterami/texteditor
 
 clean:
