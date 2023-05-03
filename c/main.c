@@ -780,7 +780,7 @@ void menu_newtab(void){
     gtk_widget_set_size_request(
       sidebar,
       width_sidebar,
-      0
+      -1
     );
     scrolled_window_map = new_scrolled_window();
     gtk_container_add(
@@ -797,6 +797,11 @@ void menu_newtab(void){
       TRUE
     );
     undoredo = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+    gtk_widget_set_size_request(
+      undoredo,
+      -1,
+      10
+    );
     scrolled_window_undo = new_scrolled_window();
     gtk_container_add(
       GTK_CONTAINER(scrolled_window_undo),
