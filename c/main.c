@@ -350,25 +350,27 @@ void menu_findline(void){
     }
     gtk_window_present(GTK_WINDOW(line_window));
 
-    GtkTextBuffer *textbuffer;
-    GtkTextIter cursor;
+    if(!get_notebook_no_pages()){
+        GtkTextBuffer *textbuffer;
+        GtkTextIter cursor;
 
-    textbuffer = tab_get_textbuffer(-1);
+        textbuffer = tab_get_textbuffer(-1);
 
-    gtk_text_buffer_get_iter_at_mark(
-      textbuffer,
-      &cursor,
-      gtk_text_buffer_get_insert(textbuffer)
-    );
-    gchar *line = g_strdup_printf(
-      "%i",
-      gtk_text_iter_get_line(&cursor) + 1
-    );
-    gtk_entry_set_text(
-      GTK_ENTRY(line_window_line),
-      line
-    );
-    g_free(line);
+        gtk_text_buffer_get_iter_at_mark(
+          textbuffer,
+          &cursor,
+          gtk_text_buffer_get_insert(textbuffer)
+        );
+        gchar *line = g_strdup_printf(
+          "%i",
+          gtk_text_iter_get_line(&cursor) + 1
+        );
+        gtk_entry_set_text(
+          GTK_ENTRY(line_window_line),
+          line
+        );
+        g_free(line);
+    }
 
     gtk_widget_grab_focus(line_window_line);
 }
