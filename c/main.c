@@ -138,7 +138,6 @@ void go_to_line(void){
       textbuffer,
       &line
     );
-    gtk_window_present(GTK_WINDOW(window));
 }
 
 int main(int argc, char **argv){
@@ -646,8 +645,9 @@ void menu_findreplaceall(void){
       TAG_FOUND
     );
 
-    refinding = FALSE;
-    while(!gtk_text_iter_is_end(&end)){
+    while(refinding == TRUE
+      || !gtk_text_iter_is_end(&end)){
+        refinding = FALSE;
         gtk_text_buffer_get_start_iter(
           textbuffer,
           &end
@@ -1658,14 +1658,13 @@ void open_file(gchar *filename){
           content,
           -1
         );
-
-        gtk_window_present(GTK_WINDOW(window));
     }
 
     g_free(content);
 }
 
 void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
+    gtk_window_present(GTK_WINDOW(window));
     gtk_text_buffer_place_cursor(
       text_buffer,
       iter
