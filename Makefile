@@ -1,6 +1,6 @@
 all: setup
 
-setup: c/main.c
+setup: repo.c
 	mkdir -p ~/iterami
 	mkdir -p ~/iterami/config
 	touch ~/iterami/config/texteditor.cfg
@@ -8,7 +8,7 @@ setup: c/main.c
 	cp ../common/css/gtk.css ~/iterami/css
 	mkdir -p ~/iterami/images
 	cp ../common/images/icon.png ~/iterami/images
-	gcc -O3 c/main.c `pkg-config --cflags --libs gtk+-3.0` -o ~/iterami/texteditor
+	gcc -O3 repo.c `pkg-config --cflags --libs gtk+-3.0` -o ~/iterami/texteditor
 
 clean:
 	rm ~/iterami/texteditor

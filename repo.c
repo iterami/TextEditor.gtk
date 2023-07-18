@@ -1,9 +1,9 @@
 #include <gtk/gtk.h>
 #include <string.h>
-#include "main.h"
-#include "../../common/c/core.c"
-#include "../../common/c/gtk.c"
-#include "../../common/c/sort.c"
+#include "repo.h"
+#include "../common/c/core.c"
+#include "../common/c/gtk.c"
+#include "../common/c/sort.c"
 
 void block_insertdelete_signals(GtkTextBuffer *text_buffer){
     g_signal_handlers_block_by_func(
