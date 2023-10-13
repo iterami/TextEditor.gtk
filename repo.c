@@ -1589,7 +1589,6 @@ void open_file(gchar *filename){
     gchar *content;
     gssize length;
 
-    block_insertdelete_signals(textbuffer);
     if(g_file_get_contents(
         filename,
         &content,
@@ -1614,6 +1613,7 @@ void open_file(gchar *filename){
         textbuffer = tab_get_textbuffer(page);
         textview = tab_get_textview(page);
 
+        block_insertdelete_signals(textbuffer);
         gtk_notebook_set_tab_label_text(
           notebook,
           gtk_notebook_get_nth_page(
@@ -1657,8 +1657,8 @@ void open_file(gchar *filename){
           content,
           -1
         );
+        unblock_insertdelete_signals(textbuffer);
     }
-    unblock_insertdelete_signals(textbuffer);
 
     g_free(content);
 }
