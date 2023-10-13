@@ -1589,6 +1589,7 @@ void open_file(gchar *filename){
     gchar *content;
     gssize length;
 
+    block_insertdelete_signals(textbuffer);
     if(g_file_get_contents(
         filename,
         &content,
@@ -1634,13 +1635,11 @@ void open_file(gchar *filename){
           g_path_get_basename(filename)
         );
 
-        block_insertdelete_signals(textbuffer);
         gtk_text_buffer_set_text(
           textbuffer,
           content,
           length
         );
-        unblock_insertdelete_signals(textbuffer);
 
         GtkTextIter start;
         gtk_text_buffer_get_start_iter(
@@ -1659,6 +1658,7 @@ void open_file(gchar *filename){
           -1
         );
     }
+    unblock_insertdelete_signals(textbuffer);
 
     g_free(content);
 }
