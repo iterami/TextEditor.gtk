@@ -122,10 +122,8 @@ void go_to_line(void){
 
     GtkTextBuffer *textbuffer;
     GtkTextIter line;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_iter_at_line(
       textbuffer,
@@ -134,7 +132,6 @@ void go_to_line(void){
     );
 
     place_cursor(
-      textview,
       textbuffer,
       &line
     );
@@ -221,10 +218,8 @@ void menu_deleteline(void){
     GtkTextIter end;
     GtkTextIter line;
     GtkTextIter start;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_iter_at_mark(
       textbuffer,
@@ -292,7 +287,6 @@ void menu_deleteline(void){
       &end
     );
     place_cursor(
-      textview,
       textbuffer,
       &start
     );
@@ -305,10 +299,8 @@ void menu_findbottom(void){
 
     GtkTextBuffer *textbuffer;
     GtkTextIter end;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_end_iter(
       textbuffer,
@@ -316,7 +308,6 @@ void menu_findbottom(void){
     );
 
     place_cursor(
-      textview,
       textbuffer,
       &end
     );
@@ -387,10 +378,8 @@ void menu_findnext(void){
     GtkTextBuffer *textbuffer;
     GtkTextIter cursor;
     GtkTextTag *tag_found;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_iter_at_mark(
       textbuffer,
@@ -429,7 +418,6 @@ void menu_findnext(void){
         }
 
         place_cursor(
-          textview,
           textbuffer,
           &cursor
         );
@@ -454,10 +442,8 @@ void menu_findprevious(void){
     GtkTextBuffer *textbuffer;
     GtkTextIter cursor;
     GtkTextTag *tag_found;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_iter_at_mark(
       textbuffer,
@@ -496,7 +482,6 @@ void menu_findprevious(void){
         }
 
         place_cursor(
-          textview,
           textbuffer,
           &cursor
         );
@@ -700,10 +685,8 @@ void menu_findtop(void){
 
     GtkTextBuffer *textbuffer;
     GtkTextIter start;
-    GtkTextView *textview;
 
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_start_iter(
       textbuffer,
@@ -711,7 +694,6 @@ void menu_findtop(void){
     );
 
     place_cursor(
-      textview,
       textbuffer,
       &start
     );
@@ -964,11 +946,9 @@ void menu_redo(void){
     GtkTextIter mapstart;
     GtkTextIter selectstart;
     GtkTextIter undostart;
-    GtkTextView *textview;
 
     mapbuffer = tab_get_mapbuffer(-1);
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
     undobuffer = tab_get_undobuffer(-1);
 
     gtk_text_buffer_get_start_iter(
@@ -1103,7 +1083,6 @@ void menu_redo(void){
     unblock_insertdelete_signals(textbuffer);
 
     place_cursor(
-      textview,
       textbuffer,
       &selectstart
     );
@@ -1336,12 +1315,7 @@ void menu_sort(gboolean asc){
         }
     }
 
-    GtkTextView *textview;
-
-    textview = tab_get_textview(-1);
-
     place_cursor(
-      textview,
       textbuffer,
       &start
     );
@@ -1381,12 +1355,10 @@ void menu_undo(void){
     GtkTextIter mapstart;
     GtkTextIter redostart;
     GtkTextIter selectstart;
-    GtkTextView *textview;
 
     mapbuffer = tab_get_mapbuffer(-1);
     redobuffer = tab_get_redobuffer(-1);
     textbuffer = tab_get_textbuffer(-1);
-    textview = tab_get_textview(-1);
 
     gtk_text_buffer_get_start_iter(
       redobuffer,
@@ -1520,7 +1492,6 @@ void menu_undo(void){
     unblock_insertdelete_signals(textbuffer);
 
     place_cursor(
-      textview,
       textbuffer,
       &selectstart
     );
@@ -1607,11 +1578,9 @@ void open_file(gchar *filename){
         int page = gtk_notebook_get_current_page(notebook);
         GtkTextBuffer *mapbuffer;
         GtkTextBuffer *textbuffer;
-        GtkTextView *textview;
 
         mapbuffer = tab_get_mapbuffer(page);
         textbuffer = tab_get_textbuffer(page);
-        textview = tab_get_textview(page);
 
         block_insertdelete_signals(textbuffer);
         gtk_notebook_set_tab_label_text(
@@ -1647,7 +1616,6 @@ void open_file(gchar *filename){
           &start
         );
         place_cursor(
-          textview,
           textbuffer,
           &start
         );
@@ -1663,7 +1631,7 @@ void open_file(gchar *filename){
     g_free(content);
 }
 
-void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
+void place_cursor(GtkTextBuffer *text_buffer, GtkTextIter *iter){
     gtk_text_buffer_place_cursor(
       text_buffer,
       iter

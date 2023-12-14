@@ -118,7 +118,7 @@ void menu_undo(void);
 GtkWidget* new_scrolled_window(void);
 GtkWidget* new_textview(gboolean editable, gchar *name);
 void open_file(gchar *filename);
-void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter);
+void place_cursor(GtkTextBuffer *text_buffer, GtkTextIter *iter);
 gboolean place_cursor_idle(gpointer data);
 void save_tab(const gchar *filename);
 void scroll_changed_map(void);
