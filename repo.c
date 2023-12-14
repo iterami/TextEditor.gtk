@@ -1669,9 +1669,9 @@ void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIte
       text_buffer,
       iter
     );
-    gtk_text_view_scroll_to_mark(
+    gtk_text_view_scroll_to_iter(
       text_view,
-      gtk_text_buffer_get_insert(text_buffer),
+      iter,
       0,
       TRUE,
       0.5,
