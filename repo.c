@@ -1639,21 +1639,19 @@ void place_cursor(GtkTextBuffer *text_buffer, GtkTextIter *iter){
     g_idle_add_full(
       G_PRIORITY_LOW,
       G_SOURCE_FUNC(place_cursor_idle),
-      NULL,
+      text_buffer,
       NULL
     );
     gtk_window_present(GTK_WINDOW(window));
 }
 
 gboolean place_cursor_idle(gpointer data){
-    GtkTextBuffer *textbuffer;
+    GtkTextBuffer *textbuffer = data;
     GtkTextView *textview;
     GList *children = get_tabbox_children(
       notebook,
       gtk_notebook_get_current_page(notebook)
     );
-
-    textbuffer = tab_get_textbuffer(-1);
     textview = GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(g_list_nth_data(children, 0))));
 
     gtk_text_view_scroll_to_mark(
