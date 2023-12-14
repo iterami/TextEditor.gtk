@@ -1664,19 +1664,36 @@ void open_file(gchar *filename){
 }
 
 void place_cursor(GtkTextView *text_view, GtkTextBuffer *text_buffer, GtkTextIter *iter){
-    gtk_window_present(GTK_WINDOW(window));
     gtk_text_buffer_place_cursor(
       text_buffer,
       iter
     );
-    gtk_text_view_scroll_to_iter(
-      text_view,
-      iter,
+    g_idle_add_full(
+      G_PRIORITY_LOW,
+      G_SOURCE_FUNC(place_cursor_idle),
+      NULL,
+      NULL
+    );
+    gtk_window_present(GTK_WINDOW(window));
+}
+
+gboolean place_cursor_idle(gpointer data){
+    GtkTextBuffer *textbuffer;
+    GtkTextView *textview;
+
+    textbuffer = tab_get_textbuffer(-1);
+    textview = tab_get_textview(-1);
+
+    gtk_text_view_scroll_to_mark(
+      textview,
+      gtk_text_buffer_get_insert(textbuffer),
       0,
       TRUE,
       0.5,
       0.5
     );
+
+    return G_SOURCE_REMOVE;
 }
 
 void save_tab(const gchar *filename){
