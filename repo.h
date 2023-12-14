@@ -130,7 +130,6 @@ GtkTextBuffer* tab_get_mapbuffer(int page);
 GtkTextBuffer* tab_get_redobuffer(int page);
 GtkAdjustment* tab_get_textadjustment(int page);
 GtkTextBuffer* tab_get_textbuffer(int page);
-GtkTextView* tab_get_textview(int page);
 GtkTextBuffer* tab_get_undobuffer(int page);
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end);
 void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter, gchar *value);
