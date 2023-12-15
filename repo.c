@@ -1636,11 +1636,9 @@ void place_cursor(GtkTextBuffer *text_buffer, GtkTextIter *iter){
       text_buffer,
       iter
     );
-    g_idle_add_full(
-      G_PRIORITY_LOW,
+    g_idle_add(
       G_SOURCE_FUNC(place_cursor_idle),
-      text_buffer,
-      NULL
+      text_buffer
     );
     gtk_window_present(GTK_WINDOW(window));
 }
@@ -1663,7 +1661,7 @@ gboolean place_cursor_idle(gpointer data){
       0.5
     );
 
-    return G_SOURCE_REMOVE;
+    return FALSE;
 }
 
 void save_tab(const gchar *filename){
