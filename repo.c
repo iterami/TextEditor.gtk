@@ -1632,6 +1632,7 @@ void open_file(gchar *filename){
 }
 
 void place_cursor(GtkTextBuffer *text_buffer, GtkTextIter *iter){
+    gtk_window_present(GTK_WINDOW(window));
     gtk_text_buffer_place_cursor(
       text_buffer,
       iter
@@ -1640,21 +1641,20 @@ void place_cursor(GtkTextBuffer *text_buffer, GtkTextIter *iter){
       G_SOURCE_FUNC(place_cursor_idle),
       text_buffer
     );
-    gtk_window_present(GTK_WINDOW(window));
 }
 
 gboolean place_cursor_idle(gpointer data){
-    GtkTextBuffer *textbuffer = data;
-    GtkTextView *textview;
+    GtkTextBuffer *text_buffer = data;
+    GtkTextView *text_view;
     GList *children = get_tabbox_children(
       notebook,
       gtk_notebook_get_current_page(notebook)
     );
-    textview = GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(g_list_nth_data(children, 0))));
+    text_view = GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(g_list_nth_data(children, 0))));
 
     gtk_text_view_scroll_to_mark(
-      textview,
-      gtk_text_buffer_get_insert(textbuffer),
+      text_view,
+      gtk_text_buffer_get_insert(text_buffer),
       0,
       TRUE,
       0.5,
