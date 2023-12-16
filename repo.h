@@ -124,7 +124,6 @@ void save_tab(const gchar *filename);
 void startup(GtkApplication* app, gpointer data);
 void switch_page(void);
 GtkTextBuffer* tab_get_redobuffer(int page);
-GtkAdjustment* tab_get_textadjustment(int page);
 GtkTextBuffer* tab_get_textbuffer(int page);
 GtkTextBuffer* tab_get_undobuffer(int page);
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end);
