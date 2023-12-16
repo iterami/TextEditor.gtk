@@ -315,7 +315,7 @@ void menu_findline(void){
         gtk_window_resize(
           GTK_WINDOW(line_window),
           300,
-          35
+          1
         );
         gtk_widget_show_all(line_window);
 
