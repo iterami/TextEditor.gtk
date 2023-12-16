@@ -312,6 +312,11 @@ void menu_findbottom(void){
 
 void menu_findline(void){
     if(!gtk_widget_is_visible(GTK_WIDGET(line_window))){
+        gtk_window_resize(
+          GTK_WINDOW(line_window),
+          300,
+          35
+        );
         gtk_widget_show_all(line_window);
 
         gint height = 0;
@@ -517,6 +522,11 @@ void menu_find_recursive(GtkTextBuffer *buffer, GtkTextIter start){
 
 void menu_findreplace(void){
     if(!gtk_widget_is_visible(GTK_WIDGET(find_window))){
+        gtk_window_resize(
+          GTK_WINDOW(find_window),
+          300,
+          200
+        );
         gtk_widget_show_all(find_window);
 
         gint height = 0;
@@ -2134,11 +2144,6 @@ void startup(GtkApplication* app, gpointer data){
       GTK_WINDOW(find_window),
       accelgroup
     );
-    gtk_window_set_default_size(
-      GTK_WINDOW(find_window),
-      300,
-      200
-    );
     gtk_window_set_title(
       GTK_WINDOW(find_window),
       LABEL_FINDREPLACEDIALOG
@@ -2208,11 +2213,6 @@ void startup(GtkApplication* app, gpointer data){
     gtk_window_add_accel_group(
       GTK_WINDOW(line_window),
       accelgroup
-    );
-    gtk_window_set_default_size(
-      GTK_WINDOW(line_window),
-      300,
-      0
     );
     gtk_window_set_title(
       GTK_WINDOW(line_window),
