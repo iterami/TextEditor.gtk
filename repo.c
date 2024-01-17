@@ -1044,15 +1044,15 @@ void menu_redo(void){
 }
 
 void menu_refind(void){
-    if(!refinding){
-        return;
-    }
-
-    finding = get_find_find();
-    if(get_notebook_no_pages()
+    if(!refinding
+      || get_notebook_no_pages()
       || !gtk_widget_is_visible(find_window)){
         return;
     }
+
+    find_clear_tags();
+
+    finding = get_find_find();
     if(finding
       && finding[0] == '\0'){
         return;
@@ -1060,9 +1060,6 @@ void menu_refind(void){
 
     GtkTextBuffer *textbuffer;
     GtkTextIter tabstart;
-
-    find_clear_tags();
-
     textbuffer = tab_get_textbuffer(-1);
 
     gtk_text_buffer_get_start_iter(
