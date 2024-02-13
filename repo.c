@@ -378,21 +378,28 @@ void menu_findnext(void){
     }
 
     GtkTextBuffer *textbuffer;
-    GtkTextIter cursor;
     GtkTextTag *tag_found;
 
     textbuffer = tab_get_textbuffer(-1);
+    tag_found = gtk_text_tag_table_lookup(
+      gtk_text_buffer_get_tag_table(textbuffer),
+      TAG_FOUND
+    );
+    if(tag_found == NULL){
+        return;
+    }
+
+    GtkTextIter cursor;
 
     gtk_text_buffer_get_iter_at_mark(
       textbuffer,
       &cursor,
       gtk_text_buffer_get_insert(textbuffer)
     );
-    tag_found = gtk_text_tag_table_lookup(
-      gtk_text_buffer_get_tag_table(textbuffer),
-      TAG_FOUND
-    );
     if(gtk_text_iter_forward_to_tag_toggle(
+        &cursor,
+        tag_found
+      ) || gtk_text_iter_backward_to_tag_toggle(
         &cursor,
         tag_found
       )){
@@ -442,21 +449,28 @@ void menu_findprevious(void){
     }
 
     GtkTextBuffer *textbuffer;
-    GtkTextIter cursor;
     GtkTextTag *tag_found;
 
     textbuffer = tab_get_textbuffer(-1);
+    tag_found = gtk_text_tag_table_lookup(
+      gtk_text_buffer_get_tag_table(textbuffer),
+      TAG_FOUND
+    );
+    if(tag_found == NULL){
+        return;
+    }
+
+    GtkTextIter cursor;
 
     gtk_text_buffer_get_iter_at_mark(
       textbuffer,
       &cursor,
       gtk_text_buffer_get_insert(textbuffer)
     );
-    tag_found = gtk_text_tag_table_lookup(
-      gtk_text_buffer_get_tag_table(textbuffer),
-      TAG_FOUND
-    );
     if(gtk_text_iter_backward_to_tag_toggle(
+        &cursor,
+        tag_found
+      ) || gtk_text_iter_forward_to_tag_toggle(
         &cursor,
         tag_found
       )){
