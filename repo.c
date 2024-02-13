@@ -101,24 +101,9 @@ GList* get_tabbox_children(GtkNotebook *tabnotebook, const gint page){
 }
 
 void go_to_line(void){
-    if(get_notebook_no_pages()
-      || gtk_entry_get_text_length(GTK_ENTRY(line_window_line)) <= 0){
+    if(get_notebook_no_pages()){
         return;
     }
-
-    const gchar *entry;
-    int linenumber = 0;
-
-    entry = gtk_entry_get_text(GTK_ENTRY(line_window_line));
-
-    int i = 0;
-    size_t length_line = strlen(entry);
-    while(i < length_line){
-        linenumber *= 10;
-        linenumber += entry[i] - '0';
-        i++;
-    }
-    linenumber -= 1;
 
     GtkTextBuffer *textbuffer;
     GtkTextIter line;
@@ -128,7 +113,7 @@ void go_to_line(void){
     gtk_text_buffer_get_iter_at_line(
       textbuffer,
       &line,
-      linenumber
+      gtk_spin_button_get_value(GTK_SPIN_BUTTON(line_window_line)) - 1
     );
 
     place_cursor(
@@ -353,15 +338,10 @@ void menu_findline(void){
           &cursor,
           gtk_text_buffer_get_insert(textbuffer)
         );
-        gchar *line = g_strdup_printf(
-          "%i",
+        gtk_spin_button_set_value(
+          GTK_SPIN_BUTTON(line_window_line),
           gtk_text_iter_get_line(&cursor) + 1
         );
-        gtk_entry_set_text(
-          GTK_ENTRY(line_window_line),
-          line
-        );
-        g_free(line);
     }
 
     gtk_widget_grab_focus(line_window_line);
