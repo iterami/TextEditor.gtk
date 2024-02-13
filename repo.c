@@ -2253,6 +2253,10 @@ void startup(GtkApplication* app, gpointer data){
       0,
       0
     );
+    gtk_spin_button_set_numeric(
+      GTK_SPIN_BUTTON(line_window_line),
+      TRUE
+    );
     gtk_container_add(
       GTK_CONTAINER(line_window),
       line_window_line
