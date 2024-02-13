@@ -2241,7 +2241,18 @@ void startup(GtkApplication* app, gpointer data){
       GTK_WINDOW(line_window),
       GDK_WINDOW_TYPE_HINT_DIALOG
     );
-    line_window_line = gtk_entry_new();
+    line_window_line = gtk_spin_button_new(
+      gtk_adjustment_new(
+        1,
+        1,
+        INT_MAX,
+        1,
+        1,
+        1
+      ),
+      0,
+      0
+    );
     gtk_container_add(
       GTK_CONTAINER(line_window),
       line_window_line
