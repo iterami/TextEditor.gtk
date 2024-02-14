@@ -113,7 +113,7 @@ void go_to_line(void){
     gtk_text_buffer_get_iter_at_line(
       textbuffer,
       &line,
-      gtk_spin_button_get_value(GTK_SPIN_BUTTON(line_window_line)) - 1
+      gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(line_window_line)) - 1
     );
 
     place_cursor(
