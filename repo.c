@@ -1563,6 +1563,10 @@ gboolean place_cursor_idle(gpointer data){
     );
     text_view = GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(g_list_nth_data(children, 0))));
 
+    if(text_buffer != gtk_text_view_get_buffer(text_view)){
+        return FALSE;
+    }
+
     gtk_text_view_scroll_to_mark(
       text_view,
       gtk_text_buffer_get_insert(text_buffer),
