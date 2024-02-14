@@ -105,6 +105,8 @@ void go_to_line(void){
         return;
     }
 
+    gtk_spin_button_update(GTK_SPIN_BUTTON(line_window_line));
+
     GtkTextBuffer *textbuffer;
     GtkTextIter line;
 
