@@ -128,7 +128,7 @@ int main(int argc, char **argv){
     GtkApplication *app;
 
     app = gtk_application_new(
-      "com.iterami.texteditorgtk",
+      "iterami_TextEditor.gtk",
       0
     );
     g_signal_connect(
