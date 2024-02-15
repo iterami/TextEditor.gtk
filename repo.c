@@ -2332,20 +2332,13 @@ GtkTextBuffer* tab_get_redobuffer(int page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkNotebook *sidebar;
-    GtkWidget *undoredo;
-
-    GList *children = get_tabbox_children(
-      notebook,
-      page
-    );
-    sidebar = g_list_nth_data(
-      children,
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(gtk_paned_get_child2(GTK_PANED(g_list_nth_data(
+      get_tabbox_children(
+        notebook,
+        page
+      ),
       1
-    );
-    undoredo = gtk_paned_get_child2(GTK_PANED(sidebar));
-
-    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child2(GTK_PANED(undoredo))))));
+    )))))))));
 }
 
 GtkTextBuffer* tab_get_textbuffer(int page){
@@ -2372,20 +2365,13 @@ GtkTextBuffer* tab_get_undobuffer(int page){
         page = gtk_notebook_get_current_page(notebook);
     }
 
-    GtkNotebook *sidebar;
-    GtkWidget *undoredo;
-
-    GList *children = get_tabbox_children(
-      notebook,
-      page
-    );
-    sidebar = g_list_nth_data(
-      children,
+    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(gtk_paned_get_child2(GTK_PANED(g_list_nth_data(
+      get_tabbox_children(
+        notebook,
+        page
+      ),
       1
-    );
-    undoredo = gtk_paned_get_child2(GTK_PANED(sidebar));
-
-    return gtk_text_view_get_buffer(GTK_TEXT_VIEW(gtk_bin_get_child(GTK_BIN(gtk_paned_get_child1(GTK_PANED(undoredo))))));
+    )))))))));
 }
 
 void text_deleted(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end){
