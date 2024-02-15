@@ -1528,15 +1528,7 @@ void open_file(gchar *filename){
           length
         );
 
-        GtkTextIter start;
-        gtk_text_buffer_get_start_iter(
-          textbuffer,
-          &start
-        );
-        place_cursor(
-          textbuffer,
-          &start
-        );
+        menu_findtop();
 
         unblock_insertdelete_signals(textbuffer);
     }
