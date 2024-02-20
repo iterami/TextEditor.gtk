@@ -156,8 +156,6 @@ int main(int argc, char **argv){
 void menu_clearundoredo(void){
     GtkTextBuffer *redobuffer;
     GtkTextBuffer *undobuffer;
-    GtkTextIter end;
-    GtkTextIter start;
 
     redobuffer = tab_get_redobuffer(-1);
     undobuffer = tab_get_undobuffer(-1);
