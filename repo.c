@@ -1564,7 +1564,7 @@ gboolean place_cursor_idle(gpointer data){
       gtk_text_buffer_get_insert(text_buffer),
       0,
       TRUE,
-      0.5,
+      1,
       0.5
     );
 
