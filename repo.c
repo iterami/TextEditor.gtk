@@ -26,12 +26,12 @@ gboolean check_equals_unsaved(void){
 }
 
 void find_clear_tags(void){
+    GtkTextBuffer *textbuffer;
+    GtkTextIter end;
+    GtkTextIter start;
+
     int page = gtk_notebook_get_n_pages(notebook) - 1;
     while(page >= 0){
-        GtkTextBuffer *textbuffer;
-        GtkTextIter end;
-        GtkTextIter start;
-
         textbuffer = tab_get_textbuffer(page);
 
         gtk_text_buffer_get_bounds(
