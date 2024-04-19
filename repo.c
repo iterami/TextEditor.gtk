@@ -1634,22 +1634,53 @@ void save_tab(const gchar *filename){
     // Make sure file ends with newline.
     start = end;
     if(gtk_text_iter_backward_char(&start)){
-        gchar *lastchar;
-        lastchar = gtk_text_buffer_get_text(
+        gchar *checked;
+        checked = gtk_text_buffer_get_text(
           textbuffer,
           &start,
           &end,
           FALSE
         );
-        if(lastchar[0] != '\n'){
+        if(checked[0] != '\n'){
             gtk_text_buffer_insert(
               textbuffer,
               &end,
               "\n",
               1
             );
+
+        }else if(checked[0] == '\n'){
+            int count = 0;
+            while(checked[0] == '\n'){
+                if(gtk_text_iter_backward_char(&start)){
+                    checked = gtk_text_buffer_get_text(
+                      textbuffer,
+                      &start,
+                      &end,
+                      FALSE
+                    );
+                    count++;
+
+                }else{
+                    break;
+                }
+            }
+            if(count > 1){
+                gtk_text_iter_forward_char(&start);
+                gtk_text_iter_backward_char(&end);
+                gtk_text_buffer_delete(
+                  textbuffer,
+                  &start,
+                  &end
+                );
+                gtk_text_buffer_get_end_iter(
+                  textbuffer,
+                  &end
+                );
+            }
         }
-        g_free(lastchar);
+
+        g_free(checked);
     }
     gtk_text_buffer_get_start_iter(
       textbuffer,
