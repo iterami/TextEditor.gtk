@@ -1574,8 +1574,6 @@ gboolean place_cursor_idle(gpointer data){
 void save_tab(const gchar *filename){
     gchar *content;
     GtkTextBuffer *textbuffer;
-    GtkTextIter checkend;
-    GtkTextIter checkstart;
     GtkTextIter end;
     GtkTextIter start;
 
@@ -1587,27 +1585,27 @@ void save_tab(const gchar *filename){
         linei--;
         gtk_text_buffer_get_iter_at_line(
           textbuffer,
-          &checkend,
+          &end,
           linei
         );
-        gtk_text_iter_forward_to_line_end(&checkend);
-        checkstart = checkend;
-        if(gtk_text_iter_backward_char(&checkstart)){
+        gtk_text_iter_forward_to_line_end(&end);
+        start = end;
+        if(gtk_text_iter_backward_char(&start)){
             gchar *checked;
             checked = gtk_text_buffer_get_text(
               textbuffer,
-              &checkstart,
-              &checkend,
+              &start,
+              &end,
               FALSE
             );
             if(checked[0] == ' '){
                 gboolean forward = TRUE;
                 while(checked[0] == ' '){
-                    if(gtk_text_iter_backward_char(&checkstart)){
+                    if(gtk_text_iter_backward_char(&start)){
                         checked = gtk_text_buffer_get_text(
                           textbuffer,
-                          &checkstart,
-                          &checkend,
+                          &start,
+                          &end,
                           FALSE
                         );
 
@@ -1617,12 +1615,12 @@ void save_tab(const gchar *filename){
                     }
                 }
                 if(forward){
-                    gtk_text_iter_forward_char(&checkstart);
+                    gtk_text_iter_forward_char(&start);
                 }
                 gtk_text_buffer_delete(
                   textbuffer,
-                  &checkstart,
-                  &checkend
+                  &start,
+                  &end
                 );
             }
             g_free(checked);
@@ -1634,12 +1632,12 @@ void save_tab(const gchar *filename){
       &end
     );
     // Make sure file ends with newline.
-    checkstart = end;
-    if(gtk_text_iter_backward_char(&checkstart)){
+    start = end;
+    if(gtk_text_iter_backward_char(&start)){
         gchar *lastchar;
         lastchar = gtk_text_buffer_get_text(
           textbuffer,
-          &checkstart,
+          &start,
           &end,
           FALSE
         );
@@ -1649,11 +1647,6 @@ void save_tab(const gchar *filename){
               &end,
               "\n",
               1
-            );
-
-            gtk_text_buffer_get_end_iter(
-              textbuffer,
-              &end
             );
         }
         g_free(lastchar);
