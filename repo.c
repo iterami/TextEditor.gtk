@@ -1572,7 +1572,6 @@ gboolean place_cursor_idle(gpointer data){
 }
 
 void save_tab(const gchar *filename){
-    gchar *content;
     GtkTextBuffer *textbuffer;
     GtkTextIter end;
     GtkTextIter start;
@@ -1687,6 +1686,7 @@ void save_tab(const gchar *filename){
       &start
     );
 
+    gchar *content;
     content = gtk_text_buffer_get_text(
       textbuffer,
       &start,
@@ -2561,7 +2561,6 @@ gchar* undoredo_entry(gchar *value, const gboolean inserted, const int line, con
 
 void update_opened_files(void){
     int page = 0;
-    gchar *content;
     GtkTextBuffer *buffer;
     GtkTextIter end;
     GtkTextIter start;
@@ -2603,6 +2602,7 @@ void update_opened_files(void){
       &end
     );
 
+    gchar *content;
     content = gtk_text_buffer_get_text(
       buffer,
       &start,
