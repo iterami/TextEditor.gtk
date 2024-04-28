@@ -1589,41 +1589,48 @@ void save_tab(const gchar *filename){
         );
         gtk_text_iter_forward_to_line_end(&end);
         start = end;
-        if(gtk_text_iter_backward_char(&start)){
-            gchar *checked;
-            checked = gtk_text_buffer_get_text(
-              textbuffer,
-              &start,
-              &end,
-              FALSE
-            );
-            if(checked[0] == ' '){
-                gboolean forward = TRUE;
-                while(checked[0] == ' '){
-                    if(gtk_text_iter_backward_char(&start)){
-                        checked = gtk_text_buffer_get_text(
-                          textbuffer,
-                          &start,
-                          &end,
-                          FALSE
-                        );
+        if(!gtk_text_iter_backward_char(&start)){
+            continue;
+        }
 
-                    }else{
-                        forward = FALSE;
-                        break;
-                    }
-                }
-                if(forward){
-                    gtk_text_iter_forward_char(&start);
-                }
-                gtk_text_buffer_delete(
+        gchar *checked;
+        checked = gtk_text_buffer_get_text(
+          textbuffer,
+          &start,
+          &end,
+          FALSE
+        );
+        if(checked[0] != ' '
+          && checked[0] != '\t'){
+            g_free(checked);
+            continue;
+        }
+
+        gboolean forward = TRUE;
+        while(checked[0] == ' '
+          || checked[0] == '\t'){
+            if(gtk_text_iter_backward_char(&start)){
+                checked = gtk_text_buffer_get_text(
                   textbuffer,
                   &start,
-                  &end
+                  &end,
+                  FALSE
                 );
+
+            }else{
+                forward = FALSE;
+                break;
             }
-            g_free(checked);
         }
+        if(forward){
+            gtk_text_iter_forward_char(&start);
+        }
+        gtk_text_buffer_delete(
+          textbuffer,
+          &start,
+          &end
+        );
+        g_free(checked);
     }
 
     gtk_text_buffer_get_end_iter(
