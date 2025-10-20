@@ -35,7 +35,6 @@
 #define LABEL_DELETENEXTWORD "Delete Ne_xt Word"
 #define LABEL_DELETEPREVIOUSWORD "Delete Pre_vious Word"
 #define LABEL_EDIT "_Edit"
-#define LABEL_EMOJI "Insert Emo_ji"
 #define LABEL_FILE "_File"
 #define LABEL_FIND "F_ind"
 #define LABEL_FINDNEXT "Find _Next"

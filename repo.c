@@ -1463,6 +1463,10 @@ GtkWidget* new_textview(gboolean editable, gchar *name){
       GTK_TEXT_VIEW(text_view),
       editable
     );
+    gtk_text_view_set_input_hints(
+      GTK_TEXT_VIEW(text_view),
+      GTK_INPUT_HINT_NO_EMOJI
+    );
 
     if(name != NULL){
         gtk_widget_set_name(
@@ -1993,25 +1997,12 @@ void startup(GtkApplication* app, gpointer data){
     );
     gtk_add_menuitem(
       menu_edit,
-      LABEL_EMOJI,
-      accelgroup,
-      KEY_INSERT_EMOJI,
-      GDK_CONTROL_MASK,
-      NULL,
-      NULL
-    );
-    gtk_add_menuitem(
-      menu_edit,
       LABEL_TOGGLEOVERWRITE,
       accelgroup,
       KEY_INSERT,
       0,
       NULL,
       NULL
-    );
-    gtk_menu_shell_append(
-      GTK_MENU_SHELL(menu_edit),
-      gtk_separator_menu_item_new()
     );
     gtk_add_menuitem(
       menu_edit,
