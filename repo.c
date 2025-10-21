@@ -2255,6 +2255,10 @@ void startup(GtkApplication* app, gpointer data){
       GTK_SPIN_BUTTON(line_window_line),
       TRUE
     );
+    gtk_entry_set_input_hints(
+      GTK_ENTRY(line_window_line),
+      GTK_INPUT_HINT_NO_EMOJI
+    );
     gtk_container_add(
       GTK_CONTAINER(line_window),
       line_window_line
